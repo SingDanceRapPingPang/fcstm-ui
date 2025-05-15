@@ -1,0 +1,182 @@
+name: Code Test
+
+on:
+  - push
+
+jobs:
+  unittest:
+    name: Code test
+    runs-on: ${{ matrix.os }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - 'ubuntu-18.04'
+        python-version:
+          - '3.6'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 20
+      - name: Set up system dependences on linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree cloc wget curl make
+          sudo apt-get install -y libegl1 libegl1-mesa libegl1-mesa-dev
+          sudo apt-get install -y libdbus-1-3 libxkbcommon-x11-0 libxcb-* xvfb
+          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade flake8 setuptools wheel twine
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+      - name: Test the basic environment
+        run: |
+          python -V
+          pip --version
+          pip list
+          tree .
+          ldd --version
+          cat /etc/issue
+          cloc app
+          cloc test
+      - name: Run unittest
+        env:
+          CI: 'true'
+          LINETRACE: 1
+        run: |
+          make ui unittest PYTEST="`which xvfb-run` `which pytest`"
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  try_build_cli:
+    name: Build Standalone CLI
+    runs-on: ${{ matrix.os }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - 'ubuntu-18.04'
+          - 'windows-2019'
+          - 'macos-10.15'
+        python-version:
+          - '3.6'
+        mode:
+          - 'directory'
+          - 'standalone'
+
+    steps:
+      - name: Get system version for linux
+        if: ${{ contains(matrix.os, 'ubuntu') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=Linux" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=" >> $GITHUB_ENV
+      - name: Get system version for windows
+        if: ${{ contains(matrix.os, 'windows') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=Windows" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=.exe" >> $GITHUB_ENV
+      - name: Get mode for directory
+        if: ${{ contains(matrix.mode, 'directory') }}
+        shell: bash
+        run: |
+          echo "RELEASE_SUFFIX=" >> $GITHUB_ENV
+          echo "STANDALONE=" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=.zip" >> $GITHUB_ENV
+      - name: Get mode for standalone
+        if: ${{ contains(matrix.mode, 'standalone') }}
+        shell: bash
+        run: |
+          echo "RELEASE_SUFFIX=-standalone" >> $GITHUB_ENV
+          echo "STANDALONE=1" >> $GITHUB_ENV
+      - name: Get system version for macos
+        if: ${{ contains(matrix.os, 'macos') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=MacOS" >> $GITHUB_ENV
+          echo "EXEC_SUFFIX=" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 20
+      - name: Set up system dependences on linux
+        if: ${{ env.OS_NAME == 'Linux' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree cloc wget curl make zip
+          sudo apt-get install -y libegl1 libegl1-mesa libegl1-mesa-dev
+          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+      - name: Set up system dependences on windows
+        if: ${{ env.OS_NAME == 'Windows' }}
+        run: |
+          choco install tree cloc wget curl make zip
+      - name: Set up system dependences on macos
+        if: ${{ env.OS_NAME == 'MacOS' }}
+        run: |
+          brew install tree cloc wget curl make zip
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-build.txt
+      - name: Test the basic environment
+        shell: bash
+        run: |
+          python -V
+          pip --version
+          pip list
+          tree .
+      - name: Build UI files
+        shell: bash
+        run: |
+          make ui
+      - name: Get package version
+        shell: bash
+        run: |
+          python -c 'from app.config.meta import __VERSION__;print(__VERSION__)'
+          echo "PACKAGE_VERSION=$(python -c 'from app.config.meta import __VERSION__;print(__VERSION__)')" >> $GITHUB_ENV
+          echo "APP_NAME=$(python -c 'from app.config.meta import __TITLE__;print(__TITLE__)')" >> $GITHUB_ENV
+          echo "GIT_COMMIT_ID=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+          echo "PYTHON_VERSION=$(python -V | xargs -n 1 | tail -1)" >> $GITHUB_ENV
+          echo "CPU_ARCH=$(uname -m)" >> $GITHUB_ENV
+      - name: Build ${{ matrix.mode }} cli
+        shell: bash
+        env:
+          STANDALONE: ${{ env.STANDALONE }}
+        run: |
+          make build
+          ls -al dist
+      - name: Upload standalone executable files to artifacts
+        if: ${{ env.STANDALONE == '1' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
+          path: dist/app${{ env.EXEC_SUFFIX }}
+      - name: Upload packed files to artifacts
+        if: ${{ env.STANDALONE == '' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
+          path: dist/app/*
