@@ -1,11 +1,12 @@
 from PyQt5.Qt import QMainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimerEvent, Qt, QPoint
-from ..ui import UIMainWindow
+from app.ui import UIMainWindow
 from pyfcstm.model import State, NormalState, CompositeState, PseudoState, Event, Transition, Statechart
 from typing import Optional, List, Dict
 from .dialog_edit_state import DialogEditState
-from ..utils.create_formLayout_dialog import create_formlayout_dialog
+from app.utils.create_formLayout_dialog import create_formlayout_dialog
+from app.utils.show_state_graph import show_state_graph
 
 class AppMainWindow(QMainWindow, UIMainWindow):
     d_all_transition: Dict[str, List[Transition]]
@@ -46,10 +47,13 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_button_state_machine_export()
         #初始化新建状态机按钮
         self._init_button_initial_new_state_machine()
+        #初始化验证按钮
+        self._init_button_state_machine_validation()
+        #初始化图生成按钮
+        self._init_button_state_machine_graph_gen()
         '''
         self._init_button_save_state()
         '''
-
 
     def _init_window_style(self):
         self._init_table_style()
@@ -417,6 +421,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def _init_tree_state_machine_all_state_context_menu(self):
         self.tree_state_machine_all_state.setContextMenuPolicy(Qt.CustomContextMenu)
+
         self.tree_state_machine_all_state.customContextMenuRequested.connect(lambda pos: self.show_tree_state_machine_all_state_context_menu(pos))
 
     def show_tree_state_machine_all_state_context_menu(self, position: QPoint):
@@ -522,6 +527,12 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_button_state_machine_export(self):
         self.button_state_machine_export.clicked.connect(lambda: self._export_statechart())
 
+    def _init_button_state_machine_validation(self):
+        self.button_state_machine_validation.clicked.connect(lambda: self._validate_statechart())
+
+    def _init_button_state_machine_graph_gen(self):
+        self.button_state_machine_graph_gen.clicked.connect(lambda: self._graph_gen())
+
     def _init_tree_state_machine_all_state(self):
         self.tree_state_machine_all_state.itemClicked.connect(
             lambda item, _: self._display_state_event_transition_details(item)
@@ -612,11 +623,26 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.d_all_transition.clear()
         self.d_id_father_state.clear()
         self.tree_state_machine_all_state.clear()
+        #在导入时，要根据transition来定位哪个事件和迁移属于哪个状态
+        for cur_transition in self.state_chart.transitions:
+            src_state = cur_transition.src_state
+            dst_state = cur_transition.dst_state
+            event = cur_transition.event
+            #TODO:出错时处理
+            if src_state is None or dst_state is None or event is None:
+                continue
+            if src_state.id not in self.d_all_transition:
+                self.d_all_transition[src_state.id] = []
+            if src_state.id not in self.d_all_event:
+                self.d_all_event[src_state.id] = []
+            self.d_all_transition[src_state.id].append(cur_transition)
+            self.d_all_event[src_state.id].append(event)
+
         if self.at_page_initial:
             self.stackedWidget_state_machine.setCurrentIndex(1)
             self.at_page_initial = False
         self.edit_state_machine_name.setText(self.state_chart.name)
-        self.edit_state_machine_description.setText(''.join(self.state_chart.preamble))
+        self.edit_state_machine_preamble.setPlainText('\n'.join(self.state_chart.preamble))
         #根据导入状态机的信息填充tree_state_machine_all_state
         self._populate_tree_state_machine_all_state(self.tree_state_machine_all_state, self.state_chart.root_state)
 
@@ -641,6 +667,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         tree_widget.expandAll()
 
     def _export_statechart(self):
+        self.show_state_machine_graph()
         options = QtWidgets.QFileDialog.Options()
         # 弹出保存文件对话框，默认扩展名为 .json
         file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -655,7 +682,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             if not file_name.endswith('.json'):
                 file_name += '.json'
             state_machine_name = self.edit_state_machine_name.text()
-            state_machine_preamble = self.edit_state_machine_description.text()
+            state_machine_preamble = self.edit_state_machine_preamble.toPlainText().splitlines()
             if state_machine_name == '' or state_machine_name is None:
                 QtWidgets.QMessageBox.warning(
                     self,
@@ -665,10 +692,61 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                 )
                 return
             self.state_chart.name = state_machine_name
-            if state_machine_preamble != '' and state_machine_preamble is not None:
+            if len(state_machine_preamble) > 0:
                 self.state_chart.preamble = state_machine_preamble
             self.state_chart.to_json(file_name)
 
+    def _validate_statechart(self):
+        try:
+            self.state_chart.validate()
+            QtWidgets.QMessageBox.information(self, "验证成功", "状态图验证通过，无错误。")
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "错误", f"具有以下错误：\n{str(e)}")
+
+    def _graph_gen(self):
+        pass
+
+    def show_state_machine_graph(self):
+        state_machine_data = {
+            'name': self.state_chart.name,
+            'preamble': 'n'.join(self.state_chart.preamble),
+            'root state': self.get_state_dict(self.state_chart.root_state)
+        }
+        state_machine = {
+            'statechart': state_machine_data,
+        }
+        show_state_graph(state_machine)
+
+    def get_state_dict(self, cur_state: NormalState):
+        transition_list = []
+        if cur_state.id in self.d_all_transition:
+            for cur_transition in self.d_all_transition[cur_state.id]:
+                cur_transition_dict = {
+                    'target': cur_transition.dst_state.name,
+                    'event': cur_transition.event.name
+                }
+                transition_list.append(cur_transition_dict)
+
+        states_list = []
+        if isinstance(cur_state, CompositeState):
+            for sub_state in cur_state.states:
+                cur_sub_state_dict = self.get_state_dict(sub_state)
+                states_list.append(cur_sub_state_dict)
+
+        cur_state_dict = {
+            'name': cur_state.name
+        }
+        if isinstance(cur_state, CompositeState):
+            cur_state_dict['states'] = states_list
+            if cur_state.initial_state_id is not None:
+                cur_state_dict['initial'] = cur_state.initial_state.name
+
+        cur_state_dict['transitions'] = transition_list
+        if cur_state.on_entry is not None:
+            cur_state_dict['on entry'] = cur_state.on_entry
+        if cur_state.on_exit is not None:
+            cur_state_dict['on exit'] = cur_state.on_exit
+        return cur_state_dict
 
     def _get_pro_state(self) -> Optional[State]:
         # 获得当前Tree中选择的item

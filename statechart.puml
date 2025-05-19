@@ -1,0 +1,14 @@
+@startuml
+title 1234
+state "start" as start {
+  state "ee" as ee {
+    state "222" as 222 {
+    }
+  }
+}
+222 --> ee : 23
+start --> 222 : 2
+note top of start
+  12nint i = 1nint p = 2
+end note
+@enduml

@@ -4,11 +4,11 @@ from PyQt5.QtWidgets import QWidget
 
 from ..ui import UIDialogEditState
 from typing import Optional
-from pyfcstm.model import NormalState, CompositeState, PseudoState, Statechart
+from pyfcstm.model import NormalState, CompositeState, PseudoState, Statechart, State
 
 class DialogEditState(QDialog, UIDialogEditState):
     def __init__(self, parent, state_chart: Statechart, root_state :Optional[CompositeState] = None,
-                 is_edit=False, initial_data: Optional[NormalState] = None):
+                 is_edit=False, initial_data: Optional[State] = None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.setFixedSize(self.width(), self.height())
@@ -82,10 +82,11 @@ class DialogEditState(QDialog, UIDialogEditState):
         during = self.edit_state_during.toPlainText()
         exit = self.edit_state_exit.toPlainText()
 
-        if type == 'composite':
-            new_state = CompositeState(name=name, initial_state= None, description=description,
+        if type == 'composite' and isinstance(self.initial_data, CompositeState):
+            new_state = CompositeState(name=name, initial_state= self.initial_data.initial_state_id, description=description,
                                        min_time_lock=minTimeLock, max_time_lock=maxTimeLock, on_entry=entry,
-                                       on_during=during, on_exit=exit, id_ = self.initial_data.id if self.is_edit else None)
+                                       on_during=during, on_exit=exit, id_ = self.initial_data.id if self.is_edit else None,
+                                       states=self.initial_data.states)
         elif type == 'normal':
             new_state = NormalState(name=name, description=description, min_time_lock=minTimeLock,
                                     max_time_lock=maxTimeLock, on_entry=entry, on_during=during,
