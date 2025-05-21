@@ -1,31 +1,23 @@
 from PyQt5.Qt import QMainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimerEvent, Qt, QPoint
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt, QPoint
 from app.ui import UIMainWindow
 from pyfcstm.model import State, NormalState, CompositeState, PseudoState, Event, Transition, Statechart
 from typing import Optional, List, Dict
 from .dialog_edit_state import DialogEditState
 from app.utils.create_formLayout_dialog import create_formlayout_dialog
 from app.utils.show_state_graph import show_state_graph
+from app.utils.fcstm_state_chart import FcstmStateChart
 
 class AppMainWindow(QMainWindow, UIMainWindow):
-    d_all_transition: Dict[str, List[Transition]]
-
-    d_all_event: Dict[str, List[Event]] #state.id: event
-
-    d_id_father_state: Dict[str, Optional[CompositeState]]
+    
+    fcstm_state_chart: Optional[FcstmStateChart]
 
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        self.state_chart: Optional[Statechart] = None
         self.at_page_initial = True
-        self.d_all_event = {} # state.id: event
-
-        self.d_all_transition = {} # state.id: transition
-
-        self.d_id_father_state = {} #state.id: state(father)
-
+        self.fcstm_state_chart = None
         self._init()
 
     def _init(self):
@@ -89,16 +81,13 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             return
         root_state = CompositeState(name="初始状态")
         states = [root_state]
-        self.state_chart = Statechart(name=state_machine_name[0], root_state=root_state, states=states)
+        state_chart = Statechart(name=state_machine_name[0], root_state=root_state, states=states)
+        self.fcstm_state_chart = FcstmStateChart(self.tree_state_machine_all_state, state_chart)
         self.edit_state_machine_name.setText(state_machine_name[0])
-        item = QtWidgets.QTreeWidgetItem([root_state.name])
-        item.setData(0, Qt.UserRole, root_state)
-        self.tree_state_machine_all_state.addTopLevelItem(item)
+        
         if self.at_page_initial:
             self.stackedWidget_state_machine.setCurrentIndex(1)
             self.at_page_initial = False
-        for i in range(self.tree_state_machine_all_state.topLevelItemCount()):
-            print(f"Top level {i}: {self.tree_state_machine_all_state.topLevelItem(i).text(0)}")
 
     def _init_table_style(self):
         # 让table中的所有列等比例填充窗口
@@ -117,8 +106,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def _init_table_context_menus(self):
         # 设置表格的上下文菜单策略
-        self.table_state_machine_event.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.table_state_machine_transition.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.table_state_machine_event.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table_state_machine_transition.setContextMenuPolicy(Qt.CustomContextMenu)
         
         # 连接自定义上下文菜单信号
         self.table_state_machine_event.customContextMenuRequested.connect(
@@ -165,44 +154,12 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
             if reply == QtWidgets.QMessageBox.No:
                 return
-            if pro_state.id in self.d_all_event:
-                del_event = None
-                for cur_event in self.d_all_event[pro_state.id]:
-                    if cur_event.name == event_name:
-                        del_event = cur_event
-                        if cur_event in self.state_chart.events:
-                            del self.state_chart.events[cur_event]
-
-                if del_event is not None:
-                    self.d_all_event[pro_state.id].remove(del_event)
-                    if pro_state.id in self.d_all_transition:
-                        for cur_transition in self.d_all_transition[pro_state.id][:]:
-                            if cur_transition.event_id == del_event.id:
-                                self.d_all_transition[pro_state.id].remove(cur_transition)
-                                del self.state_chart.transitions[cur_transition]
-
-
+            self.fcstm_state_chart.del_event(pro_state, event_name)
 
         elif table == self.table_state_machine_transition:
             transition_event = table.item(row, 0).text() if table.item(row, 0) is not None else None
             transition_target_name = table.item(row, 1).text() if table.item(row, 1) is not None else None
-
-            transition_target_state = self.state_chart.states.get_by_name(transition_target_name)
-
-            if pro_state.id in self.d_all_transition:
-                del_transition = None
-                for cur_transition in self.d_all_transition[pro_state.id]:
-                    cur_event_id = cur_transition.event_id
-                    cur_event = self.state_chart.events.get(cur_event_id)
-
-                    if (cur_event and cur_transition.src_state_id == pro_state.id and
-                            cur_transition.dst_state_id == transition_target_state.id and
-                            cur_event.name == transition_event):
-                        del_transition = cur_transition
-                        break
-                if del_transition is not None:
-                    self.d_all_transition[pro_state.id].remove(del_transition)
-                    del self.state_chart.transitions[del_transition]
+            self.fcstm_state_chart.del_transition(pro_state, transition_event, transition_target_name)
         # 更新表格
         cur_state_item = self.tree_state_machine_all_state.currentItem()
         self._display_state_event_transition_details(cur_state_item)
@@ -229,7 +186,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         dialog.setWindowTitle("编辑事件" if is_edit else "添加事件")
         layout = QtWidgets.QFormLayout(dialog)
         # 移除 "?" 按钮
-        dialog.setWindowFlags(dialog.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
+        dialog.setWindowFlags(dialog.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         # 创建输入框
         entries = []
         if is_edit:
@@ -248,7 +205,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         # 添加确定和取消按钮
         buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel,
-            QtCore.Qt.Horizontal, dialog)
+            Qt.Horizontal, dialog)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addRow(buttons)
@@ -269,49 +226,10 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             new_event_name = new_data[0]
             new_event_guard = new_data[1]
             if is_edit:
-                is_validate = True
                 old_event_name = self.table_state_machine_event.item(row, 0).text()
-                old_event = None
-
-                if pro_state.id in self.d_all_event:
-                    for cur_event in self.d_all_event[pro_state.id]:
-                        if cur_event.name == old_event_name:
-                            old_event = cur_event
-                        if new_event_name == cur_event.name and old_event_name != cur_event.name:
-                            is_validate = False
-
-                if not is_validate:
-                    QtWidgets.QMessageBox.warning(
-                        self,
-                        "警告",
-                        "事件名称已经存在！",
-                        QtWidgets.QMessageBox.Ok
-                    )
-                    return
-                if old_event is not None:
-                        # 输入的事件名称不能已经存在
-                        old_event.name = new_event_name
-                        old_event.guard = new_event_guard
+                self.fcstm_state_chart.edit_event(self, pro_state, new_event_name, new_event_guard, old_event_name)
             else:
-                is_validate = True
-                if pro_state.id in self.d_all_event:
-                    for cur_event in self.d_all_event[pro_state.id]:
-                        if new_event_name == cur_event.name:
-                            is_validate = False
-
-                if not is_validate:
-                    QtWidgets.QMessageBox.warning(
-                        self,
-                        "警告",
-                        "事件名称已经存在！",
-                        QtWidgets.QMessageBox.Ok
-                    )
-                    return
-                new_event = Event(new_event_name, new_event_guard)
-                if pro_state.id not in self.d_all_event:
-                    self.d_all_event[pro_state.id] = []
-                self.d_all_event[pro_state.id].append(new_event)
-                self.state_chart.events.add(new_event)
+                self.fcstm_state_chart.add_event(self, pro_state, new_event_name, new_event_guard)
             # 重新加载表格
             cur_state_item = self.tree_state_machine_all_state.currentItem()
             self._display_state_event_transition_details(cur_state_item)
@@ -332,7 +250,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         dialog.setWindowTitle("编辑迁移" if is_edit else "添加迁移")
         layout = QtWidgets.QFormLayout(dialog)
         # 移除 "?" 按钮
-        dialog.setWindowFlags(dialog.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
+        dialog.setWindowFlags(dialog.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         # 创建输入框
         entries = []
         if is_edit:
@@ -351,7 +269,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         # 添加确定和取消按钮
         buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel,
-            QtCore.Qt.Horizontal, dialog)
+            Qt.Horizontal, dialog)
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         layout.addRow(buttons)
@@ -370,8 +288,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                 return
             new_transition_event_name = new_data[0]
             new_transition_target_name = new_data[1]
-            new_transition_event = self.state_chart.events.get_by_name(new_transition_event_name)
-            new_transition_target_state = self.state_chart.states.get_by_name(new_transition_target_name)
+            new_transition_event = self.fcstm_state_chart.state_chart.events.get_by_name(new_transition_event_name)
+            new_transition_target_state = self.fcstm_state_chart.state_chart.states.get_by_name(new_transition_target_name)
             if not new_transition_event or not new_transition_target_state:
                 QtWidgets.QMessageBox.warning(
                     self,
@@ -384,30 +302,11 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             if is_edit:
                 old_transition_event_name = self.table_state_machine_transition.item(row, 0).text()
                 old_transition_target_name = self.table_state_machine_transition.item(row, 1).text()
+                self.fcstm_state_chart.edit_transition(pro_state, old_transition_target_name, old_transition_event_name,
+                                                       new_transition_target_name, new_transition_event_name)
 
-                old_transition_target_state = self.state_chart.states.get_by_name(old_transition_target_name)
-                old_transition = None
-                if pro_state.id in self.d_all_transition:
-
-                    for cur_transition in self.d_all_transition[pro_state.id]:
-                        cur_event_id = cur_transition.event_id
-                        cur_event = self.state_chart.events.get(cur_event_id)
-
-                        if (cur_event and cur_transition.src_state_id == pro_state.id and
-                                cur_transition.dst_state_id == old_transition_target_state.id and
-                                cur_event.name == old_transition_event_name):
-                            old_transition = cur_transition
-                            break
-
-                if old_transition is not None:
-                    old_transition.dst_state = self.state_chart.states.get_by_name(new_transition_target_name)
-                    old_transition.event = self.state_chart.events.get_by_name(new_transition_event_name)
             else:
-                new_transition = Transition(pro_state, new_transition_target_state, new_transition_event)
-                self.state_chart.transitions.add(new_transition)
-                if pro_state.id not in self.d_all_transition:
-                    self.d_all_transition[pro_state.id] = []
-                self.d_all_transition[pro_state.id].append(new_transition)
+                self.fcstm_state_chart.add_transition(pro_state, new_transition_target_state, new_transition_event)
 
             # 重新加载表格
             cur_state_item = self.tree_state_machine_all_state.currentItem()
@@ -459,29 +358,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def delete_state(self, item, state):
 
-        def recursive_delete_state(cur_state: State):
-            if cur_state is None:
-                return
-            #删除与当前状态关联的事件和迁移
-            if cur_state.id in self.d_all_event:
-                for cur_event in self.d_all_event[cur_state.id]:
-                    del self.state_chart.events[cur_event]
-                del self.d_all_event[cur_state.id]
-
-            if cur_state.id in self.d_all_transition:
-                for cur_transition in self.d_all_transition[cur_state.id]:
-                    del self.state_chart.transitions[cur_transition]
-                del self.d_all_transition[cur_state.id]
-
-            if cur_state.id in self.d_id_father_state:
-                del self.d_id_father_state[cur_state.id]
-
-            del self.state_chart.states[cur_state]
-            if isinstance(cur_state, CompositeState):
-                for son_state in cur_state.states:
-                    recursive_delete_state(son_state)
-
-        if state.id == self.state_chart.root_state.id:
+        if state.id == self.fcstm_state_chart.state_chart.root_state.id:
             QtWidgets.QMessageBox.warning(
                 self,
                 "警告",
@@ -494,24 +371,13 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
 
         if reply == QtWidgets.QMessageBox.Yes:
-            parent_item = item.parent()
-            if parent_item:
-                parent_state = parent_item.data(0, Qt.UserRole)
-                del parent_state.states[state]
-                parent_item.removeChild(item)
-            else:
-                index = self.tree_state_machine_all_state.indexOfTopLevelItem(item)
-                self.tree_state_machine_all_state.takeTopLevelItem(index)
-
-            # 如果待删除状态为CompositeState的话，要递归删除子状态以及相关的迁移和事件
-            if isinstance(state, CompositeState):
-                recursive_delete_state(state)
+            self.fcstm_state_chart.del_state(item, state)
 
     def set_as_initial_state(self, state):
         parent_item = self.tree_state_machine_all_state.currentItem().parent()
         #如果是设置整个状态机的初始状态：
         if not parent_item:
-            if self.state_chart.root_state.id == state.id:
+            if self.fcstm_state_chart.state_chart.root_state.id == state.id:
                 return
             QtWidgets.QMessageBox.warning(self, "操作无效", "状态机根节点不能修改")
             return
@@ -544,8 +410,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             return
         # 更新 Events 表格
         self.table_state_machine_event.setRowCount(0)
-        if cur_state.id in self.d_all_event:
-            for event in self.d_all_event[cur_state.id]:
+        if cur_state.id in self.fcstm_state_chart.d_all_event:
+            for event in self.fcstm_state_chart.d_all_event[cur_state.id]:
                 row = self.table_state_machine_event.rowCount()
                 self.table_state_machine_event.insertRow(row)
                 self.table_state_machine_event.setItem(row, 0, QtWidgets.QTableWidgetItem(event.name))
@@ -553,8 +419,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
         # 更新 Transitions 表格
         self.table_state_machine_transition.setRowCount(0)
-        if cur_state.id in self.d_all_transition:
-            for transition in self.d_all_transition[cur_state.id]:
+        if cur_state.id in self.fcstm_state_chart.d_all_transition:
+            for transition in self.fcstm_state_chart.d_all_transition[cur_state.id]:
                 row = self.table_state_machine_transition.rowCount()
                 self.table_state_machine_transition.insertRow(row)
                 self.table_state_machine_transition.setItem(row, 0, QtWidgets.QTableWidgetItem(transition.event.name))
@@ -569,46 +435,29 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         if is_edit:
             # 获取当前编辑状态
             pro_state = self._get_pro_state()
-            dialog = DialogEditState(self, state_chart=self.state_chart, root_state= self.state_chart.root_state,
+            dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
                                      is_edit=True, initial_data=pro_state)
             if dialog.exec_() == QtWidgets.QDialog.Accepted:
                 new_state = dialog.get_state()
                 # 更新逻辑，删除原状态，并添加新状态
-                del self.state_chart.states[pro_state]
-                self.state_chart.states.add(new_state)
-                cur_tree_item = self.tree_state_machine_all_state.currentItem()
-                cur_tree_item.setText(0, new_state.name)
-                cur_tree_item.setData(0, Qt.UserRole, new_state)
+                self.fcstm_state_chart.edit_state(pro_state, new_state)
         else:
             if father_state is not None and not isinstance(father_state, CompositeState):
                 QtWidgets.QMessageBox.warning(self, "错误", "只有composite类型能拥有子状态！")
                 return
             # 添加新状态
-            dialog = DialogEditState(self, state_chart=self.state_chart, root_state= self.state_chart.root_state,
+            dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
                                      is_edit=False, initial_data=None)
             if dialog.exec_() == QtWidgets.QDialog.Accepted:
                 new_state = dialog.get_state()
-
-                cur_state_item = QtWidgets.QTreeWidgetItem([new_state.name])
-                cur_state_item.setData(0, Qt.UserRole, new_state)
-                self.state_chart.states.add(new_state)
-                # 如果是添加子状态：
-                if father_state is not None:
-                    father_item = self.tree_state_machine_all_state.currentItem()
-                    self.d_id_father_state[new_state.id] = father_state
-                    father_state.states.add(new_state)
-                    father_item.addChild(cur_state_item)
-                else:
-                    self.d_id_father_state[new_state.id] = None
-                    self.tree_state_machine_all_state.addTopLevelItem(cur_state_item)
-
+                self.fcstm_state_chart.add_state(father_state, new_state)
         '''
         if new_state is not None:
             max_time_lock = new_state.max_time_lock
             if max_time_lock is not None:
                 max_time_lock_event = Event('max_time', f"{new_state.name}_count > {max_time_lock}")
                 self.d_all_event[new_state.id].append(max_time_lock_event)
-                self.state_chart.events.add(max_time_lock_event)
+                self.fcstm_state_chart.state_chart.events.add(max_time_lock_event)
         '''
         #重置输入框
         #self._reset_input_fields()
@@ -618,54 +467,16 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "选择json文件", "./", "JSON Files (*.json);;All Files (*)")
         if not file_path:
             return
-        self.state_chart = Statechart.read_json(file_path)
-        self.d_all_event.clear()
-        self.d_all_transition.clear()
-        self.d_id_father_state.clear()
-        self.tree_state_machine_all_state.clear()
-        #在导入时，要根据transition来定位哪个事件和迁移属于哪个状态
-        for cur_transition in self.state_chart.transitions:
-            src_state = cur_transition.src_state
-            dst_state = cur_transition.dst_state
-            event = cur_transition.event
-            #TODO:出错时处理
-            if src_state is None or dst_state is None or event is None:
-                continue
-            if src_state.id not in self.d_all_transition:
-                self.d_all_transition[src_state.id] = []
-            if src_state.id not in self.d_all_event:
-                self.d_all_event[src_state.id] = []
-            self.d_all_transition[src_state.id].append(cur_transition)
-            self.d_all_event[src_state.id].append(event)
-
+        state_chart = Statechart.read_json(file_path)
+        self.fcstm_state_chart = FcstmStateChart(self.tree_state_machine_all_state, state_chart)
+        
         if self.at_page_initial:
             self.stackedWidget_state_machine.setCurrentIndex(1)
             self.at_page_initial = False
-        self.edit_state_machine_name.setText(self.state_chart.name)
-        self.edit_state_machine_preamble.setPlainText('\n'.join(self.state_chart.preamble))
-        #根据导入状态机的信息填充tree_state_machine_all_state
-        self._populate_tree_state_machine_all_state(self.tree_state_machine_all_state, self.state_chart.root_state)
-
-    def _populate_tree_state_machine_all_state(self, tree_widget: QtWidgets.QTreeWidget, root_state: CompositeState):
-        tree_widget.clear()
-
-        def add_state_to_tree(parent_item, state):
-            item = QtWidgets.QTreeWidgetItem([state.name])
-            item.setData(0, Qt.UserRole, state)
-
-            if parent_item:
-                parent_state = parent_item.data(0, Qt.UserRole)
-                self.d_id_father_state[state.id] = parent_state
-                parent_item.addChild(item)
-            else:
-                tree_widget.addTopLevelItem(item)
-            if isinstance(state, CompositeState):
-                for child_state in state.states:
-                    add_state_to_tree(item, child_state)
-
-        add_state_to_tree(None, root_state)
-        tree_widget.expandAll()
-
+        self.edit_state_machine_name.setText(self.fcstm_state_chart.state_chart.name)
+        self.edit_state_machine_preamble.setPlainText('\n'.join(self.fcstm_state_chart.state_chart.preamble))
+        self.tree_state_machine_all_state.expandAll() 
+        
     def _export_statechart(self):
         self.show_state_machine_graph()
         options = QtWidgets.QFileDialog.Options()
@@ -691,14 +502,14 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                     QtWidgets.QMessageBox.Ok
                 )
                 return
-            self.state_chart.name = state_machine_name
+            self.fcstm_state_chart.state_chart.name = state_machine_name
             if len(state_machine_preamble) > 0:
-                self.state_chart.preamble = state_machine_preamble
-            self.state_chart.to_json(file_name)
+                self.fcstm_state_chart.state_chart.preamble = state_machine_preamble
+            self.fcstm_state_chart.state_chart.to_json(file_name)
 
     def _validate_statechart(self):
         try:
-            self.state_chart.validate()
+            self.fcstm_state_chart.state_chart.validate()
             QtWidgets.QMessageBox.information(self, "验证成功", "状态图验证通过，无错误。")
         except Exception as e:
             QtWidgets.QMessageBox.critical(self, "错误", f"具有以下错误：\n{str(e)}")
@@ -708,9 +519,9 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def show_state_machine_graph(self):
         state_machine_data = {
-            'name': self.state_chart.name,
-            'preamble': 'n'.join(self.state_chart.preamble),
-            'root state': self.get_state_dict(self.state_chart.root_state)
+            'name': self.fcstm_state_chart.state_chart.name,
+            'preamble': 'n'.join(self.fcstm_state_chart.state_chart.preamble),
+            'root state': self.get_state_dict(self.fcstm_state_chart.state_chart.root_state)
         }
         state_machine = {
             'statechart': state_machine_data,
@@ -719,8 +530,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def get_state_dict(self, cur_state: NormalState):
         transition_list = []
-        if cur_state.id in self.d_all_transition:
-            for cur_transition in self.d_all_transition[cur_state.id]:
+        if cur_state.id in self.fcstm_state_chart.d_all_transition:
+            for cur_transition in self.fcstm_state_chart.d_all_transition[cur_state.id]:
                 cur_transition_dict = {
                     'target': cur_transition.dst_state.name,
                     'event': cur_transition.event.name

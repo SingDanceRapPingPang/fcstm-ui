@@ -82,11 +82,18 @@ class DialogEditState(QDialog, UIDialogEditState):
         during = self.edit_state_during.toPlainText()
         exit = self.edit_state_exit.toPlainText()
 
-        if type == 'composite' and isinstance(self.initial_data, CompositeState):
-            new_state = CompositeState(name=name, initial_state= self.initial_data.initial_state_id, description=description,
+        if type == 'composite':
+            new_state_initial_state = None
+            new_state_id = None
+            new_state_states = None
+            if self.initial_data is not None and isinstance(self.initial_data, CompositeState):
+                new_state_initial_state = self.initial_data.initial_state_id
+                new_state_id = self.initial_data.id
+                new_state_states = self.initial_data.states
+            new_state = CompositeState(name=name, initial_state=new_state_initial_state, description=description,
                                        min_time_lock=minTimeLock, max_time_lock=maxTimeLock, on_entry=entry,
-                                       on_during=during, on_exit=exit, id_ = self.initial_data.id if self.is_edit else None,
-                                       states=self.initial_data.states)
+                                       on_during=during, on_exit=exit, id_=new_state_id if self.is_edit else None,
+                                       states=new_state_states)
         elif type == 'normal':
             new_state = NormalState(name=name, description=description, min_time_lock=minTimeLock,
                                     max_time_lock=maxTimeLock, on_entry=entry, on_during=during,
