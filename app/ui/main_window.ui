@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>fcstm</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -33,7 +33,7 @@
         <item>
          <widget class="QStackedWidget" name="stackedWidget_state_machine">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_initial">
            <layout class="QGridLayout" name="gridLayout_3">
@@ -616,7 +616,7 @@
                </widget>
               </item>
               <item row="1" column="0" colspan="2">
-               <widget class="QTextBrowser" name="textBrowser_code_gen_code_show"/>
+               <widget class="QWidget" name="widget_code_ide" native="true"/>
               </item>
              </layout>
             </widget>

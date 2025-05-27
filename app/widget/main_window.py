@@ -6,8 +6,8 @@ from pyfcstm.model import State, NormalState, CompositeState, PseudoState, Event
 from typing import Optional, List, Dict
 from .dialog_edit_state import DialogEditState
 from app.utils.create_formLayout_dialog import create_formlayout_dialog
-from app.utils.show_state_graph import show_state_graph
 from app.utils.fcstm_state_chart import FcstmStateChart
+from app.utils.c_code_editor import CCodeEditor
 
 class AppMainWindow(QMainWindow, UIMainWindow):
     
@@ -21,6 +21,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init()
 
     def _init(self):
+        #添加代码编辑器并设置格式
+        self._init_code_editor()
         #初始化窗口格式
         self._init_window_style()
         #初始化event和transition表格的上下文菜单
@@ -43,9 +45,28 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_button_state_machine_validation()
         #初始化图生成按钮
         self._init_button_state_machine_graph_gen()
+        #保存代码按钮
+        self._init_button_code_gen_code_save()
         '''
         self._init_button_save_state()
         '''
+
+    def _init_code_editor(self):
+        """初始化代码编辑器"""
+        # 创建代码编辑器
+        self.code_editor = CCodeEditor(self.widget_code_ide)
+
+        # 创建布局
+        layout = QtWidgets.QVBoxLayout(self.widget_code_ide)
+        layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
+        layout.addWidget(self.code_editor)
+
+        # 设置示例代码（可选）
+        self.code_editor.set_text("""#include <stdio.h>
+    int main() {
+        printf("Hello, world!\\n");
+        return 0;
+    }""")
 
     def _init_window_style(self):
         self._init_table_style()
@@ -225,6 +246,14 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
             new_event_name = new_data[0]
             new_event_guard = new_data[1]
+            if self.fcstm_state_chart.state_chart.events.get_by_name(new_event_name):
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "警告",
+                    "事件名称已经存在！",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
             if is_edit:
                 old_event_name = self.table_state_machine_event.item(row, 0).text()
                 self.fcstm_state_chart.edit_event(self, pro_state, new_event_name, new_event_guard, old_event_name)
@@ -399,6 +428,43 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_button_state_machine_graph_gen(self):
         self.button_state_machine_graph_gen.clicked.connect(lambda: self._graph_gen())
 
+    def _init_button_code_gen_code_save(self):
+        self.button_code_gen_code_save.clicked.connect(lambda: self._save_c_code())
+
+    def _save_c_code(self):
+        code = self.code_editor.get_text()
+        file_name, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "保存代码文件",
+            "./",  # 默认保存路径
+            "C Source Files (*.c);;C Header Files (*.h);;All Files (*)",
+            options=QtWidgets.QFileDialog.Options()
+        )
+
+        if file_name:
+            if selected_filter == "C Source Files (*.c)" and not file_name.endswith('.c'):
+                file_name += '.c'
+            elif selected_filter == "C Header Files (*.h)" and not file_name.endswith('.h'):
+                file_name += '.h'
+
+            try:
+                with open(file_name, 'w', encoding='utf-8') as f:
+                    f.write(code)
+                QtWidgets.QMessageBox.information(
+                    self,
+                    "保存成功",
+                    f"代码已成功保存到：\n{file_name}",
+                    QtWidgets.QMessageBox.Ok
+                )
+            except Exception as e:
+                # 显示错误消息
+                QtWidgets.QMessageBox.critical(
+                    self,
+                    "保存失败",
+                    f"保存文件时发生错误：\n{str(e)}",
+                    QtWidgets.QMessageBox.Ok
+                )
+
     def _init_tree_state_machine_all_state(self):
         self.tree_state_machine_all_state.itemClicked.connect(
             lambda item, _: self._display_state_event_transition_details(item)
@@ -478,7 +544,6 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.tree_state_machine_all_state.expandAll() 
         
     def _export_statechart(self):
-        self.show_state_machine_graph()
         options = QtWidgets.QFileDialog.Options()
         # 弹出保存文件对话框，默认扩展名为 .json
         file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -526,7 +591,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         state_machine = {
             'statechart': state_machine_data,
         }
-        show_state_graph(state_machine)
+        #show_state_graph(state_machine)
 
     def get_state_dict(self, cur_state: NormalState):
         transition_list = []
