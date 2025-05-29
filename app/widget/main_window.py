@@ -8,6 +8,7 @@ from .dialog_edit_state import DialogEditState
 from app.utils.create_formLayout_dialog import create_formlayout_dialog
 from app.utils.fcstm_state_chart import FcstmStateChart
 from app.utils.c_code_editor import CCodeEditor
+from app.utils.show_state_graph import ShowStateGraph
 
 class AppMainWindow(QMainWindow, UIMainWindow):
     
@@ -405,6 +406,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def set_as_initial_state(self, state):
         parent_item = self.tree_state_machine_all_state.currentItem().parent()
         #如果是设置整个状态机的初始状态：
+        #TODO:fcstm中statechart的root_state并不能设置
         if not parent_item:
             if self.fcstm_state_chart.state_chart.root_state.id == state.id:
                 return
@@ -413,7 +415,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
         parent_state = parent_item.data(0, Qt.UserRole)
         if isinstance(parent_state, CompositeState):
-            parent_state.initial_state = state
+            self.fcstm_state_chart.change_initial_state(parent_state, state)
             QtWidgets.QMessageBox.information(self, "成功", f"{state.name} 已被设为初始状态")
 
     def _init_button_state_machine_add_state(self):
@@ -580,10 +582,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             QtWidgets.QMessageBox.critical(self, "错误", f"具有以下错误：\n{str(e)}")
 
     def _graph_gen(self):
-        pass
-
-    def show_state_machine_graph(self):
-        state_machine_data = {
+        '''state_machine_data = {
             'name': self.fcstm_state_chart.state_chart.name,
             'preamble': 'n'.join(self.fcstm_state_chart.state_chart.preamble),
             'root state': self.get_state_dict(self.fcstm_state_chart.state_chart.root_state)
@@ -591,7 +590,21 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         state_machine = {
             'statechart': state_machine_data,
         }
-        #show_state_graph(state_machine)
+        #show_state_graph(state_machine)'''
+        options = QtWidgets.QFileDialog.Options()
+        # 弹出保存文件对话框，默认扩展名为 .json
+        file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "保存为puml文件",
+            "./",
+            "Pluntuml Files (*.puml);;All Files (*)",
+            options=options
+        )
+        if file_name:
+            # 确保文件名以 .json 结尾
+            if not file_name.endswith('.puml'):
+                file_name += '.puml'
+            ShowStateGraph.show_state_graph(self.fcstm_state_chart.state_chart, file_name)
 
     def get_state_dict(self, cur_state: NormalState):
         transition_list = []

@@ -46,7 +46,18 @@ class FcstmStateChart:
         self.tree_widget.clear()
 
         def add_state_to_tree(parent_item, state):
-            item = QtWidgets.QTreeWidgetItem([state.name])
+            # 检查是否为父状态的初始状态
+            if parent_item:
+                parent_state = parent_item.data(0, Qt.UserRole)
+                if isinstance(parent_state, CompositeState) and parent_state.initial_state_id == state.id:
+                    item = QtWidgets.QTreeWidgetItem([f"⚫{state.name}"])  # 使用实心圆点标记初始状态
+                else:
+                    item = QtWidgets.QTreeWidgetItem([state.name])
+            elif self.state_chart.root_state_id == state.id:
+                item = QtWidgets.QTreeWidgetItem([f"⚫{state.name}"])
+            else:
+                item = QtWidgets.QTreeWidgetItem([state.name])
+            
             item.setData(0, Qt.UserRole, state)
 
             if parent_item:
@@ -237,3 +248,24 @@ class FcstmStateChart:
             self.tree_widget.takeTopLevelItem(index)
         #删除state的所有相关信息
         recursive_delete_state(state)
+
+    def change_initial_state(self, father_state: CompositeState, new_initial_state: State):
+        """
+        修改复合状态的初始状态
+
+        Args:
+            father_state: 要修改的复合状态
+            new_initial_state: 新的初始状态
+        """
+        cur_tree_item = self.tree_widget.currentItem()
+        # 更新复合状态的初始状态ID
+        if father_state.initial_state_id is not None:
+            father_state_item = cur_tree_item.parent()
+            for i in range(father_state_item.childCount()):
+                child_item = father_state_item.child(i)
+                child_state = child_item.data(0, Qt.UserRole)
+                if child_state.id == father_state.initial_state_id:
+                    child_item.setText(0, f"{child_state.name}")
+
+        father_state.initial_state = new_initial_state
+        cur_tree_item.setText(0, f"⚫{new_initial_state.name}")
