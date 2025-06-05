@@ -17,3 +17,5 @@ __AUTHOR__ = "HansBug"
 
 #: Email of the authors'.
 __AUTHOR_EMAIL__ = "hansbug@buaa.edu.cn"
+
+PLANTUML_JAR_PATH = "app/resources/plantuml.jar"

@@ -2,6 +2,12 @@ import os
 import subprocess
 from typing import Dict, List
 from pyfcstm.model import State, CompositeState, NormalState, PseudoState, Transition, Event, Statechart
+from pathlib import Path
+from plantumlcli import LocalPlantuml
+from app.config import PLANTUML_JAR_PATH
+import tempfile
+import shutil
+
 
 class ShowStateGraph:
     @classmethod
@@ -83,10 +89,11 @@ class ShowStateGraph:
         return "\n".join(plantuml_code)
 
     @classmethod
-    def show_state_graph(cls, statechart: Statechart, puml_file):
+    def show_state_graph(cls, statechart: Statechart, png_file):
         # 生成 PlantUML 代码
         plantuml_code = cls.generate_plantuml_statechart(statechart)
 
+        local = LocalPlantuml.autoload(plantuml=PLANTUML_JAR_PATH)
+        # print(local.dump_txt(code))  # print text graph of code
+        local.dump(png_file, 'png', plantuml_code)  # save png to /my/path/source_local.png
         # 保存 PlantUML 代码到文件
-        with open(puml_file, "w", encoding="utf-8") as f:
-            f.write(plantuml_code)

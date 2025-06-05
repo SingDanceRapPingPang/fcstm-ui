@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1114</width>
-    <height>887</height>
+    <width>1028</width>
+    <height>824</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
         <item>
          <widget class="QStackedWidget" name="stackedWidget_state_machine">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_initial">
            <layout class="QGridLayout" name="gridLayout_3">
@@ -163,23 +163,7 @@
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,1,1,1,6,1,6">
-                  <item row="3" column="4">
-                   <widget class="QPushButton" name="button_state_machine_add_event">
-                    <property name="font">
-                     <font>
-                      <family>微软雅黑</family>
-                      <pointsize>9</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>添加事件</string>
-                    </property>
-                    <property name="autoDefault">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
+                 <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0">
                   <item row="5" column="4">
                    <widget class="QPushButton" name="button_state_machine_add_transition">
                     <property name="font">
@@ -196,34 +180,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" colspan="4">
-                   <widget class="QTextEdit" name="edit_state_machine_preamble">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_state_machine_state_machine_preamble">
-                    <property name="font">
-                     <font>
-                      <family>微软雅黑</family>
-                      <pointsize>9</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>状态机前置代码</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="2" colspan="2">
-                   <widget class="QLabel" name="label_state_machine_transition">
+                  <item row="3" column="2" colspan="2">
+                   <widget class="QLabel" name="label_state_machine_gen_state">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -237,7 +195,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>迁移</string>
+                     <string>产生事件</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -274,7 +232,7 @@
                      <number>2</number>
                     </property>
                     <property name="columnCount">
-                     <number>2</number>
+                     <number>3</number>
                     </property>
                     <attribute name="horizontalHeaderDefaultSectionSize">
                      <number>200</number>
@@ -283,15 +241,20 @@
                     <row/>
                     <column>
                      <property name="text">
+                      <string>源状态</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
                       <string>激励事件</string>
                      </property>
                     </column>
                     <column>
                      <property name="text">
-                      <string>迁移目标</string>
+                      <string>目标状态</string>
                      </property>
                     </column>
-                    <item row="0" column="1">
+                    <item row="0" column="2">
                      <property name="text">
                       <string/>
                      </property>
@@ -299,6 +262,44 @@
                       <set>AlignCenter</set>
                      </property>
                     </item>
+                   </widget>
+                  </item>
+                  <item row="3" column="4">
+                   <widget class="QPushButton" name="button_state_machine_add_event">
+                    <property name="font">
+                     <font>
+                      <family>微软雅黑</family>
+                      <pointsize>9</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>添加事件</string>
+                    </property>
+                    <property name="autoDefault">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="2" colspan="2">
+                   <widget class="QLabel" name="label_state_machine_transition">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>微软雅黑</family>
+                      <pointsize>9</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>迁移</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
                    </widget>
                   </item>
                   <item row="4" column="0" colspan="5">
@@ -379,8 +380,8 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_state_machine_state_machine_name">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_state_machine_state_machine_preamble">
                     <property name="font">
                      <font>
                       <family>微软雅黑</family>
@@ -388,7 +389,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>状态机名称</string>
+                     <string>状态机前置代码</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -429,14 +430,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="2" colspan="2">
-                   <widget class="QLabel" name="label_state_machine_gen_state">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_state_machine_state_machine_name">
                     <property name="font">
                      <font>
                       <family>微软雅黑</family>
@@ -444,10 +439,26 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>产生事件</string>
+                     <string>状态机名称</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" colspan="4">
+                   <widget class="QTextEdit" name="edit_state_machine_preamble">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>80</height>
+                     </size>
                     </property>
                    </widget>
                   </item>
@@ -635,7 +646,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1114</width>
+     <width>1028</width>
      <height>23</height>
     </rect>
    </property>

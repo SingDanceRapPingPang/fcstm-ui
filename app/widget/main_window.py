@@ -9,6 +9,7 @@ from app.utils.create_formLayout_dialog import create_formlayout_dialog
 from app.utils.fcstm_state_chart import FcstmStateChart
 from app.utils.c_code_editor import CCodeEditor
 from app.utils.show_state_graph import ShowStateGraph
+from .show_state_chart_graph import StateMachineGraphWindow
 
 class AppMainWindow(QMainWindow, UIMainWindow):
     
@@ -35,9 +36,9 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_button_state_machine_add_state()
         #初始化导入状态机按钮
         self._init_import_state_chart()
-        #初始化tree_state_machine_all_state点击和上下文菜单
-        self._init_tree_state_machine_all_state()
         self._init_tree_state_machine_all_state_context_menu()
+        #初始化tabWidget在点击代码生成后的初始化动作
+        self._init_tab_widget_init()
         #初始化导出按钮
         self._init_button_state_machine_export()
         #初始化新建状态机按钮
@@ -159,13 +160,6 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             self._delete_item(table, item.row())
 
     def _delete_item(self, table, row):
-        # 获取待处理的状态
-        pro_state = self._get_pro_state()
-        # 获取待处理的状态
-        if pro_state is None:
-            table.removeRow(row)
-            return
-
         if table == self.table_state_machine_event:
             event_name = table.item(row, 0).text() if table.item(row, 0) is not None else None
             event_guard = table.item(row, 1).text() if table.item(row, 1) is not None else None
@@ -176,15 +170,15 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
             if reply == QtWidgets.QMessageBox.No:
                 return
-            self.fcstm_state_chart.del_event(pro_state, event_name)
+            self.fcstm_state_chart.del_event(self, event_name)
 
         elif table == self.table_state_machine_transition:
-            transition_event = table.item(row, 0).text() if table.item(row, 0) is not None else None
-            transition_target_name = table.item(row, 1).text() if table.item(row, 1) is not None else None
-            self.fcstm_state_chart.del_transition(pro_state, transition_event, transition_target_name)
+            transition_src_name = table.item(row, 0).text() if table.item(row, 0) is not None else None
+            transition_event_name = table.item(row, 1).text() if table.item(row, 1) is not None else None
+            transition_target_name = table.item(row, 2).text() if table.item(row, 2) is not None else None
+            self.fcstm_state_chart.del_transition(self, transition_src_name, transition_event_name, transition_target_name)
         # 更新表格
-        cur_state_item = self.tree_state_machine_all_state.currentItem()
-        self._display_state_event_transition_details(cur_state_item)
+        self._display_state_event_transition_details()
 
     def _edit_item(self, table, row):
         if table == self.table_state_machine_event:
@@ -200,10 +194,6 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         :return:
         """
         # 获取待处理的状态
-        pro_state = self._get_pro_state()
-        if pro_state is None:
-            return
-
         dialog = QtWidgets.QDialog(self)
         dialog.setWindowTitle("编辑事件" if is_edit else "添加事件")
         layout = QtWidgets.QFormLayout(dialog)
@@ -247,22 +237,14 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
             new_event_name = new_data[0]
             new_event_guard = new_data[1]
-            if self.fcstm_state_chart.state_chart.events.get_by_name(new_event_name):
-                QtWidgets.QMessageBox.warning(
-                    self,
-                    "警告",
-                    "事件名称已经存在！",
-                    QtWidgets.QMessageBox.Ok
-                )
-                return
+
             if is_edit:
                 old_event_name = self.table_state_machine_event.item(row, 0).text()
-                self.fcstm_state_chart.edit_event(self, pro_state, new_event_name, new_event_guard, old_event_name)
+                self.fcstm_state_chart.edit_event(self, new_event_name, new_event_guard, old_event_name)
             else:
-                self.fcstm_state_chart.add_event(self, pro_state, new_event_name, new_event_guard)
+                self.fcstm_state_chart.add_event(self, new_event_name, new_event_guard)
             # 重新加载表格
-            cur_state_item = self.tree_state_machine_all_state.currentItem()
-            self._display_state_event_transition_details(cur_state_item)
+            self._display_state_event_transition_details()
 
     def _show_transitions_dialog(self, is_edit=False, row=-1):
         """
@@ -271,11 +253,6 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         :param row:
         :return:
         """
-        # 获取代处理的状态
-        pro_state = self._get_pro_state()
-        if pro_state is None:
-            return
-
         dialog = QtWidgets.QDialog(self)
         dialog.setWindowTitle("编辑迁移" if is_edit else "添加迁移")
         layout = QtWidgets.QFormLayout(dialog)
@@ -308,7 +285,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             new_data = [entry.text() for entry in entries]
             if (new_data[0] == '' or new_data[0] is None or
-                new_data[1] == '' or new_data[1] is None):
+                new_data[1] == '' or new_data[1] is None or
+                new_data[2] == '' or new_data[2] is None):
                 QtWidgets.QMessageBox.warning(
                     self,
                     "警告",
@@ -316,11 +294,13 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                     QtWidgets.QMessageBox.Ok
                 )
                 return
-            new_transition_event_name = new_data[0]
-            new_transition_target_name = new_data[1]
+            new_transition_src_name = new_data[0]
+            new_transition_event_name = new_data[1]
+            new_transition_target_name = new_data[2]
+            new_transition_src_state = self.fcstm_state_chart.state_chart.states.get_by_name(new_transition_src_name)
             new_transition_event = self.fcstm_state_chart.state_chart.events.get_by_name(new_transition_event_name)
             new_transition_target_state = self.fcstm_state_chart.state_chart.states.get_by_name(new_transition_target_name)
-            if not new_transition_event or not new_transition_target_state:
+            if new_transition_src_state is None or new_transition_event is None or new_transition_target_state is None:
                 QtWidgets.QMessageBox.warning(
                     self,
                     "警告",
@@ -330,17 +310,23 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                 return
 
             if is_edit:
-                old_transition_event_name = self.table_state_machine_transition.item(row, 0).text()
-                old_transition_target_name = self.table_state_machine_transition.item(row, 1).text()
-                self.fcstm_state_chart.edit_transition(pro_state, old_transition_target_name, old_transition_event_name,
-                                                       new_transition_target_name, new_transition_event_name)
+                old_transition_src_name = self.table_state_machine_transition.item(row, 0).text()
+                old_transition_event_name = self.table_state_machine_transition.item(row, 1).text()
+                old_transition_target_name = self.table_state_machine_transition.item(row, 2).text()
+                old_transition_src_state = self.fcstm_state_chart.state_chart.states.get_by_name(old_transition_src_name)
+                old_transition_target_state = self.fcstm_state_chart.state_chart.states.get_by_name(old_transition_target_name)
+                old_transition_event = self.fcstm_state_chart.state_chart.events.get_by_name(old_transition_event_name)
+
+                self.fcstm_state_chart.edit_transition(self, old_transition_src_state, old_transition_target_state,
+                                                       old_transition_event, new_transition_src_state,
+                                                       new_transition_target_state, new_transition_event)
 
             else:
-                self.fcstm_state_chart.add_transition(pro_state, new_transition_target_state, new_transition_event)
+                self.fcstm_state_chart.add_transition(self, new_transition_src_state, new_transition_target_state,
+                                                      new_transition_event)
 
             # 重新加载表格
-            cur_state_item = self.tree_state_machine_all_state.currentItem()
-            self._display_state_event_transition_details(cur_state_item)
+            self._display_state_event_transition_details()
 
     def _init_button_state_machine_add_event(self):
         self.button_state_machine_add_event.clicked.connect(lambda: self._show_event_dialog(False))
@@ -352,6 +338,15 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.tree_state_machine_all_state.setContextMenuPolicy(Qt.CustomContextMenu)
 
         self.tree_state_machine_all_state.customContextMenuRequested.connect(lambda pos: self.show_tree_state_machine_all_state_context_menu(pos))
+
+    def _init_tab_widget_init(self):
+        self.tabWidget.currentChanged.connect(self._handle_tab_changed)
+
+    def _handle_tab_changed(self, index):
+        if index == 1:
+            #填充tree_code_gen_all_state
+            self.fcstm_state_chart.populate_tree_state_machine_all_state(self.tree_code_gen_all_state)
+            self.tree_code_gen_all_state.expandAll()
 
     def show_tree_state_machine_all_state_context_menu(self, position: QPoint):
         item = self.tree_state_machine_all_state.itemAt(position)
@@ -397,7 +392,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             )
             return
 
-        reply = QtWidgets.QMessageBox.question(self, "删除确认", f"确定要删除状态 '{state.name}' 及其所有子状态吗？",
+        reply = QtWidgets.QMessageBox.question(self, "删除确认", f"确定要删除状态 '{state.name}' 和其所有子状态，以及有关的迁移吗？",
                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
 
         if reply == QtWidgets.QMessageBox.Yes:
@@ -467,33 +462,24 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                     QtWidgets.QMessageBox.Ok
                 )
 
-    def _init_tree_state_machine_all_state(self):
-        self.tree_state_machine_all_state.itemClicked.connect(
-            lambda item, _: self._display_state_event_transition_details(item)
-        )
+    def _display_state_event_transition_details(self):
 
-    def _display_state_event_transition_details(self, item):
-        cur_state = item.data(0, Qt.UserRole)
-        if not cur_state:
-            return
         # 更新 Events 表格
         self.table_state_machine_event.setRowCount(0)
-        if cur_state.id in self.fcstm_state_chart.d_all_event:
-            for event in self.fcstm_state_chart.d_all_event[cur_state.id]:
-                row = self.table_state_machine_event.rowCount()
-                self.table_state_machine_event.insertRow(row)
-                self.table_state_machine_event.setItem(row, 0, QtWidgets.QTableWidgetItem(event.name))
-                self.table_state_machine_event.setItem(row, 1, QtWidgets.QTableWidgetItem(event.guard))
+        for event in self.fcstm_state_chart.state_chart.events:
+            row = self.table_state_machine_event.rowCount()
+            self.table_state_machine_event.insertRow(row)
+            self.table_state_machine_event.setItem(row, 0, QtWidgets.QTableWidgetItem(event.name))
+            self.table_state_machine_event.setItem(row, 1, QtWidgets.QTableWidgetItem(event.guard))
 
         # 更新 Transitions 表格
         self.table_state_machine_transition.setRowCount(0)
-        if cur_state.id in self.fcstm_state_chart.d_all_transition:
-            for transition in self.fcstm_state_chart.d_all_transition[cur_state.id]:
-                row = self.table_state_machine_transition.rowCount()
-                self.table_state_machine_transition.insertRow(row)
-                self.table_state_machine_transition.setItem(row, 0, QtWidgets.QTableWidgetItem(transition.event.name))
-                self.table_state_machine_transition.setItem(row, 1,
-                                                            QtWidgets.QTableWidgetItem(transition.dst_state.name))
+        for transition in self.fcstm_state_chart.state_chart.transitions:
+            row = self.table_state_machine_transition.rowCount()
+            self.table_state_machine_transition.insertRow(row)
+            self.table_state_machine_transition.setItem(row, 0, QtWidgets.QTableWidgetItem(transition.src_state.name))
+            self.table_state_machine_transition.setItem(row, 1, QtWidgets.QTableWidgetItem(transition.event.name))
+            self.table_state_machine_transition.setItem(row, 2, QtWidgets.QTableWidgetItem(transition.dst_state.name))
 
     def _add_state(self, father_state: Optional[CompositeState], is_edit = False):
         """
@@ -537,13 +523,14 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             return
         state_chart = Statechart.read_json(file_path)
         self.fcstm_state_chart = FcstmStateChart(self.tree_state_machine_all_state, state_chart)
-        
+        self.fcstm_state_chart.legality_check(self)
         if self.at_page_initial:
             self.stackedWidget_state_machine.setCurrentIndex(1)
             self.at_page_initial = False
         self.edit_state_machine_name.setText(self.fcstm_state_chart.state_chart.name)
         self.edit_state_machine_preamble.setPlainText('\n'.join(self.fcstm_state_chart.state_chart.preamble))
-        self.tree_state_machine_all_state.expandAll() 
+        self.tree_state_machine_all_state.expandAll()
+        self._display_state_event_transition_details()
         
     def _export_statechart(self):
         options = QtWidgets.QFileDialog.Options()
@@ -591,22 +578,36 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             'statechart': state_machine_data,
         }
         #show_state_graph(state_machine)'''
+
+        #graph_window = StateMachineGraphWindow(self.fcstm_state_chart.state_chart, self)
+        #graph_window.show()
+
         options = QtWidgets.QFileDialog.Options()
         # 弹出保存文件对话框，默认扩展名为 .json
         file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
-            "保存为puml文件",
+            "保存为png文件",
             "./",
-            "Pluntuml Files (*.puml);;All Files (*)",
+            "Pluntuml Files (*.png);;All Files (*)",
             options=options
         )
         if file_name:
             # 确保文件名以 .json 结尾
-            if not file_name.endswith('.puml'):
-                file_name += '.puml'
+            if not file_name.endswith('.png'):
+                file_name += '.png'
             ShowStateGraph.show_state_graph(self.fcstm_state_chart.state_chart, file_name)
 
-    def get_state_dict(self, cur_state: NormalState):
+    def _get_pro_state(self) -> Optional[State]:
+        # 获得当前Tree中选择的item
+        selected_state_item = self.tree_state_machine_all_state.currentItem()
+        # 若没有选中状态，则报错
+        if not selected_state_item:
+            QtWidgets.QMessageBox.warning(self, "提示", "请先选择要编辑的状态")
+            return None
+        pro_state = selected_state_item.data(0, Qt.UserRole)
+        return pro_state
+    '''
+        def get_state_dict(self, cur_state: NormalState):
         transition_list = []
         if cur_state.id in self.fcstm_state_chart.d_all_transition:
             for cur_transition in self.fcstm_state_chart.d_all_transition[cur_state.id]:
@@ -636,14 +637,4 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         if cur_state.on_exit is not None:
             cur_state_dict['on exit'] = cur_state.on_exit
         return cur_state_dict
-
-    def _get_pro_state(self) -> Optional[State]:
-        # 获得当前Tree中选择的item
-        selected_state_item = self.tree_state_machine_all_state.currentItem()
-        # 若没有选中状态，则报错
-        if not selected_state_item:
-            QtWidgets.QMessageBox.warning(self, "提示", "请先选择要编辑的状态")
-            return None
-        pro_state = selected_state_item.data(0, Qt.UserRole)
-        return pro_state
-
+    '''

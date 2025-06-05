@@ -8,18 +8,16 @@ from pyfcstm.model import (
 from typing import Dict, List, Optional
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+from vtkmodules.numpy_interface.dataset_adapter import NoneArray
+
 
 class FcstmStateChart:
     """fcstm，事件和迁移都挂在状态下"""
-    d_all_transition: Dict[str, List[Transition]]
-    d_all_event: Dict[str, List[Event]]
     d_id_father_state: Dict[str, Optional[CompositeState]]
 
     def __init__(self, tree_widget: QtWidgets.QTreeWidget, state_chart: Statechart):
         self._state_chart = state_chart
 
-        self.d_all_event = {}  # state.id: [event]
-        self.d_all_transition = {}  # state.id: [transition]
         self.d_id_father_state = {}  # state.id: state(father)
         self.tree_widget = tree_widget
         self.tree_widget.clear()
@@ -28,22 +26,11 @@ class FcstmStateChart:
             self.__init_fcstm()
 
     def __init_fcstm(self):
-        for cur_transition in self._state_chart.transitions:
-            src_state = cur_transition.src_state
-            dst_state = cur_transition.dst_state
-            event = cur_transition.event
-            if src_state is None or dst_state is None or event is None:
-                continue
-            if src_state.id not in self.d_all_transition:
-                self.d_all_transition[src_state.id] = []
-            if src_state.id not in self.d_all_event:
-                self.d_all_event[src_state.id] = []
-            self.d_all_transition[src_state.id].append(cur_transition)
-            self.d_all_event[src_state.id].append(event)
-        self._populate_tree_state_machine_all_state()
 
-    def _populate_tree_state_machine_all_state(self):
-        self.tree_widget.clear()
+        self.populate_tree_state_machine_all_state(self.tree_widget)
+
+    def populate_tree_state_machine_all_state(self, tree_widget: QtWidgets.QTreeWidget):
+        tree_widget.clear()
 
         def add_state_to_tree(parent_item, state):
             # 检查是否为父状态的初始状态
@@ -65,7 +52,7 @@ class FcstmStateChart:
                 self.d_id_father_state[state.id] = parent_state
                 parent_item.addChild(item)
             else:
-                self.tree_widget.addTopLevelItem(item)
+                tree_widget.addTopLevelItem(item)
             if isinstance(state, CompositeState):
                 for child_state in state.states:
                     add_state_to_tree(item, child_state)
@@ -76,49 +63,33 @@ class FcstmStateChart:
     def state_chart(self) -> Statechart:
         return self._state_chart
 
-    def add_event(self, parent_widget, pro_state: State, new_event_name: str, new_event_guard: str):
+    def add_event(self, parent_widget, new_event_name: str, new_event_guard: str):
         """新增事件"""
         is_validate = True
-        if pro_state.id in self.d_all_event:
-            for cur_event in self.d_all_event[pro_state.id]:
-                if new_event_name == cur_event.name:
-                    is_validate = False
+        for cur_event in self.state_chart.events:
+            if new_event_name == cur_event.name:
+                is_validate = False
 
         if not is_validate:
-            QtWidgets.QMessageBox.warning(
-                parent_widget,
-                "警告",
-                "事件名称已经存在！",
-                QtWidgets.QMessageBox.Ok
-            )
+            self.warning_message(parent_widget, "事件名称已经存在！")
             return
         new_event = Event(new_event_name, new_event_guard)
-        if pro_state.id not in self.d_all_event:
-            self.d_all_event[pro_state.id] = []
-        self.d_all_event[pro_state.id].append(new_event)
         self.state_chart.events.add(new_event)
 
-    def edit_event(self, parent_widget, pro_state: State, new_event_name: str,
+    def edit_event(self, parent_widget, new_event_name: str,
                    new_event_guard: str, old_event_name: str):
         """修改事件"""
         is_validate = True
-        old_event = None
+        old_event = self.state_chart.events.get_by_name(old_event_name)
+        if not old_event:
+            self.warning_message(parent_widget, "待编辑的事件不存在！")
+            return
+        if self.state_chart.events.get_by_name(new_event_name) and old_event_name != new_event_name:
+            is_validate = False
         #找到待修改的旧事件，并判断修改是否合法
         #不合法：修改的事件名称已经存在
-        if pro_state.id in self.d_all_event:
-            for cur_event in self.d_all_event[pro_state.id]:
-                if cur_event.name == old_event_name:
-                    old_event = cur_event
-                if new_event_name == cur_event.name and old_event_name != cur_event.name:
-                    is_validate = False
-
         if not is_validate:
-            QtWidgets.QMessageBox.warning(
-                parent_widget,
-                "警告",
-                "事件名称已经存在！",
-                QtWidgets.QMessageBox.Ok
-            )
+            self.warning_message(parent_widget, "事件名称已经存在！")
             return
 
         if old_event is not None:
@@ -126,70 +97,64 @@ class FcstmStateChart:
             old_event.name = new_event_name
             old_event.guard = new_event_guard
 
-    def add_transition(self, pro_state: State, new_transition_target_state: State, new_transition_event: Event):
-        new_transition = Transition(pro_state, new_transition_target_state, new_transition_event)
+    def add_transition(self, parent_widget, new_transition_src_state: State, new_transition_target_state: State, new_transition_event: Event):
+        for cur_transition in self.state_chart.transitions:
+            if (cur_transition.src_state_id == new_transition_src_state.id and cur_transition.dst_state_id == new_transition_target_state.id
+            and cur_transition.event_id == new_transition_event.id):
+                self.warning_message(parent_widget, "迁移已经存在！")
+                return
+
+        new_transition = Transition(new_transition_src_state, new_transition_target_state, new_transition_event)
         self.state_chart.transitions.add(new_transition)
-        if pro_state.id not in self.d_all_transition:
-            self.d_all_transition[pro_state.id] = []
-        self.d_all_transition[pro_state.id].append(new_transition)
 
-    def edit_transition(self, pro_state: State, old_transition_target_name: str, old_transition_event_name: str,
-                        new_transition_target_name: str, new_transition_event_name: str):
-        old_transition_target_state = self.state_chart.states.get_by_name(old_transition_target_name)
+    def edit_transition(self, parent_widget, old_transition_src_state: State, old_transition_target_state: State, old_transition_event: Event,
+                        new_transition_src_state: State, new_transition_target_state: State, new_transition_event: Event):
         old_transition = None
-        if pro_state.id in self.d_all_transition:
+        #找到旧的迁移
+        for cur_transition in self.state_chart.transitions:
+            if (cur_transition.src_state_id == old_transition_src_state.id and cur_transition.dst_state_id == old_transition_target_state.id
+            and cur_transition.event_id == old_transition_event.id):
+                old_transition = cur_transition
+        if old_transition is None:
+            self.warning_message(parent_widget, "待编辑的迁移不存在！")
+            return
+        #判断新迁移是否已经存在
+        for cur_transition in self.state_chart.transitions:
+            if(cur_transition.src_state_id == new_transition_src_state.id and cur_transition.dst_state_id == new_transition_target_state.id
+            and cur_transition.event_id == new_transition_event.id):
+                self.warning_message(parent_widget, "编辑后的迁移已经存在！")
+                return
 
-            for cur_transition in self.d_all_transition[pro_state.id]:
-                cur_event_id = cur_transition.event_id
-                cur_event = self.state_chart.events.get(cur_event_id)
+        old_transition.src_state = new_transition_src_state
+        old_transition.dst_state = new_transition_target_state
+        old_transition.event = new_transition_event
 
-                if (cur_event and cur_transition.src_state_id == pro_state.id and
-                        cur_transition.dst_state_id == old_transition_target_state.id and
-                        cur_event.name == old_transition_event_name):
-                    old_transition = cur_transition
-                    break
-
-        if old_transition is not None:
-            old_transition.dst_state = self.state_chart.states.get_by_name(new_transition_target_name)
-            old_transition.event = self.state_chart.events.get_by_name(new_transition_event_name)
-
-    def del_event(self, pro_state: State, event_name: str):
+    def del_event(self, parent_widget, event_name: str):
         """删除特定状态下指定名字的事件，以及与该事件相关的迁移"""
-        #根据event_name找到待删除的状态
-        if pro_state.id in self.d_all_event:
-            del_event = None
-            for cur_event in self.d_all_event[pro_state.id]:
-                if cur_event.name == event_name:
-                    del_event = cur_event
-                    if cur_event in self.state_chart.events:
-                        del self.state_chart.events[cur_event]
+        del_event = self.state_chart.events.get_by_name(event_name)
+        if not del_event:
+            return
+        #删除所有与该事件有关的迁移
+        for cur_transition in self.state_chart.transitions[:]:
+            if cur_transition.event_id == del_event.id:
+                del self.state_chart.transitions[cur_transition]
 
-            if del_event is not None:
-                self.d_all_event[pro_state.id].remove(del_event)
-                if pro_state.id in self.d_all_transition:
-                    for cur_transition in self.d_all_transition[pro_state.id][:]:
-                        if cur_transition.event_id == del_event.id:
-                            self.d_all_transition[pro_state.id].remove(cur_transition)
-                            del self.state_chart.transitions[cur_transition]
+        del self.state_chart.events[del_event]
 
-    def del_transition(self, pro_state: State, transition_event: str, transition_target_name: str):
+    def del_transition(self, parent_widget, transition_src_name: str, transition_event_name: str, transition_target_name: str):
         """删除特定状态下指定名字迁移"""
+        transition_src_state = self.state_chart.states.get_by_name(transition_src_name)
         transition_target_state = self.state_chart.states.get_by_name(transition_target_name)
-
-        if pro_state.id in self.d_all_transition:
-            del_transition = None
-            for cur_transition in self.d_all_transition[pro_state.id]:
-                cur_event_id = cur_transition.event_id
-                cur_event = self.state_chart.events.get(cur_event_id)
-
-                if (cur_event and cur_transition.src_state_id == pro_state.id and
-                        cur_transition.dst_state_id == transition_target_state.id and
-                        cur_event.name == transition_event):
-                    del_transition = cur_transition
-                    break
-            if del_transition is not None:
-                self.d_all_transition[pro_state.id].remove(del_transition)
-                del self.state_chart.transitions[del_transition]
+        transition_event = self.state_chart.events.get_by_name(transition_event_name)
+        #导入有问题时的删除
+        del_transition = None
+        for cur_transition in self.state_chart.transitions:
+            if (cur_transition.src_state_id == transition_src_state.id and cur_transition.dst_state_id == transition_target_state.id
+            and cur_transition.event_id == transition_event.id):
+                del_transition = cur_transition
+        if del_transition is None:
+            return
+        del self.state_chart.transitions[del_transition]
 
     def add_state(self, father_state: CompositeState, new_state: State):
         """添加状态"""
@@ -218,17 +183,10 @@ class FcstmStateChart:
         def recursive_delete_state(cur_state: State):
             if cur_state is None:
                 return
-            #删除与当前状态关联的事件和迁移
-            if cur_state.id in self.d_all_event:
-                for cur_event in self.d_all_event[cur_state.id]:
-                    del self.state_chart.events[cur_event]
-                del self.d_all_event[cur_state.id]
-
-            if cur_state.id in self.d_all_transition:
-                for cur_transition in self.d_all_transition[cur_state.id]:
+            #删除与当前状态关联的所有迁移
+            for cur_transition in self.state_chart.transitions[:]:
+                if cur_transition.src_state_id == cur_state.id or cur_transition.dst_state_id == cur_state.id:
                     del self.state_chart.transitions[cur_transition]
-                del self.d_all_transition[cur_state.id]
-
             if cur_state.id in self.d_id_father_state:
                 del self.d_id_father_state[cur_state.id]
 
@@ -269,3 +227,29 @@ class FcstmStateChart:
 
         father_state.initial_state = new_initial_state
         cur_tree_item.setText(0, f"⚫{new_initial_state.name}")
+
+    def warning_message(self, parent_widget, message: str):
+        QtWidgets.QMessageBox.warning(
+            parent_widget,
+            "警告",
+            message,
+            QtWidgets.QMessageBox.Ok
+        )
+
+    def legality_check(self, parent_widget):
+        illegal_transitions = []
+        warning_str = []
+        for cur_transition in self.state_chart.transitions:
+            cur_transition_src_state = cur_transition.src_state
+            cur_transition_dst_state = cur_transition.dst_state
+            cur_transition_event = cur_transition.event
+            if (not cur_transition_src_state or not cur_transition_dst_state or
+            not cur_transition_event):
+                illegal_transitions.append(cur_transition)
+                cur_str = (f'{cur_transition_src_state.name if cur_transition_src_state is not None else ""}'
+                           f'-->{cur_transition_dst_state.name if cur_transition_dst_state is not None else ""}, '
+                           f'事件:{cur_transition_event.name if cur_transition_event is not None else ""}')
+                warning_str.append(cur_str)
+
+        if illegal_transitions:
+            self.warning_message(parent_widget, f"以下不合法的迁移将被删除: {"".join(warning_str)}")
