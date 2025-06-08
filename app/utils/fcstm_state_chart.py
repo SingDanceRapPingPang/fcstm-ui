@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from vtkmodules.numpy_interface.dataset_adapter import NoneArray
+import qtawesome as qta
 
 
 class FcstmStateChart:
@@ -37,11 +38,17 @@ class FcstmStateChart:
             if parent_item:
                 parent_state = parent_item.data(0, Qt.UserRole)
                 if isinstance(parent_state, CompositeState) and parent_state.initial_state_id == state.id:
-                    item = QtWidgets.QTreeWidgetItem([f"⚫{state.name}"])  # 使用实心圆点标记初始状态
+                    # 创建带有图标的文本
+                    icon = qta.icon('fa5s.play', color='#4169E1')  # 使用皇家蓝颜色
+                    item = QtWidgets.QTreeWidgetItem([state.name])
+                    item.setIcon(0, icon)
                 else:
                     item = QtWidgets.QTreeWidgetItem([state.name])
             elif self.state_chart.root_state_id == state.id:
-                item = QtWidgets.QTreeWidgetItem([f"⚫{state.name}"])
+                # 创建带有图标的文本
+                icon = qta.icon('fa5s.play', color='#4169E1')  # 使用皇家蓝颜色
+                item = QtWidgets.QTreeWidgetItem([state.name])
+                item.setIcon(0, icon)
             else:
                 item = QtWidgets.QTreeWidgetItem([state.name])
             
@@ -134,10 +141,15 @@ class FcstmStateChart:
         del_event = self.state_chart.events.get_by_name(event_name)
         if not del_event:
             return
-        #删除所有与该事件有关的迁移
-        for cur_transition in self.state_chart.transitions[:]:
+        # 创建一个列表来存储要删除的transition
+        transitions_to_delete = []
+        for cur_transition in self.state_chart.transitions:
             if cur_transition.event_id == del_event.id:
-                del self.state_chart.transitions[cur_transition]
+                transitions_to_delete.append(cur_transition)
+        
+        # 删除找到的transitions
+        for transition in transitions_to_delete:
+            del self.state_chart.transitions[transition]
 
         del self.state_chart.events[del_event]
 
@@ -184,9 +196,14 @@ class FcstmStateChart:
             if cur_state is None:
                 return
             #删除与当前状态关联的所有迁移
-            for cur_transition in self.state_chart.transitions[:]:
+            transitions_to_delete = []
+            for cur_transition in self.state_chart.transitions:
                 if cur_transition.src_state_id == cur_state.id or cur_transition.dst_state_id == cur_state.id:
-                    del self.state_chart.transitions[cur_transition]
+                    transitions_to_delete.append(cur_transition)
+            # 删除找到的transitions
+            for transition in transitions_to_delete:
+                del self.state_chart.transitions[transition]
+
             if cur_state.id in self.d_id_father_state:
                 del self.d_id_father_state[cur_state.id]
 
@@ -224,9 +241,10 @@ class FcstmStateChart:
                 child_state = child_item.data(0, Qt.UserRole)
                 if child_state.id == father_state.initial_state_id:
                     child_item.setText(0, f"{child_state.name}")
+        icon = qta.icon('fa5s.play', color='#4169E1')
 
         father_state.initial_state = new_initial_state
-        cur_tree_item.setText(0, f"⚫{new_initial_state.name}")
+        cur_tree_item.setIcon(0, icon)
 
     def warning_message(self, parent_widget, message: str):
         QtWidgets.QMessageBox.warning(

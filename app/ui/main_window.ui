@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1028</width>
-    <height>824</height>
+    <width>1156</width>
+    <height>938</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,27 +37,20 @@
           </property>
           <widget class="QWidget" name="page_initial">
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_4">
+            <item row="3" column="3">
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="button_initial_import_state_machine">
-              <property name="text">
-               <string>导入状态机</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
+            <item row="2" column="2">
              <spacer name="horizontalSpacer_6">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -70,7 +63,7 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="4">
+            <item row="2" column="4">
              <spacer name="horizontalSpacer_5">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -83,15 +76,8 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="button_initial_new_state_machine">
-              <property name="text">
-               <string>新建状态机</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <spacer name="verticalSpacer_2">
+            <item row="3" column="1">
+             <spacer name="verticalSpacer_4">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -99,6 +85,19 @@
                <size>
                 <width>20</width>
                 <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="2" column="0">
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>
@@ -130,17 +129,18 @@
              </spacer>
             </item>
             <item row="2" column="1">
-             <spacer name="verticalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QToolButton" name="button_initial_import_state_machine">
+              <property name="text">
+               <string>导入状态机</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QToolButton" name="button_initial_new_state_machine">
+              <property name="text">
+               <string>新建状态机</string>
               </property>
-             </spacer>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -166,6 +166,12 @@
                  <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0">
                   <item row="5" column="4">
                    <widget class="QPushButton" name="button_state_machine_add_transition">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>35</height>
+                     </size>
+                    </property>
                     <property name="font">
                      <font>
                       <family>微软雅黑</family>
@@ -266,6 +272,12 @@
                   </item>
                   <item row="3" column="4">
                    <widget class="QPushButton" name="button_state_machine_add_event">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>35</height>
+                     </size>
+                    </property>
                     <property name="font">
                      <font>
                       <family>微软雅黑</family>
@@ -474,23 +486,122 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
                   <item>
-                   <widget class="QPushButton" name="button_state_machine_add_state">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>3000</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>添加状态</string>
-                    </property>
+                   <widget class="QWidget" name="widget_state" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,3">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QWidget" name="widget" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_6">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>10</number>
+                        </property>
+                        <item>
+                         <widget class="QPushButton" name="button_state_machine_fold_all">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>35</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="button_state_machine_expand_all">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>35</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>50</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_state_add_state" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_7">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <spacer name="horizontalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
+                        </item>
+                        <item alignment="Qt::AlignRight">
+                         <widget class="QPushButton" name="button_state_machine_add_state">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="minimumSize">
+                           <size>
+                            <width>200</width>
+                            <height>35</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>200</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>添加状态</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                   <item>
@@ -517,8 +628,23 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="spacing">
+                <number>20</number>
+               </property>
                <item>
                 <widget class="QPushButton" name="button_state_machine_import_state">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <family>微软雅黑</family>
@@ -531,6 +657,18 @@
                </item>
                <item>
                 <widget class="QPushButton" name="button_state_machine_export">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <family>微软雅黑</family>
@@ -547,6 +685,18 @@
                </item>
                <item>
                 <widget class="QPushButton" name="button_state_machine_graph_gen">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>状态机图生成</string>
                  </property>
@@ -554,6 +704,18 @@
                </item>
                <item>
                 <widget class="QPushButton" name="button_state_machine_validation">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>状态机验证</string>
                  </property>
@@ -581,7 +743,7 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,4">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="2,7">
            <item>
             <widget class="QFrame" name="frame_load_state">
              <property name="frameShape">
@@ -591,6 +753,69 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QWidget" name="widget_2" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="button_code_gen_fold_all">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>50</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_code_gen_expand_all">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>50</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
               <item>
                <widget class="QTreeWidget" name="tree_code_gen_all_state">
                 <column>
@@ -611,23 +836,60 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="0">
-               <widget class="QPushButton" name="button_code_gen_code_gen">
-                <property name="text">
-                 <string>生成代码</string>
-                </property>
+             <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,20">
+              <item>
+               <widget class="QWidget" name="widget_code_gen_button_container" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <item>
+                  <widget class="QPushButton" name="button_code_gen_code_gen">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>生成代码</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_code_gen_code_save">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>35</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>200</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>保存代码</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="button_code_gen_code_save">
-                <property name="text">
-                 <string>保存代码</string>
+              <item>
+               <widget class="QWidget" name="widget_code_ide" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
                </widget>
-              </item>
-              <item row="1" column="0" colspan="2">
-               <widget class="QWidget" name="widget_code_ide" native="true"/>
               </item>
              </layout>
             </widget>
@@ -646,7 +908,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1028</width>
+     <width>1156</width>
      <height>23</height>
     </rect>
    </property>

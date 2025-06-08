@@ -1,15 +1,18 @@
-from PyQt5.Qt import QMainWindow
+from typing import Optional
+
+import PyQt5.Qt
 from PyQt5 import QtWidgets
+from PyQt5.Qt import QMainWindow
 from PyQt5.QtCore import Qt, QPoint
+import qtawesome as qta
+from pyfcstm.model import State, CompositeState, Statechart
+
 from app.ui import UIMainWindow
-from pyfcstm.model import State, NormalState, CompositeState, PseudoState, Event, Transition, Statechart
-from typing import Optional, List, Dict
-from .dialog_edit_state import DialogEditState
+from app.utils.c_code_editor import CCodeEditor
 from app.utils.create_formLayout_dialog import create_formlayout_dialog
 from app.utils.fcstm_state_chart import FcstmStateChart
-from app.utils.c_code_editor import CCodeEditor
-from app.utils.show_state_graph import ShowStateGraph
-from .show_state_chart_graph import StateMachineGraphWindow
+from .dialog_edit_state import DialogEditState
+from .dialog_show_graph import DialogShowGraph
 
 class AppMainWindow(QMainWindow, UIMainWindow):
     
@@ -49,6 +52,12 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self._init_button_state_machine_graph_gen()
         #保存代码按钮
         self._init_button_code_gen_code_save()
+        #展开所有状态按钮
+        self._init_button_state_machine_expand_all()
+        self._init_button_code_gen_expand_all()
+        #折叠所有状态按钮
+        self._init_button_state_machine_fold_all()
+        self._init_button_code_gen_fold_all()
         '''
         self._init_button_save_state()
         '''
@@ -73,6 +82,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
     def _init_window_style(self):
         self._init_table_style()
         self._init_tree_style()
+        self._init_button_style()
 
     def _init_import_state_chart(self):
         self._init_button_initial_import_state_machine()
@@ -123,9 +133,58 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def _init_tree_style(self):
         self.tree_state_machine_all_state.header().hide()
-        #self.tree_state_machine_all_state.setIndentation(0)
+        self.tree_state_machine_all_state.setTextElideMode(Qt.ElideNone)
+        self.tree_state_machine_all_state.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        #self.tree_state_machine_all_state.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.tree_state_machine_all_state.header().setMinimumSectionSize(800)
+        self.tree_state_machine_all_state.setAutoScroll(False)
+        
         self.tree_code_gen_all_state.header().hide()
-        #self.tree_code_gen_all_state.setIndentation(0)
+        self.tree_code_gen_all_state.setTextElideMode(Qt.ElideNone)
+        self.tree_code_gen_all_state.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        #self.tree_code_gen_all_state.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.tree_code_gen_all_state.header().setMinimumSectionSize(800)
+        self.tree_code_gen_all_state.setAutoScroll(False)
+
+    def _init_button_style(self):
+        button_style = """
+            QToolButton {
+                border: none;
+                background-color: #FFFACD;
+                font-size: 20px;
+                padding: 50px 16px 8px 16px;  /* 上 右 下 左 的内边距 */
+                border-radius: 6px;
+                spacing: 5px;  /* 图标和文字之间的间距 */
+            }
+
+            QToolButton:hover {
+                background-color: #ADD8E6;
+            }
+
+            QToolButton:pressed {
+                background-color: #ADD8E6;
+            }
+        """
+        self.button_initial_new_state_machine.setMinimumSize(300, 300)
+        self.button_initial_import_state_machine.setMinimumSize(300, 300)
+        self.button_initial_new_state_machine.setStyleSheet(button_style)
+        self.button_initial_import_state_machine.setStyleSheet(button_style)
+        
+        # 设置按钮图标和文字
+        new_icon = qta.icon('fa5s.plus-circle', color='#000000')
+        import_icon = qta.icon('fa5s.file-import', color='#000000')
+        
+        self.button_initial_new_state_machine.setIcon(new_icon)
+        self.button_initial_import_state_machine.setIcon(import_icon)
+        
+        # 设置图标大小
+        icon_size = 64
+        self.button_initial_new_state_machine.setIconSize(PyQt5.Qt.QSize(icon_size, icon_size))
+        self.button_initial_import_state_machine.setIconSize(PyQt5.Qt.QSize(icon_size, icon_size))
+        
+        # 设置文字在图标下方
+        self.button_initial_new_state_machine.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.button_initial_import_state_machine.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
     def _init_table_context_menus(self):
         # 设置表格的上下文菜单策略
@@ -343,7 +402,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.tabWidget.currentChanged.connect(self._handle_tab_changed)
 
     def _handle_tab_changed(self, index):
-        if index == 1:
+        if index == 1 and self.fcstm_state_chart is not None:
             #填充tree_code_gen_all_state
             self.fcstm_state_chart.populate_tree_state_machine_all_state(self.tree_code_gen_all_state)
             self.tree_code_gen_all_state.expandAll()
@@ -397,6 +456,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
         if reply == QtWidgets.QMessageBox.Yes:
             self.fcstm_state_chart.del_state(item, state)
+            # 更新表格
+            self._display_state_event_transition_details()
 
     def set_as_initial_state(self, state):
         parent_item = self.tree_state_machine_all_state.currentItem().parent()
@@ -411,7 +472,6 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         parent_state = parent_item.data(0, Qt.UserRole)
         if isinstance(parent_state, CompositeState):
             self.fcstm_state_chart.change_initial_state(parent_state, state)
-            QtWidgets.QMessageBox.information(self, "成功", f"{state.name} 已被设为初始状态")
 
     def _init_button_state_machine_add_state(self):
         self.button_state_machine_add_state.clicked.connect(lambda: self._add_state(None, False))
@@ -427,6 +487,34 @@ class AppMainWindow(QMainWindow, UIMainWindow):
 
     def _init_button_code_gen_code_save(self):
         self.button_code_gen_code_save.clicked.connect(lambda: self._save_c_code())
+
+    def _init_button_state_machine_expand_all(self):
+        self.button_state_machine_expand_all.setToolTip("展开所有")
+        expand_icon = qta.icon('fa5s.angle-down', color='#000000')
+        self.button_state_machine_expand_all.setIcon(expand_icon)
+        self.button_state_machine_expand_all.setIconSize(PyQt5.Qt.QSize(25, 25))
+        self.button_state_machine_expand_all.clicked.connect(lambda: self._expand_all_state(self.tree_state_machine_all_state))
+
+    def _init_button_state_machine_fold_all(self):
+        self.button_state_machine_fold_all.setToolTip("折叠所有")
+        fold_icon = qta.icon('fa5s.angle-up', color='#000000')
+        self.button_state_machine_fold_all.setIcon(fold_icon)
+        self.button_state_machine_fold_all.setIconSize(PyQt5.Qt.QSize(25, 25))
+        self.button_state_machine_fold_all.clicked.connect(lambda: self._fold_all_state(self.tree_state_machine_all_state))
+
+    def _init_button_code_gen_expand_all(self):
+        self.button_code_gen_expand_all.setToolTip("展开所有")
+        expand_icon = qta.icon('fa5s.angle-down', color='#000000')
+        self.button_code_gen_expand_all.setIcon(expand_icon)
+        self.button_code_gen_expand_all.setIconSize(PyQt5.Qt.QSize(25, 25))
+        self.button_code_gen_expand_all.clicked.connect(lambda: self._expand_all_state(self.tree_code_gen_all_state))
+
+    def _init_button_code_gen_fold_all(self):
+        self.button_code_gen_fold_all.setToolTip("折叠所有")
+        fold_icon = qta.icon('fa5s.angle-up', color='#000000')
+        self.button_code_gen_fold_all.setIcon(fold_icon)
+        self.button_code_gen_fold_all.setIconSize(PyQt5.Qt.QSize(25, 25))
+        self.button_code_gen_fold_all.clicked.connect(lambda: self._fold_all_state(self.tree_code_gen_all_state))
 
     def _save_c_code(self):
         code = self.code_editor.get_text()
@@ -461,6 +549,12 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                     f"保存文件时发生错误：\n{str(e)}",
                     QtWidgets.QMessageBox.Ok
                 )
+
+    def _expand_all_state(self, tree_widget: QtWidgets.QTreeWidget):
+        tree_widget.expandAll()
+
+    def _fold_all_state(self, tree_widget: QtWidgets.QTreeWidget):
+        tree_widget.collapseAll()
 
     def _display_state_event_transition_details(self):
 
@@ -569,33 +663,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
             QtWidgets.QMessageBox.critical(self, "错误", f"具有以下错误：\n{str(e)}")
 
     def _graph_gen(self):
-        '''state_machine_data = {
-            'name': self.fcstm_state_chart.state_chart.name,
-            'preamble': 'n'.join(self.fcstm_state_chart.state_chart.preamble),
-            'root state': self.get_state_dict(self.fcstm_state_chart.state_chart.root_state)
-        }
-        state_machine = {
-            'statechart': state_machine_data,
-        }
-        #show_state_graph(state_machine)'''
-
-        #graph_window = StateMachineGraphWindow(self.fcstm_state_chart.state_chart, self)
-        #graph_window.show()
-
-        options = QtWidgets.QFileDialog.Options()
-        # 弹出保存文件对话框，默认扩展名为 .json
-        file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self,
-            "保存为png文件",
-            "./",
-            "Pluntuml Files (*.png);;All Files (*)",
-            options=options
-        )
-        if file_name:
-            # 确保文件名以 .json 结尾
-            if not file_name.endswith('.png'):
-                file_name += '.png'
-            ShowStateGraph.show_state_graph(self.fcstm_state_chart.state_chart, file_name)
+        dialog_show_graph = DialogShowGraph(self, self.fcstm_state_chart.state_chart)
+        dialog_show_graph.exec_()
 
     def _get_pro_state(self) -> Optional[State]:
         # 获得当前Tree中选择的item

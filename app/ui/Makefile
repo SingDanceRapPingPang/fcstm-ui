@@ -8,7 +8,8 @@ PYUIC5 := $(PYTHON) -m PyQt5.uic.pyuic
 
 UI_FILES := \
 	main_window.ui \
-	dialog_edit_state.ui
+	dialog_edit_state.ui \
+	dialog_show_graph.ui
 GUI_PY_FILES := $(addsuffix _ui.py, $(basename ${UI_FILES}))
 
 all: build
