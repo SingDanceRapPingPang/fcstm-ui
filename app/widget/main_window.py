@@ -1,4 +1,5 @@
 from typing import Optional
+import os
 
 import PyQt5.Qt
 from PyQt5 import QtWidgets
@@ -11,6 +12,8 @@ from app.ui import UIMainWindow
 from app.utils.c_code_editor import CCodeEditor
 from app.utils.create_formLayout_dialog import create_formlayout_dialog
 from app.utils.fcstm_state_chart import FcstmStateChart
+from app.utils.export_to_word import export_statechart_to_word
+from app.utils.export_to_excel import export_statechart_to_excel
 from .dialog_edit_state import DialogEditState
 from .dialog_show_graph import DialogShowGraph
 
@@ -23,6 +26,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.setupUi(self)
         self.at_page_initial = True
         self.fcstm_state_chart = None
+        self.code_file_path = "./"
+        self.state_machine_file_path = "./"
         self._init()
 
     def _init(self):
@@ -517,38 +522,61 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.button_code_gen_fold_all.clicked.connect(lambda: self._fold_all_state(self.tree_code_gen_all_state))
 
     def _save_c_code(self):
-        code = self.code_editor.get_text()
-        file_name, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
-            self,
-            "保存代码文件",
-            "./",  # 默认保存路径
-            "C Source Files (*.c);;C Header Files (*.h);;All Files (*)",
-            options=QtWidgets.QFileDialog.Options()
-        )
-
-        if file_name:
-            if selected_filter == "C Source Files (*.c)" and not file_name.endswith('.c'):
-                file_name += '.c'
-            elif selected_filter == "C Header Files (*.h)" and not file_name.endswith('.h'):
-                file_name += '.h'
-
-            try:
-                with open(file_name, 'w', encoding='utf-8') as f:
-                    f.write(code)
-                QtWidgets.QMessageBox.information(
+        try:
+            # 检查上次使用的路径是否存在
+            if not os.path.exists(self.code_file_path):
+                self.code_file_path = "./"
+                
+            code = self.code_editor.get_text()
+            if not code:
+                QtWidgets.QMessageBox.warning(
                     self,
-                    "保存成功",
-                    f"代码已成功保存到：\n{file_name}",
+                    "警告",
+                    "没有可保存的代码！",
                     QtWidgets.QMessageBox.Ok
                 )
-            except Exception as e:
-                # 显示错误消息
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "保存失败",
-                    f"保存文件时发生错误：\n{str(e)}",
-                    QtWidgets.QMessageBox.Ok
-                )
+                return
+
+            file_name, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "保存代码文件",
+                self.code_file_path,
+                "C Source Files (*.c);;C Header Files (*.h);;All Files (*)",
+                options=QtWidgets.QFileDialog.Options()
+            )
+
+            if file_name:
+                # 更新上次使用的路径
+                self.code_file_path = os.path.dirname(file_name)
+                
+                if selected_filter == "C Source Files (*.c)" and not file_name.endswith('.c'):
+                    file_name += '.c'
+                elif selected_filter == "C Header Files (*.h)" and not file_name.endswith('.h'):
+                    file_name += '.h'
+
+                try:
+                    with open(file_name, 'w', encoding='utf-8') as f:
+                        f.write(code)
+                    QtWidgets.QMessageBox.information(
+                        self,
+                        "保存成功",
+                        f"代码已成功保存到：\n{file_name}",
+                        QtWidgets.QMessageBox.Ok
+                    )
+                except Exception as e:
+                    QtWidgets.QMessageBox.critical(
+                        self,
+                        "保存失败",
+                        f"保存文件时发生错误：\n{str(e)}",
+                        QtWidgets.QMessageBox.Ok
+                    )
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"保存代码时发生错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
 
     def _expand_all_state(self, tree_widget: QtWidgets.QTreeWidget):
         tree_widget.expandAll()
@@ -557,89 +585,183 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         tree_widget.collapseAll()
 
     def _display_state_event_transition_details(self):
+        try:
+            if self.fcstm_state_chart is None:
+                return
 
-        # 更新 Events 表格
-        self.table_state_machine_event.setRowCount(0)
-        for event in self.fcstm_state_chart.state_chart.events:
-            row = self.table_state_machine_event.rowCount()
-            self.table_state_machine_event.insertRow(row)
-            self.table_state_machine_event.setItem(row, 0, QtWidgets.QTableWidgetItem(event.name))
-            self.table_state_machine_event.setItem(row, 1, QtWidgets.QTableWidgetItem(event.guard))
+            # 更新 Events 表格
+            self.table_state_machine_event.setRowCount(0)
+            for event in self.fcstm_state_chart.state_chart.events:
+                row = self.table_state_machine_event.rowCount()
+                self.table_state_machine_event.insertRow(row)
+                self.table_state_machine_event.setItem(row, 0, QtWidgets.QTableWidgetItem(event.name))
+                self.table_state_machine_event.setItem(row, 1, QtWidgets.QTableWidgetItem(event.guard))
 
-        # 更新 Transitions 表格
-        self.table_state_machine_transition.setRowCount(0)
-        for transition in self.fcstm_state_chart.state_chart.transitions:
-            row = self.table_state_machine_transition.rowCount()
-            self.table_state_machine_transition.insertRow(row)
-            self.table_state_machine_transition.setItem(row, 0, QtWidgets.QTableWidgetItem(transition.src_state.name))
-            self.table_state_machine_transition.setItem(row, 1, QtWidgets.QTableWidgetItem(transition.event.name))
-            self.table_state_machine_transition.setItem(row, 2, QtWidgets.QTableWidgetItem(transition.dst_state.name))
+            # 更新 Transitions 表格
+            self.table_state_machine_transition.setRowCount(0)
+            for transition in self.fcstm_state_chart.state_chart.transitions:
+                row = self.table_state_machine_transition.rowCount()
+                self.table_state_machine_transition.insertRow(row)
+                self.table_state_machine_transition.setItem(row, 0, QtWidgets.QTableWidgetItem(transition.src_state.name))
+                self.table_state_machine_transition.setItem(row, 1, QtWidgets.QTableWidgetItem(transition.event.name))
+                self.table_state_machine_transition.setItem(row, 2, QtWidgets.QTableWidgetItem(transition.dst_state.name))
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"更新状态机详情时发生错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
 
     def _add_state(self, father_state: Optional[CompositeState], is_edit = False):
         """
         保存状态信息，并使用QTreeWidget展示状态
         """
-        new_state = None
-        if is_edit:
-            # 获取当前编辑状态
-            pro_state = self._get_pro_state()
-            dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
-                                     is_edit=True, initial_data=pro_state)
-            if dialog.exec_() == QtWidgets.QDialog.Accepted:
-                new_state = dialog.get_state()
-                # 更新逻辑，删除原状态，并添加新状态
-                self.fcstm_state_chart.edit_state(pro_state, new_state)
-        else:
-            if father_state is not None and not isinstance(father_state, CompositeState):
-                QtWidgets.QMessageBox.warning(self, "错误", "只有composite类型能拥有子状态！")
-                return
-            # 添加新状态
-            dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
-                                     is_edit=False, initial_data=None)
-            if dialog.exec_() == QtWidgets.QDialog.Accepted:
-                new_state = dialog.get_state()
-                self.fcstm_state_chart.add_state(father_state, new_state)
-        '''
-        if new_state is not None:
-            max_time_lock = new_state.max_time_lock
-            if max_time_lock is not None:
-                max_time_lock_event = Event('max_time', f"{new_state.name}_count > {max_time_lock}")
-                self.d_all_event[new_state.id].append(max_time_lock_event)
-                self.fcstm_state_chart.state_chart.events.add(max_time_lock_event)
-        '''
-        #重置输入框
-        #self._reset_input_fields()
+        try:
+            new_state = None
+            if is_edit:
+                # 获取当前编辑状态
+                pro_state = self._get_pro_state()
+                if pro_state is None:
+                    return
+                    
+                dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
+                                         is_edit=True, initial_data=pro_state)
+                if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                    new_state = dialog.get_state()
+                    if new_state is None:
+                        QtWidgets.QMessageBox.warning(
+                            self,
+                            "警告",
+                            "获取新状态信息失败！",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                        return
+                    # 更新逻辑，删除原状态，并添加新状态
+                    try:
+                        self.fcstm_state_chart.edit_state(pro_state, new_state)
+                    except Exception as e:
+                        QtWidgets.QMessageBox.critical(
+                            self,
+                            "错误",
+                            f"编辑状态时发生错误：\n{str(e)}",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                        return
+            else:
+                if father_state is not None and not isinstance(father_state, CompositeState):
+                    QtWidgets.QMessageBox.warning(self, "错误", "只有composite类型能拥有子状态！")
+                    return
+                # 添加新状态
+                dialog = DialogEditState(self, state_chart=self.fcstm_state_chart.state_chart, root_state= self.fcstm_state_chart.state_chart.root_state,
+                                         is_edit=False, initial_data=None)
+                if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                    new_state = dialog.get_state()
+                    if new_state is None:
+                        QtWidgets.QMessageBox.warning(
+                            self,
+                            "警告",
+                            "获取新状态信息失败！",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                        return
+                    try:
+                        self.fcstm_state_chart.add_state(father_state, new_state)
+                    except Exception as e:
+                        QtWidgets.QMessageBox.critical(
+                            self,
+                            "错误",
+                            f"添加状态时发生错误：\n{str(e)}",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                        return
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"操作状态时发生未知错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
 
     def _import_statechart(self):
         """导入 StateChart 文件"""
-        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "选择json文件", "./", "JSON Files (*.json);;All Files (*)")
-        if not file_path:
-            return
-        state_chart = Statechart.read_json(file_path)
-        self.fcstm_state_chart = FcstmStateChart(self.tree_state_machine_all_state, state_chart)
-        self.fcstm_state_chart.legality_check(self)
-        if self.at_page_initial:
-            self.stackedWidget_state_machine.setCurrentIndex(1)
-            self.at_page_initial = False
-        self.edit_state_machine_name.setText(self.fcstm_state_chart.state_chart.name)
-        self.edit_state_machine_preamble.setPlainText('\n'.join(self.fcstm_state_chart.state_chart.preamble))
-        self.tree_state_machine_all_state.expandAll()
-        self._display_state_event_transition_details()
-        
+        try:
+            # 检查上次使用的路径是否存在
+            if not os.path.exists(self.state_machine_file_path):
+                self.state_machine_file_path = "./"
+                
+            file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self, 
+                "选择json文件", 
+                self.state_machine_file_path, 
+                "JSON Files (*.json);;All Files (*)"
+            )
+            if not file_path:
+                return
+                
+            # 更新上次使用的路径
+            self.state_machine_file_path = os.path.dirname(file_path)
+            
+            try:
+                state_chart = Statechart.read_json(file_path)
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(
+                    self,
+                    "导入失败",
+                    f"读取JSON文件时发生错误：\n{str(e)}",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
+
+            self.fcstm_state_chart = FcstmStateChart(self.tree_state_machine_all_state, state_chart)
+            try:
+                self.fcstm_state_chart.legality_check(self)
+            except Exception as e:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "警告",
+                    f"状态机合法性检查发现问题：\n{str(e)}",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
+
+            if self.at_page_initial:
+                self.stackedWidget_state_machine.setCurrentIndex(1)
+                self.at_page_initial = False
+            self.edit_state_machine_name.setText(self.fcstm_state_chart.state_chart.name)
+            self.edit_state_machine_preamble.setPlainText('\n'.join(self.fcstm_state_chart.state_chart.preamble))
+            self.tree_state_machine_all_state.expandAll()
+            self._display_state_event_transition_details()
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"导入状态机时发生未知错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
+
     def _export_statechart(self):
-        options = QtWidgets.QFileDialog.Options()
-        # 弹出保存文件对话框，默认扩展名为 .json
-        file_name, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self,
-            "保存为JSON文件",
-            "./",
-            "JSON Files (*.json);;All Files (*)",
-            options=options
-        )
-        if file_name:
-            # 确保文件名以 .json 结尾
-            if not file_name.endswith('.json'):
-                file_name += '.json'
+        try:
+            # 检查上次使用的路径是否存在
+            if not os.path.exists(self.state_machine_file_path):
+                self.state_machine_file_path = "./"
+                
+            options = QtWidgets.QFileDialog.Options()
+            file_name, selected_filter = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "导出状态机",
+                self.state_machine_file_path,
+                "JSON Files (*.json);;Word Documents (*.docx);;Excel Files (*.xlsx);;All Files (*)",
+                options=options
+            )
+            
+            if not file_name:
+                return
+                
+            # 更新上次使用的路径
+            self.state_machine_file_path = os.path.dirname(file_name)
+            
+            # 更新状态机信息
             state_machine_name = self.edit_state_machine_name.text()
             state_machine_preamble = self.edit_state_machine_preamble.toPlainText().splitlines()
             if state_machine_name == '' or state_machine_name is None:
@@ -650,21 +772,110 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                     QtWidgets.QMessageBox.Ok
                 )
                 return
+                
             self.fcstm_state_chart.state_chart.name = state_machine_name
             if len(state_machine_preamble) > 0:
                 self.fcstm_state_chart.state_chart.preamble = state_machine_preamble
-            self.fcstm_state_chart.state_chart.to_json(file_name)
+                
+            try:
+                if selected_filter == "JSON Files (*.json)":
+                    # 确保文件名以 .json 结尾
+                    if not file_name.endswith('.json'):
+                        file_name += '.json'
+                    self.fcstm_state_chart.state_chart.to_json(file_name)
+                    QtWidgets.QMessageBox.information(
+                        self,
+                        "导出成功",
+                        f"状态机信息已成功导出到：\n{file_name}",
+                        QtWidgets.QMessageBox.Ok
+                    )
+                elif selected_filter == "Word Documents (*.docx)":
+                    # 确保文件名以 .docx 结尾
+                    if not file_name.endswith('.docx'):
+                        file_name += '.docx'
+                    if export_statechart_to_word(self.fcstm_state_chart.state_chart, file_name):
+                        QtWidgets.QMessageBox.information(
+                            self,
+                            "导出成功",
+                            f"状态机信息已成功导出到：\n{file_name}",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                    else:
+                        QtWidgets.QMessageBox.critical(
+                            self,
+                            "导出失败",
+                            "导出Word文档时发生错误",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                elif selected_filter == "Excel Files (*.xlsx)":
+                    # 确保文件名以 .xlsx 结尾
+                    if not file_name.endswith('.xlsx'):
+                        file_name += '.xlsx'
+                    if export_statechart_to_excel(self.fcstm_state_chart.state_chart, file_name):
+                        QtWidgets.QMessageBox.information(
+                            self,
+                            "导出成功",
+                            f"状态机信息已成功导出到：\n{file_name}",
+                            QtWidgets.QMessageBox.Ok
+                        )
+                    else:
+                        QtWidgets.QMessageBox.critical(
+                            self,
+                            "导出失败",
+                            "导出Excel文档时发生错误",
+                            QtWidgets.QMessageBox.Ok
+                        )
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(
+                    self,
+                    "导出失败",
+                    f"导出文件时发生错误：\n{str(e)}",
+                    QtWidgets.QMessageBox.Ok
+                )
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"导出状态机时发生未知错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
 
     def _validate_statechart(self):
         try:
+            if self.fcstm_state_chart is None:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "警告",
+                    "请先创建或导入状态机！",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
+
             self.fcstm_state_chart.state_chart.validate()
             QtWidgets.QMessageBox.information(self, "验证成功", "状态图验证通过，无错误。")
         except Exception as e:
             QtWidgets.QMessageBox.critical(self, "错误", f"具有以下错误：\n{str(e)}")
 
     def _graph_gen(self):
-        dialog_show_graph = DialogShowGraph(self, self.fcstm_state_chart.state_chart)
-        dialog_show_graph.exec_()
+        try:
+            if self.fcstm_state_chart is None:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "警告",
+                    "请先创建或导入状态机！",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
+
+            dialog_show_graph = DialogShowGraph(self, self.fcstm_state_chart.state_chart)
+            dialog_show_graph.exec_()
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"生成状态图时发生错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
 
     def _get_pro_state(self) -> Optional[State]:
         # 获得当前Tree中选择的item

@@ -20,6 +20,7 @@
       <property name="font">
        <font>
         <family>微软雅黑</family>
+        <pointsize>9</pointsize>
        </font>
       </property>
       <property name="currentIndex">
@@ -33,7 +34,7 @@
         <item>
          <widget class="QStackedWidget" name="stackedWidget_state_machine">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_initial">
            <layout class="QGridLayout" name="gridLayout_3">
@@ -130,6 +131,12 @@
             </item>
             <item row="2" column="1">
              <widget class="QToolButton" name="button_initial_import_state_machine">
+              <property name="font">
+               <font>
+                <family>微软雅黑</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>导入状态机</string>
               </property>
@@ -137,6 +144,12 @@
             </item>
             <item row="2" column="3">
              <widget class="QToolButton" name="button_initial_new_state_machine">
+              <property name="font">
+               <font>
+                <family>微软雅黑</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>新建状态机</string>
               </property>
@@ -472,6 +485,12 @@
                       <height>80</height>
                      </size>
                     </property>
+                    <property name="font">
+                     <font>
+                      <family>微软雅黑</family>
+                      <pointsize>9</pointsize>
+                     </font>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -648,6 +667,7 @@
                  <property name="font">
                   <font>
                    <family>微软雅黑</family>
+                   <pointsize>9</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -909,7 +929,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

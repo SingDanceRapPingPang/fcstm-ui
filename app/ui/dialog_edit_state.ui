@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>637</width>
-    <height>808</height>
+    <height>837</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,10 +152,24 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QTextEdit" name="edit_state_entry"/>
+       <widget class="QTextEdit" name="edit_state_entry">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QTextEdit" name="edit_state_during"/>
+       <widget class="QTextEdit" name="edit_state_during">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_state_type">
@@ -199,7 +213,14 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QTextEdit" name="edit_state_exit"/>
+       <widget class="QTextEdit" name="edit_state_exit">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_state_name">
@@ -321,7 +342,14 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QTextEdit" name="edit_state_description"/>
+       <widget class="QTextEdit" name="edit_state_description">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -340,6 +368,7 @@
         <property name="font">
          <font>
           <family>微软雅黑</family>
+          <pointsize>9</pointsize>
          </font>
         </property>
         <property name="text">
@@ -349,6 +378,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="button_cancle">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>取消</string>
         </property>

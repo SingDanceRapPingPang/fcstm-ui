@@ -10,6 +10,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from vtkmodules.numpy_interface.dataset_adapter import NoneArray
 import qtawesome as qta
+from PyQt5.QtGui import QIcon
 
 
 class FcstmStateChart:
@@ -64,7 +65,16 @@ class FcstmStateChart:
                 for child_state in state.states:
                     add_state_to_tree(item, child_state)
 
-        add_state_to_tree(None, self._state_chart.root_state)
+        #初始化self.d_id_father_state
+        for state in self.state_chart.states:
+            if isinstance(state, CompositeState):
+                for child_state in state.states:
+                    self.d_id_father_state[child_state.id] = state
+        for state in self.state_chart.states:
+            if self.d_id_father_state.get(state.id, None) is not None:
+                continue
+            add_state_to_tree(None, state)
+
 
     @property
     def state_chart(self) -> Statechart:
@@ -240,7 +250,8 @@ class FcstmStateChart:
                 child_item = father_state_item.child(i)
                 child_state = child_item.data(0, Qt.UserRole)
                 if child_state.id == father_state.initial_state_id:
-                    child_item.setText(0, f"{child_state.name}")
+                    #child_item.setText(0, f"{child_state.name}")
+                    child_item.setIcon(0, QIcon())
         icon = qta.icon('fa5s.play', color='#4169E1')
 
         father_state.initial_state = new_initial_state
