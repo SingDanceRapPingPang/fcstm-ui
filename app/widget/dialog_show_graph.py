@@ -6,6 +6,7 @@ import os
 from app.utils.show_state_graph import ShowStateGraph
 from pyfcstm.model import Statechart
 from app.ui import UIDialogShowGraph
+from app.utils.fcstm_state_chart import FcstmStateChart
 
 class CustomGraphicsView(QGraphicsView):
     def wheelEvent(self, event):
@@ -30,10 +31,10 @@ class CustomGraphicsView(QGraphicsView):
         self.translate(delta.x(), delta.y())
 
 class DialogShowGraph(QDialog, UIDialogShowGraph):
-    def __init__(self, parent, statechart: Statechart):
+    def __init__(self, parent, fcstm_state_chart: FcstmStateChart):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.statechart = statechart
+        self.fcstm_state_chart = fcstm_state_chart
         self.temp_png_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'temp_state_graph.png')
         
         # 创建自定义的CustomGraphicsView并添加到widget容器中
@@ -59,7 +60,7 @@ class DialogShowGraph(QDialog, UIDialogShowGraph):
     def show_state_graph(self):
         """显示状态机图"""
         # 生成状态机图
-        ShowStateGraph.show_state_graph(self.statechart, self.temp_png_path)
+        ShowStateGraph.show_state_graph(self.fcstm_state_chart, self.temp_png_path)
         
         # 创建场景并显示图像
         scene = QGraphicsScene()

@@ -2,21 +2,19 @@ import os
 import subprocess
 from typing import Dict, List
 from pyfcstm.model import State, CompositeState, NormalState, PseudoState, Transition, Event, Statechart
-from pathlib import Path
+from app.utils.fcstm_state_chart import FcstmStateChart
 from plantumlcli import LocalPlantuml
 from app.config import PLANTUML_JAR_PATH
-import tempfile
-import shutil
 
 
 class ShowStateGraph:
     @classmethod
-    def generate_plantuml_statechart(cls, statechart: Statechart) -> str:
+    def generate_plantuml_statechart(cls, fcstm_state_chart: FcstmStateChart) -> str:
         """
         生成 PlantUML 状态图代码
 
         Args:
-            statechart: 代表状态机的Statechart
+            fcstm_state_chart: FcstmStateChart
 
         Returns:
             str: PlantUML 代码
@@ -58,11 +56,14 @@ class ShowStateGraph:
                 state_lines.append(f"state \"{state_name}\" as {state_name.replace(' ', '_')} {state_type} {{")
             else:
                 state_lines.append(f"state \"{state_name}\" as {state_name.replace(' ', '_')} {state_type} {{")
+            '''
             # 添加状态进入/退出动作
             if state.on_entry:
-                state_lines.append(f"    on entry / {state.on_entry}")
+                state_lines.append(f"    entry / {state.on_entry}")
             if state.on_exit:
-                state_lines.append(f"    on exit / {state.on_exit}")
+                state_lines.append(f"    exit / {state.on_exit}")
+            '''
+
 
             # 处理子状态
             if isinstance(state, CompositeState):
@@ -75,10 +76,15 @@ class ShowStateGraph:
             state_lines.append("}")
             return state_lines
 
-        # 处理根状态
-        plantuml_code.extend(process_state(statechart.root_state, True))
+        for state in fcstm_state_chart.state_chart.states:
+            if isinstance(state, CompositeState) and fcstm_state_chart.d_id_father_state.get(state.id, None) is None:
+                # 处理根状态
+                if state.id == fcstm_state_chart.state_chart.root_state_id:
+                    plantuml_code.extend(process_state(state, True))
+                else:
+                    plantuml_code.extend(process_state(state, False))
         # 处理迁移
-        for transition in statechart.transitions:
+        for transition in fcstm_state_chart.state_chart.transitions:
             src_state = transition.src_state.name.replace(' ', '_')
             target_state = transition.dst_state.name.replace(' ', '_')
             event = transition.event.name
@@ -89,10 +95,10 @@ class ShowStateGraph:
         return "\n".join(plantuml_code)
 
     @classmethod
-    def show_state_graph(cls, statechart: Statechart, png_file):
+    def show_state_graph(cls, fcstm_state_chart: FcstmStateChart, png_file):
         # 生成 PlantUML 代码
-        plantuml_code = cls.generate_plantuml_statechart(statechart)
-
+        plantuml_code = cls.generate_plantuml_statechart(fcstm_state_chart)
+        print(plantuml_code)
         local = LocalPlantuml.autoload(plantuml=PLANTUML_JAR_PATH)
         # print(local.dump_txt(code))  # print text graph of code
         local.dump(png_file, 'png', plantuml_code)  # save png to /my/path/source_local.png

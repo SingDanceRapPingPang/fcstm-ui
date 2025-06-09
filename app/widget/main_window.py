@@ -867,7 +867,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                 )
                 return
 
-            dialog_show_graph = DialogShowGraph(self, self.fcstm_state_chart.state_chart)
+            dialog_show_graph = DialogShowGraph(self, self.fcstm_state_chart)
             dialog_show_graph.exec_()
         except Exception as e:
             QtWidgets.QMessageBox.critical(
