@@ -17,7 +17,7 @@ jobs:
           - 'windows-2019'
           - 'macos-10.15'
         python-version:
-          - '3.6'
+          - '3.12'
         mode:
           - 'directory'
           - 'standalone'
