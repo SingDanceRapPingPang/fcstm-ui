@@ -2,7 +2,11 @@
 
 RM := rm -rf
 
-PYTHON := $(word 1, $(shell where python))
+ifeq ($(OS),Windows_NT)
+	PYTHON := $(word 1, $(shell where python))
+else
+	PYTHON := $(word 1, $(shell which python))
+endif
 
 PYUIC5 := $(PYTHON) -m PyQt5.uic.pyuic
 
