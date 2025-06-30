@@ -675,6 +675,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                             QtWidgets.QMessageBox.Ok
                         )
                         return
+            self._display_state_event_transition_details()
         except Exception as e:
             QtWidgets.QMessageBox.critical(
                 self,

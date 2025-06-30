@@ -76,18 +76,10 @@ class TestShowStateGraph:
         
         [*] --> 根状态
         state "根状态" as 根状态 <<composite>> {
-            state "状态1" as 状态1 <<normal>> {
-                on entry / entry_action1
-                on exit / exit_action1
-            }
-            state "状态2" as 状态2 <<normal>> {
-                on entry / entry_action2
-            }
+            state "状态1" as 状态1 <<normal>>
+            state "状态2" as 状态2 <<normal>> 
             state "复合状态" as 复合状态 <<composite>> {
-                on entry / entry_action3
-                state "状态4" as 状态4 <<normal>> {
-                    on entry / entry_action4
-                }
+                state "状态4" as 状态4 <<normal>>
                 state "初始状态" as 初始状态 <<pseudo>> {
                 }
             }

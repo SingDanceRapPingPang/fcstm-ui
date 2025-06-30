@@ -170,13 +170,13 @@ jobs:
           ls -al dist
       - name: Upload standalone executable files to artifacts
         if: ${{ env.STANDALONE == '1' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
           path: dist/app${{ env.EXEC_SUFFIX }}
       - name: Upload packed files to artifacts
         if: ${{ env.STANDALONE == '' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-v${{ env.PACKAGE_VERSION }}-${{ env.OS_NAME }}-${{ env.CPU_ARCH }}-${{ env.GIT_COMMIT_ID }}${{ env.RELEASE_SUFFIX }}
           path: dist/app/*
