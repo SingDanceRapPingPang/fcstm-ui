@@ -12,6 +12,7 @@ Defaults to onedir.
 """
 
 import os
+import sys
 from pathlib import Path
 
 from PyInstaller.utils.hooks import (
@@ -20,6 +21,15 @@ from PyInstaller.utils.hooks import (
     collect_submodules,
 )
 
+
+# Make sure the project root is on sys.path so collect_submodules('app')
+# can actually import the package while the spec is evaluated.  Without
+# this, PyInstaller silently returns just the top-level package and most
+# of our laz-loaded submodules (export_to_excel, draggable_tree_widget,
+# …) end up missing from the bundle.
+_PROJECT_ROOT = os.path.dirname(os.path.abspath(SPEC))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
 BUILD_MODE = os.environ.get('FCSTM_UI_BUILD_MODE', 'onedir').lower()
 APP_NAME = 'fcstm-ui'
@@ -52,6 +62,12 @@ plantuml_jar = Path('docs/plantuml.jar')
 if plantuml_jar.exists():
     datas.append((str(plantuml_jar), 'docs'))
 
+# Sample DSL file used by the smoke-test routine to do an end-to-end
+# parse + plantuml render check inside the frozen build.
+sample_dsl = Path('docs/StateMachine.fcstm')
+if sample_dsl.exists():
+    datas.append((str(sample_dsl), 'docs'))
+
 # Help PyInstaller discover modules that get imported via string lookups
 # inside pyfcstm / hbutils, plus a handful of stdlib modules that PyQt5
 # imports lazily.
@@ -59,6 +75,14 @@ hiddenimports = []
 hiddenimports += collect_submodules('pyfcstm')
 hiddenimports += collect_submodules('plantumlcli')
 hiddenimports += collect_submodules('hbutils')
+# App-level submodules — several are loaded by name (importlib/subprocess
+# strings inside dialog handlers) so PyInstaller can't see them via static
+# analysis.
+hiddenimports += collect_submodules('app')
+# Document export deps — only referenced from inside lazily-loaded utility
+# modules, so PyInstaller misses them too.
+hiddenimports += collect_submodules('openpyxl')
+hiddenimports += collect_submodules('docx')
 hiddenimports += [
     'ipaddress',
     'pkg_resources.py2_warn',

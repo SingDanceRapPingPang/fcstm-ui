@@ -71,6 +71,14 @@ jobs:
             libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 \
             x11-utils xvfb
 
+      # The build-stage smoke test runs the freshly-built binary and
+      # verifies plantuml render end-to-end, which needs `java`.
+      - name: Set up Java (build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Show Python info
         shell: bash
         run: |
@@ -263,6 +271,15 @@ jobs:
             xvfb \
             default-jre-headless
 
+      # On macOS-15-intel the bundled `java` may be absent; pin a JRE
+      # explicitly so all three platforms see one.  Windows runners
+      # ship Temurin JDK by default but adding setup-java here is a no-op.
+      - name: Set up Java (verify)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Confirm java is on PATH
         shell: bash
         run: |
@@ -302,7 +319,10 @@ jobs:
           else
             unzip -q "downloaded/${{ matrix.onedir_archive }}" -d extracted
           fi
-          ls -lhR extracted | head -40
+          # Don't pipe ls into head — `set -o pipefail` plus SIGPIPE makes
+          # the step fail with exit 141 even though the unpack succeeded.
+          ls extracted
+          ls "extracted/${{ matrix.artifact_dir_name }}" || true
 
       - name: Make binaries executable (POSIX)
         if: runner.os != 'Windows'

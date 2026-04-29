@@ -1230,3 +1230,4 @@ pip-wheel-metadata/
 # Keep packaging specs under version control
 !main.spec
 !fcstm-ui.spec
+.claude/
