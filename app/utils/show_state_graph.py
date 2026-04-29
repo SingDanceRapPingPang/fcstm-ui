@@ -7,6 +7,7 @@ import os
 
 from ..model import StateManager
 from ..config import PLANTUML_JAR_PATH
+from ..utils.plantuml_safe_dump import render_plantuml
 from ..utils.ui_to_dsl import state_manager_to_dsl
 
 
@@ -44,6 +45,14 @@ class ShowStateGraph:
                 f.write(plantuml_code)
             return
 
+        # Prefer the local-jar path via our cross-platform safe dumper.
+        # plantumlcli's own LocalPlantuml backend has a Windows-specific
+        # NamedTemporaryFile bug; we sidestep it entirely.
+        if PLANTUML_JAR_PATH and os.path.exists(PLANTUML_JAR_PATH):
+            render_plantuml(plantuml_code, output_file, output_format)
+            return
+
+        # Fall back to remote rendering when no JAR is available.
         backend = cls._backend()
         backend.dump(output_file, cls.FORMAT_TYPES.get(output_format, output_format), plantuml_code)
 
