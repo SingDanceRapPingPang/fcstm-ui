@@ -289,6 +289,50 @@ def _check_plantuml_render_png() -> None:
         _print(f'    rendered PNG: {size} bytes')
 
 
+def _check_frozen_self_dispatch_render() -> None:
+    """When frozen, the GUI runs PlantUML rendering by re-invoking the
+    same executable with ``--plantuml-render-cli``.  Verify the dispatch
+    works end-to-end and does NOT relaunch the GUI."""
+    if not getattr(sys, 'frozen', False):
+        # Not applicable in source mode — there's no self-dispatch path
+        # there (sys.executable -m app.utils.plantuml_render_cli works
+        # directly).  Treat as a documented no-op.
+        _print('    skipped (not a frozen build)')
+        return
+
+    _java_path()  # warning if java is missing.
+
+    sample = _resolve_sample_fcstm()
+    from app.utils.dsl_to_ui import dsl_to_state_manager
+    from app.utils.show_state_graph import ShowStateGraph
+
+    sm = dsl_to_state_manager(sample)
+    puml = ShowStateGraph.build_plantuml_code(sm)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        puml_path = os.path.join(tmp, 'in.puml')
+        out_path = os.path.join(tmp, 'out.png')
+        with open(puml_path, 'w', encoding='utf-8') as f:
+            f.write(puml)
+
+        cmd = [
+            sys.executable,
+            '--plantuml-render-cli',
+            '--input', puml_path,
+            '--output', out_path,
+            '--format', 'png',
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        assert proc.returncode == 0, (
+            f'self-dispatch render exited {proc.returncode}\n'
+            f'stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}'
+        )
+        assert os.path.exists(out_path), 'self-dispatch did not produce PNG'
+        size = os.path.getsize(out_path)
+        assert size > 1024, f'self-dispatch PNG suspiciously small: {size} bytes'
+        _print(f'    self-dispatch render OK: {size} bytes')
+
+
 def _check_z3_solve() -> None:
     import z3
 
@@ -348,6 +392,7 @@ def _build_checks() -> List[Tuple[str, CheckFn]]:
         ('DSL parse + roundtrip',          _check_dsl_parse_and_roundtrip),
         ('plantuml code generation',       _check_plantuml_code_generation),
         ('PUML -> PNG render (e2e)',       _check_plantuml_render_png),
+        ('frozen self-dispatch render',    _check_frozen_self_dispatch_render),
         ('z3 import + sat solve',          _check_z3_solve),
         ('pyfcstm simulate runtime',       _check_pyfcstm_simulate_runtime),
         ('Qt event loop pumps',            _check_event_loop_pumps),

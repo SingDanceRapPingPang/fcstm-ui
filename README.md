@@ -58,21 +58,12 @@
 ### 用打包产物时（最小集合）
 
 - **OS**：Ubuntu 22.04.5 LTS（x86_64），其它较新的 glibc ≥ 2.35 的 Linux 一般也行。
-- **Java**：`default-jre` / `openjdk-11-jre-headless` 之类，目标机自带 `java` 命令即可（**JRE 不在 artifact 里，需要自己装**）。
-- **Qt 系统库**：`apt install` 一次以下包，否则 PyQt5 找不到 `xcb` platform plugin：
-  ```bash
-  sudo apt-get update
-  sudo apt-get install -y \
-      libxkbcommon-x11-0 \
-      libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
-      libxcb-render-util0 libxcb-shape0 libxcb-sync1 libxcb-xfixes0 \
-      libxcb-xinerama0 libxcb-xkb1 libxcb-cursor0 \
-      libegl1 libgl1 libglx-mesa0 libopengl0 \
-      libfontconfig1 libdbus-1-3 libxkbcommon0 \
-      default-jre-headless
-  ```
-- **可选**：`graphviz`（PlantUML 在状态图里调用 `dot` 做布局，没装也能出图，但部分复杂图会被退化为简单序列图）。
-- **可选**：`xvfb`（如果要在没有显示器的机器上跑或自动化测试，配合 `QT_QPA_PLATFORM=offscreen` 使用）。
+- **Java**：`default-jre` / `openjdk-11-jre-headless` 之类，目标机自带 `java` 命令即可（**JRE 不在 artifact 里，按策略需要自己装**）。
+- **Qt / X11 系统库**：**已经全部打进 artifact，不需要再 `apt install`**。
+  - 包括 `libxcb-*` 全套子库、`libxkbcommon`、`libxkbcommon-x11`、`libfontconfig`、`libfreetype`、`libstdc++`、`libdbus-1`、`libpng16`、`libz`，以及我们额外补的 `libGL.so.1` / `libGLdispatch` / `libGLX` / `libX11` / `libX11-xcb` / `libXext` / `libxcb` / `libXau` / `libXdmcp` / `libbsd`。
+  - 在干净的 `ubuntu:22.04` docker 容器里**只装** `default-jre-headless` 就能跑通全部 76 项 smoke check（不装 java 也能跑通 72 项，剩 4 项 WARN 标 java 缺失，不算失败）。
+- **可选**：`graphviz`（PlantUML 在复杂层级状态图里调用 `dot` 做布局，没装也能出基本图，但复杂图会被退化）。
+- **可选**：`xvfb`（无显示器机器上跑，配合 `QT_QPA_PLATFORM=offscreen`）。
 
 ### 从源码开发时
 
@@ -338,9 +329,24 @@ GitHub Actions 默认 `set -o pipefail`，`head` 关闭 stdin → `ls` 收到 SI
 
 这是 plantumlcli 的兼容性 bug，不是我们的。当前的对策是：先把 Windows 矩阵从 CI 摘出来，等修好（要么升级 plantumlcli，要么在 fcstm-ui 这一层用直接调 `java -jar plantuml.jar` 的实现替换 `backend.dump`）再加回去。
 
-### 7. `xcb plugin not found`
+### 7. `xcb plugin not found` 与 PyInstaller 6.x 的 system-lib 行为
 
-PyQt5 在 Linux 上初始化时会去找 Qt 的 platform plugin。系统少一个 `libxcb-*` / `libxkbcommon-x11-0` / `libfontconfig1` 都会报这个错。**这一组系统库永远是 PyInstaller 没法替我们带的**（PyInstaller 不包 libstdc++、libGL、libxkbcommon 这种）—— 装机文档里必须列。
+老版本 PyInstaller 默认会跳过一长串"系统提供的"库，因此早期文档里"目标机必须 apt install libxcb-* / libxkbcommon-x11-0 / libfontconfig1 …"的结论曾经是对的。
+
+但 PyInstaller 6.x 已经默认把 PyQt5 platform plugin 真正依赖的 **libxcb 子模块全套 / libxkbcommon / libfontconfig / libfreetype / libstdc++ / libdbus / libpng / libz / libglib** 都自动 collect 进 onedir / onefile，所以那条结论现在过时了。本仓库实测过：本机 build 出 dist/ 后扔到一个**全新 `ubuntu:22.04`、零 `apt install`** 的 docker 容器里，PyQt5 还能起来，挡路的只剩下 **OpenGL / GLX / libX11 / libxcb 本体** 这一组。
+
+这一组之所以默认不带，是 PyInstaller 维护着一份"system-driver excludelist"——`libGL.so.1` 等通常需要匹配目标机的 GPU 驱动，所以官方默认让目标机自己出。但对一个 **PyQt5 offscreen / 不真正 issue GL draw call** 的应用，把 build runner 上的 `libGL` 带过去**只要保证 dlopen 能拿到符号**就够了。所以 `main.spec` 里我们加了一个 `_collect_linux_system_libs()` helper，从 build 机的 `/usr/lib/x86_64-linux-gnu` 收下面这 10 个 SONAME 并塞进 `binaries`：
+
+```
+libGL.so.1   libGLdispatch.so.0   libGLX.so.0
+libX11.so.6  libX11-xcb.so.1      libXext.so.6
+libxcb.so.1  libXau.so.6          libXdmcp.so.6
+libbsd.so.0
+```
+
+⚠️ 必须**用 SONAME 路径**（如 `/usr/lib/.../libGL.so.1`）传给 `binaries`，不是 `os.path.realpath`。PyInstaller 用 source basename 当 destination 文件名，dlopen 需要 SONAME 而不是 real name（`libGL.so.1.7.0`），realpath 一下产出的 dist 跑不起来。
+
+⚠️ `libc.so.6` / `libpthread.so.0` / `libdl.so.2` / `ld-linux-x86-64.so.2` 这些 glibc 套件**不要带**——动态链接器是 ABI 边界。当前 build 用 `ubuntu-22.04` runner（glibc 2.35），所以目标机 glibc 必须 ≥ 2.35。
 
 ### 8. Java 版本对齐
 
@@ -349,6 +355,16 @@ PyQt5 在 Linux 上初始化时会去找 Qt 的 platform plugin。系统少一�
 ### 9. PlantUML 状态图缺 `dot`（graphviz）
 
 PlantUML 渲染 state diagram 默认调 `dot` 做布局。如果目标机没装 `graphviz`，PlantUML 会回退成简单序列图并打印 `Error: Dot executable does not exist`。安装步骤里把 `graphviz` 列上是稳妥做法，特别是要画复杂层级状态图的时候。
+
+### 10. 在 PyInstaller 产物里点"显示状态图"竟然又起了一个主程序
+
+复现路径：双击打包好的 `fcstm-ui` → 加载一个 `.fcstm` → 点"显示状态图" → 弹出**第二个独立的主窗口**，然后第一个窗口里的对话框报"未能读取生成的 PNG 图像"。
+
+根因：`dialog_show_graph._run_render_task` 用 `progress.start(sys.executable, ['-m', 'app.utils.plantuml_render_cli', ...])` 启子进程渲染。源码模式下 `sys.executable` 是 `python`，`-m foo.bar` 会被 Python 解释器消费；但 frozen 后 `sys.executable` 是 `fcstm-ui` 自己——**PyInstaller 的 bootloader 不实现 `-m`**，它把 `-m`、`app.utils.plantuml_render_cli`、`--input`、… 当成普通 `sys.argv` 再交给应用。应用的入口看到不是 `--smoke-test`，于是 `from app import run_app; run_app()` —— 一个新的 GUI 窗口就这么起来了。同时旧 dialog 等不到 PNG，于是报错。
+
+修法：让打包好的 binary 同时充当 CLI dispatcher。`main.py` 里检测 `sys.argv[1] == '--plantuml-render-cli'`，把工作交给 `app.utils.plantuml_render_cli.main()`，然后退出。`dialog_show_graph._run_render_task` 在 `getattr(sys, "frozen", False)` 时用新的 `--plantuml-render-cli` 标志，源码模式继续走 `-m`。
+
+`app/smoke.py` 里专门加了一项 `frozen self-dispatch render`，只在 frozen build 里激活，跑 `subprocess.run([sys.executable, '--plantuml-render-cli', ...])` 端到端验证子进程真的去渲染 PNG 而不是又起一个主程序。CI 每次都会跑到这一项。
 
 ---
 

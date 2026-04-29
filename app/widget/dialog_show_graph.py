@@ -276,16 +276,31 @@ class DialogShowGraph(QDialog, UIDialogShowGraph):
     def _run_render_task(self, plantuml_code: str, output_file: str, output_format: str, message: str):
         puml_path = self._write_temp_puml(plantuml_code)
         progress = PlantumlTaskDialog(self, message)
-        args = [
-            "-m",
-            "app.utils.plantuml_render_cli",
-            "--input",
-            puml_path,
-            "--output",
-            output_file,
-            "--format",
-            output_format,
-        ]
+        # The PyInstaller bootloader does not implement ``-m foo.bar``, so
+        # ``sys.executable -m app.utils.plantuml_render_cli`` would re-launch
+        # the whole GUI inside the subprocess.  When frozen, dispatch via a
+        # dedicated flag handled in ``main.py`` instead.
+        if getattr(sys, "frozen", False):
+            args = [
+                "--plantuml-render-cli",
+                "--input",
+                puml_path,
+                "--output",
+                output_file,
+                "--format",
+                output_format,
+            ]
+        else:
+            args = [
+                "-m",
+                "app.utils.plantuml_render_cli",
+                "--input",
+                puml_path,
+                "--output",
+                output_file,
+                "--format",
+                output_format,
+            ]
         progress.start(sys.executable, args)
         result = progress.exec_()
         try:

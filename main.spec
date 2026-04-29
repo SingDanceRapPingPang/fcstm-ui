@@ -38,6 +38,70 @@ datas = []
 binaries = []
 runtime_hooks = ['pyinstaller_rthook_z3.py']
 
+
+def _collect_linux_system_libs():
+    """Return a list of (src, '.') tuples for the Linux system libraries
+    that PyInstaller does *not* bundle by default but that PyQt5 needs at
+    runtime on a clean Ubuntu 22.04 box.
+
+    PyInstaller 6.x already auto-collects the bulk of the Qt platform
+    plugin's dependencies (libxcb-* sub-libs, libxkbcommon, libfontconfig,
+    libfreetype, libstdc++, libdbus, libpng16, libz, …).  What it
+    intentionally excludes are the OpenGL / GLX / X11 entry-point
+    libraries — they sit on a system-driver excludelist because the
+    matching mesa libGL on the build host may not match the GPU driver
+    on the target box.
+
+    For us the GUI never actually issues any GL draw calls (PyQt5 only
+    needs the libGL.so.1 *symbols* to satisfy linker references), so
+    bundling whatever libGL is on the build host is fine and gives us a
+    self-contained artifact that runs on a fresh ubuntu:22.04 with zero
+    apt installs (Java aside, which is policy-bundled separately).
+
+    Returns an empty list on non-Linux hosts so the spec stays portable.
+    """
+    if sys.platform != 'linux':
+        return []
+    result = []
+    seen = set()
+    candidates = [
+        'libGL.so.1',
+        'libGLdispatch.so.0',
+        'libGLX.so.0',
+        'libX11.so.6',
+        'libX11-xcb.so.1',
+        'libXext.so.6',
+        'libxcb.so.1',
+        'libXau.so.6',
+        'libXdmcp.so.6',
+        'libbsd.so.0',
+    ]
+    search_dirs = [
+        '/usr/lib/x86_64-linux-gnu',
+        '/lib/x86_64-linux-gnu',
+        '/usr/lib64',
+    ]
+    for name in candidates:
+        for d in search_dirs:
+            path = os.path.join(d, name)
+            if os.path.exists(path) and path not in seen:
+                # IMPORTANT: pass the SONAME path (e.g. /…/libGL.so.1),
+                # NOT os.path.realpath which would resolve to the real
+                # name (e.g. /…/libGL.so.1.7.0).  PyInstaller copies the
+                # binary using the *source basename* as the destination
+                # filename, and dlopen needs the SONAME to be present in
+                # the runtime root.  When the source is a symlink chain
+                # PyInstaller follows it and copies the real .so under
+                # the SONAME basename, which is exactly what we want.
+                result.append((path, '.'))
+                seen.add(path)
+                seen.add(os.path.realpath(path))
+                break
+    return result
+
+
+binaries += _collect_linux_system_libs()
+
 # z3-solver: bundle the native libz3 next to the python wrapper.  The
 # runtime hook (pyinstaller_rthook_z3.py) sets Z3_LIBRARY_PATH so the
 # python wrapper can find the right .so/.dll/.dylib at startup.

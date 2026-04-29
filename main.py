@@ -1,11 +1,17 @@
 """
 Entry point for the fcstm-ui application.
 
+The frozen PyInstaller binary doubles as a CLI dispatcher: any subprocess
+the GUI fires off (currently only the PlantUML renderer) re-invokes the
+same executable with a leading flag identifying the sub-command.  This
+avoids the classic frozen-app trap where ``sys.executable -m foo.bar``
+silently re-launches the whole GUI because the bootloader does not
+implement ``-m``.
+
 Smoke-test mode is dispatched as early as possible — before any app
-package import — so that the smoke routine still runs even if
-``app/__init__.py`` or any of its eager imports raise.  That way the
-smoke test is the last line of defence: the user always gets a
-per-check diagnostic instead of an opaque traceback at startup.
+package import — so the smoke routine still runs when ``app/__init__.py``
+or its eager imports raise.  The smoke test is the last line of defence;
+it must always launch.
 """
 
 from __future__ import annotations
@@ -20,11 +26,11 @@ def _is_smoke_test_mode() -> bool:
     return any(arg == '--smoke-test' for arg in sys.argv[1:])
 
 
+def _is_plantuml_render_cli_mode() -> bool:
+    return len(sys.argv) > 1 and sys.argv[1] == '--plantuml-render-cli'
+
+
 def _run_smoke_test() -> int:
-    # We deliberately import ``app.smoke`` lazily and *after* the
-    # mode check, and we only depend on the stdlib up to this point.
-    # If even ``app.smoke`` itself fails to import we still want to
-    # print a useful diagnostic instead of bubbling up an exception.
     import traceback
     try:
         from app.smoke import run_smoke_test
@@ -40,8 +46,28 @@ def _run_smoke_test() -> int:
         return 3
 
 
+def _run_plantuml_render_cli() -> int:
+    import traceback
+    try:
+        from app.utils.plantuml_render_cli import main as cli_main
+    except Exception:
+        traceback.print_exc()
+        print('fcstm-ui: failed to import plantuml_render_cli', file=sys.stderr, flush=True)
+        return 2
+    try:
+        return cli_main(sys.argv[2:]) or 0
+    except SystemExit as exc:
+        return int(exc.code or 0)
+    except Exception as exc:  # pragma: no cover - error reporting branch
+        print(str(exc), file=sys.stderr, flush=True)
+        traceback.print_exc()
+        return 1
+
+
 if __name__ == '__main__':
     if _is_smoke_test_mode():
         sys.exit(_run_smoke_test())
+    if _is_plantuml_render_cli_mode():
+        sys.exit(_run_plantuml_render_cli())
     from app import run_app
     run_app()
