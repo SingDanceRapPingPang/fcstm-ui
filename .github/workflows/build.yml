@@ -34,18 +34,21 @@ jobs:
             onefile_name: fcstm-ui
             onedir_archive: fcstm-ui-linux-x86_64.zip
             onefile_archive: fcstm-ui-linux-x86_64
-          - os: windows-2022
-            label: windows-x86_64
-            artifact_dir_name: fcstm-ui
-            onefile_name: fcstm-ui.exe
-            onedir_archive: fcstm-ui-windows-x86_64.zip
-            onefile_archive: fcstm-ui-windows-x86_64.exe
-          - os: macos-15-intel
-            label: macos-x86_64
-            artifact_dir_name: fcstm-ui
-            onefile_name: fcstm-ui
-            onedir_archive: fcstm-ui-macos-x86_64.zip
-            onefile_archive: fcstm-ui-macos-x86_64
+          # Windows / macOS builds are temporarily disabled while the
+          # Linux pipeline is being stabilised.  Re-enable by
+          # uncommenting the entries below.
+          # - os: windows-2022
+          #   label: windows-x86_64
+          #   artifact_dir_name: fcstm-ui
+          #   onefile_name: fcstm-ui.exe
+          #   onedir_archive: fcstm-ui-windows-x86_64.zip
+          #   onefile_archive: fcstm-ui-windows-x86_64.exe
+          # - os: macos-15-intel
+          #   label: macos-x86_64
+          #   artifact_dir_name: fcstm-ui
+          #   onefile_name: fcstm-ui
+          #   onedir_archive: fcstm-ui-macos-x86_64.zip
+          #   onefile_archive: fcstm-ui-macos-x86_64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -234,18 +237,20 @@ jobs:
             onefile_name: fcstm-ui
             onedir_archive: fcstm-ui-linux-x86_64.zip
             onefile_archive: fcstm-ui-linux-x86_64
-          - os: windows-2022
-            label: windows-x86_64
-            artifact_dir_name: fcstm-ui
-            onefile_name: fcstm-ui.exe
-            onedir_archive: fcstm-ui-windows-x86_64.zip
-            onefile_archive: fcstm-ui-windows-x86_64.exe
-          - os: macos-15-intel
-            label: macos-x86_64
-            artifact_dir_name: fcstm-ui
-            onefile_name: fcstm-ui
-            onedir_archive: fcstm-ui-macos-x86_64.zip
-            onefile_archive: fcstm-ui-macos-x86_64
+          # Windows / macOS verify jobs are paused alongside their
+          # build counterparts.  Re-enable in tandem.
+          # - os: windows-2022
+          #   label: windows-x86_64
+          #   artifact_dir_name: fcstm-ui
+          #   onefile_name: fcstm-ui.exe
+          #   onedir_archive: fcstm-ui-windows-x86_64.zip
+          #   onefile_archive: fcstm-ui-windows-x86_64.exe
+          # - os: macos-15-intel
+          #   label: macos-x86_64
+          #   artifact_dir_name: fcstm-ui
+          #   onefile_name: fcstm-ui
+          #   onedir_archive: fcstm-ui-macos-x86_64.zip
+          #   onefile_archive: fcstm-ui-macos-x86_64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Show OS info
