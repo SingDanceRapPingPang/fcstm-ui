@@ -33,8 +33,8 @@
 | PlantUML | 仓库内 `docs/plantuml.jar`，**Java 运行时不打包，目标机自带** |
 | 求解器 | `z3-solver`，二进制 libz3 通过 PyInstaller runtime hook 暴露 |
 | 打包工具 | PyInstaller 6.x，spec 文件 `main.spec` 同时支持 onefile / onedir |
-| CI 平台 | GitHub Actions（当前仅启用 `ubuntu-22.04`，Windows / macOS 暂时关闭） |
-| 目标运行环境 | Ubuntu 22.04.5 LTS x86_64 + 自带 `default-jre`（OpenJDK 11） |
+| CI 平台 | GitHub Actions ， 矩阵覆盖 `ubuntu-22.04` / `windows-2022` / `macos-15-intel`（全部 x86_64，全部免费 runner） |
+| 目标运行环境 | Linux: Ubuntu 22.04.5 LTS x86_64 + `default-jre`（OpenJDK 11）；Win/Mac: 系统自带 Java |
 
 ---
 
@@ -195,7 +195,7 @@ fcstm-ui smoke test: PASSED
 
 ### 阶段 1 · build
 
-- 矩阵：当前只有 `ubuntu-22.04 / x86_64`（Windows / macOS 占位但已注释掉，下方"踩过的坑"里有原因）。
+- 矩阵：`ubuntu-22.04` / `windows-2022` / `macos-15-intel`，**全部 x86_64**（不打 ARM）。三个 label 都在 GitHub free 矩阵上，无需 paid runner。
 - 装 Qt 系统库 + JRE（Temurin 11，对齐目标机的 OpenJDK 11）。
 - `pip install -r requirements.txt -r requirements-build.txt`。
 - 用 `python -m PyQt5.uic.pyuic` 现场编译 `.ui` → `*_ui.py`（这些文件在 `.gitignore` 里）。
@@ -321,13 +321,13 @@ GitHub Actions 默认 `set -o pipefail`，`head` 关闭 stdin → `ls` 收到 SI
 
 ### 5. macOS-13 已经在 2025-12 全面下线
 
-最初想用 `macos-13` 当免费 x86_64 macOS runner，但它 2025-12-08 起就被 GitHub 下掉了。当前可用的 free x86_64 macOS label 是 `macos-15-intel`（参考 `actions/runner-images` 仓库主页的 "Available Images" 表）。本仓库现在 macOS 矩阵注释掉了，要回归时用这个 label。
+最初想用 `macos-13` 当免费 x86_64 macOS runner，但它 2025-12-08 起就被 GitHub 下掉了。当前可用的 free x86_64 macOS label 是 `macos-15-intel`（参考 `actions/runner-images` 仓库主页的 "Available Images" 表），本仓库现在 macOS 矩阵就用这个。`macos-14` / `macos-latest` 现在默认指向 ARM Apple Silicon，与"只构建 x86_64"的策略不匹配，不要用。
 
 ### 6. Windows 上 `plantumlcli` 的 `NamedTemporaryFile` 触发 `PermissionError`
 
 `plantumlcli.models.local._generate_uml_data` 用 `NamedTemporaryFile(prefix='puml', suffix='.puml')` 建临时文件，然后另开一个进程 (`save_text_file`) 再次以 `w+b` 打开同一个路径写入。Linux / macOS 上没问题；Windows 默认对 `NamedTemporaryFile` 持有独占句柄，第二次打开直接 `[Errno 13] Permission denied: '...puml'`。
 
-这是 plantumlcli 的兼容性 bug，不是我们的。当前的对策是：先把 Windows 矩阵从 CI 摘出来，等修好（要么升级 plantumlcli，要么在 fcstm-ui 这一层用直接调 `java -jar plantuml.jar` 的实现替换 `backend.dump`）再加回去。
+这是 plantumlcli 的兼容性 bug，不是我们的。本仓库的对策：在 `app/utils/plantuml_safe_dump.py` 里写一个 `render_plantuml(plantuml_code, output_path, fmt)`，**直接调 `java -jar plantuml.jar -t<fmt> -o <outdir> <input.puml>`**，把 .puml 写到一个普通的 `tempfile.TemporaryDirectory` 里再跑——既不依赖 `NamedTemporaryFile` 的独占行为，也不依赖 `plantumlcli.LocalPlantuml._generate_uml_data` 的内部实现。Linux/macOS 行为与之前完全一致（PNG 字节相同），Windows 不再炸。`ShowStateGraph.dump_state_graph` 与 `app.utils.plantuml_render_cli` 都改走这条新路径。
 
 ### 7. `xcb plugin not found` 与 PyInstaller 6.x 的 system-lib 行为
 
