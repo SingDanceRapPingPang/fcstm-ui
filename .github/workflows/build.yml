@@ -1,0 +1,360 @@
+name: Build & Verify
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - 'dev/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'ci/**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  # ----------------------------------------------------------------------
+  # Stage 1: build the PyInstaller artifacts on each target OS.
+  # ----------------------------------------------------------------------
+  build:
+    name: Build (${{ matrix.label }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            label: linux-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui
+            onedir_archive: fcstm-ui-linux-x86_64.zip
+            onefile_archive: fcstm-ui-linux-x86_64
+          - os: windows-2022
+            label: windows-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui.exe
+            onedir_archive: fcstm-ui-windows-x86_64.zip
+            onefile_archive: fcstm-ui-windows-x86_64.exe
+          - os: macos-15-intel
+            label: macos-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui
+            onedir_archive: fcstm-ui-macos-x86_64.zip
+            onefile_archive: fcstm-ui-macos-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Linux Qt system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libxkbcommon-x11-0 \
+            libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
+            libxcb-render-util0 libxcb-shape0 libxcb-sync1 libxcb-xfixes0 \
+            libxcb-xinerama0 libxcb-xkb1 libxcb-cursor0 \
+            libegl1 libgl1 libglx-mesa0 libopengl0 \
+            libfontconfig1 libdbus-1-3 \
+            libxkbcommon0 \
+            libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 \
+            x11-utils xvfb
+
+      - name: Show Python info
+        shell: bash
+        run: |
+          python --version
+          python -c "import sys, platform; print(sys.executable); print(platform.platform()); print(platform.machine())"
+
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          pip install -r requirements.txt
+          pip install -r requirements-build.txt
+
+      - name: Generate Qt UI Python files
+        shell: bash
+        run: |
+          cd app/ui
+          for f in *.ui; do
+            python -m PyQt5.uic.pyuic "$f" -o "${f%.ui}_ui.py"
+          done
+
+      - name: Build onedir artifact
+        shell: bash
+        env:
+          FCSTM_UI_BUILD_MODE: onedir
+        run: |
+          rm -rf build dist
+          pyinstaller --noconfirm main.spec
+          ls -la dist/
+
+      - name: Smoke-test onedir build (Linux, headless)
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          xvfb-run -a ./dist/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Smoke-test onedir build (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./dist/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Smoke-test onedir build (macOS, headless)
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./dist/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Pack onedir as zip
+        shell: bash
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import os, shutil
+          target_dir = os.path.join('dist', '${{ matrix.artifact_dir_name }}')
+          # Drop a portable run script into the onedir layout so users do not
+          # have to know the exact entry-point binary name.
+          if os.name == 'posix':
+              run_sh = os.path.join(target_dir, 'run.sh')
+              with open(run_sh, 'w') as f:
+                  f.write('#!/usr/bin/env bash\n')
+                  f.write('DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"\n')
+                  f.write('exec "$DIR/${{ matrix.onefile_name }}" "$@"\n')
+              os.chmod(run_sh, 0o755)
+          else:
+              run_bat = os.path.join(target_dir, 'run.bat')
+              with open(run_bat, 'w') as f:
+                  f.write('@echo off\r\n')
+                  f.write('"%~dp0${{ matrix.onefile_name }}" %*\r\n')
+          archive = os.path.join('out', '${{ matrix.onedir_archive }}'.removesuffix('.zip'))
+          shutil.make_archive(archive, 'zip', root_dir='dist', base_dir='${{ matrix.artifact_dir_name }}')
+          print('zip ->', archive + '.zip', os.path.getsize(archive + '.zip'))
+          PY
+          ls -lh out/
+
+      - name: Build onefile artifact
+        shell: bash
+        env:
+          FCSTM_UI_BUILD_MODE: onefile
+        run: |
+          rm -rf build dist
+          pyinstaller --noconfirm main.spec
+          ls -la dist/
+
+      - name: Smoke-test onefile build (Linux, headless)
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          xvfb-run -a ./dist/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Smoke-test onefile build (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./dist/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Smoke-test onefile build (macOS, headless)
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          ./dist/${{ matrix.onefile_name }} --smoke-test
+
+      - name: Stage onefile output
+        shell: bash
+        run: |
+          mkdir -p out
+          cp "dist/${{ matrix.onefile_name }}" "out/${{ matrix.onefile_archive }}"
+          ls -lh out/
+
+      - name: Upload onedir zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.onedir_archive }}
+          path: out/${{ matrix.onedir_archive }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload onefile artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.onefile_archive }}
+          path: out/${{ matrix.onefile_archive }}
+          if-no-files-found: error
+          retention-days: 14
+
+  # ----------------------------------------------------------------------
+  # Stage 2: spin up *fresh* runners that DO NOT install any project
+  # python deps, download the artifacts, and run them as a black-box
+  # smoke test.  This proves the artifacts are self-contained.
+  # ----------------------------------------------------------------------
+  verify:
+    name: Verify on fresh ${{ matrix.label }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            label: linux-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui
+            onedir_archive: fcstm-ui-linux-x86_64.zip
+            onefile_archive: fcstm-ui-linux-x86_64
+          - os: windows-2022
+            label: windows-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui.exe
+            onedir_archive: fcstm-ui-windows-x86_64.zip
+            onefile_archive: fcstm-ui-windows-x86_64.exe
+          - os: macos-15-intel
+            label: macos-x86_64
+            artifact_dir_name: fcstm-ui
+            onefile_name: fcstm-ui
+            onedir_archive: fcstm-ui-macos-x86_64.zip
+            onefile_archive: fcstm-ui-macos-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Show OS info
+        shell: bash
+        run: |
+          uname -a || true
+          if [ "$RUNNER_OS" = "Linux" ]; then cat /etc/os-release; fi
+
+      # Linux runners need Qt platform libraries even for the binary.
+      # PyInstaller does not ship glibc / libGL / libxkbcommon / libfontconfig.
+      - name: Install Linux runtime system libraries (no python)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libxkbcommon-x11-0 \
+            libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
+            libxcb-render-util0 libxcb-shape0 libxcb-sync1 libxcb-xfixes0 \
+            libxcb-xinerama0 libxcb-xkb1 libxcb-cursor0 \
+            libegl1 libgl1 libglx-mesa0 libopengl0 \
+            libfontconfig1 libdbus-1-3 \
+            libxkbcommon0 \
+            xvfb \
+            default-jre-headless
+
+      - name: Confirm java is on PATH
+        shell: bash
+        run: |
+          java -version
+
+      - name: Confirm no project python is present
+        shell: bash
+        run: |
+          # We deliberately skip actions/setup-python here: the verify job
+          # must demonstrate that the artifact is self-contained.  We only
+          # log what's available so failures are easy to debug.
+          which python || true
+          which python3 || true
+
+      - name: Download onedir zip
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.onedir_archive }}
+          path: downloaded
+
+      - name: Download onefile binary
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.onefile_archive }}
+          path: downloaded
+
+      - name: List downloaded artifacts
+        shell: bash
+        run: ls -lhR downloaded/
+
+      - name: Unpack onedir
+        shell: bash
+        run: |
+          mkdir -p extracted
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            powershell -Command "Expand-Archive -Path 'downloaded/${{ matrix.onedir_archive }}' -DestinationPath 'extracted'"
+          else
+            unzip -q "downloaded/${{ matrix.onedir_archive }}" -d extracted
+          fi
+          ls -lhR extracted | head -40
+
+      - name: Make binaries executable (POSIX)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          chmod +x "downloaded/${{ matrix.onefile_archive }}"
+          chmod +x "extracted/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }}" || true
+
+      - name: Verify onedir build (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          xvfb-run -a "extracted/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }}" --smoke-test
+
+      - name: Verify onedir build (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          "extracted/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }}" --smoke-test
+
+      - name: Verify onedir build (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          "extracted/${{ matrix.artifact_dir_name }}/${{ matrix.onefile_name }}" --smoke-test
+
+      - name: Verify onefile build (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          xvfb-run -a "downloaded/${{ matrix.onefile_archive }}" --smoke-test
+
+      - name: Verify onefile build (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          "downloaded/${{ matrix.onefile_archive }}" --smoke-test
+
+      - name: Verify onefile build (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          "downloaded/${{ matrix.onefile_archive }}" --smoke-test
