@@ -1,0 +1,25 @@
+# test_val.fcstm
+def int x = 0;
+def int y = 1;
+state Root {
+    state A;
+    state B;
+    pseudo state C;
+    state D;
+    state F;
+
+    [*] -> A;
+
+    A -> B : if [x >= 48 && x < 55 && x % 7 == 1] effect {
+        x = x + 10;
+        y = y + 1;
+    };
+    B -> D : if [x % 4 == 0];
+
+    A -> C : if [x % 7 != 1];
+    C -> F : if [x % 4 != 1];
+    C -> A effect {
+        x = x + 1;
+        y = y + 1;
+    };
+}

@@ -1,0 +1,13 @@
+def int x = 0;
+def int y = 1;
+state Root {
+    state A;
+    state F;
+
+    [*] -> A;
+
+    A -> F : if [x > 54];
+    A -> A : if [x < 40] effect {
+        x = x + 10;
+    }
+}

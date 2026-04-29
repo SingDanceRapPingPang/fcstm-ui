@@ -1,3 +1,9 @@
 from .main_window_ui import Ui_MainWindow as UIMainWindow
 from .dialog_edit_state_ui import Ui_Dialog_Edit_State as UIDialogEditState
 from .dialog_show_graph_ui import Ui_Dialog_Show_Graph as UIDialogShowGraph
+from .dialog_show_error_ui import Ui_Dialog_Show_Error as UIDialogShowError
+from .dialog_reachability_val_ui import Ui_Dialog_Reachability_Val as UIDialogReaVal
+from .dialog_add_lifecycle_ui import Ui_Dialog_Add_Lifecycle as UIDialogAddLifecycle
+from .dialog_add_transition_ui import Ui_Dialog_Add_Transition as UIDialogAddTransition
+from .dialog_simulate_ui import Ui_Dialog_Simulate as UIDialogSimulate
+from .dialog_exclusive_val_ui import Ui_Dialog_Exclusive_Val as UIDialogExclusiveVal

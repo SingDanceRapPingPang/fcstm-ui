@@ -1,0 +1,50 @@
+def float z = 2000;
+state StateMachine {
+    state Idle;
+    state Control {
+        state F {
+            enter abstract L;
+        }
+        state W {
+            enter abstract R;
+        }
+        state H {
+            state L {
+                enter abstract N;
+            }
+            state M {
+                enter abstract Q;
+            }
+            [*] -> L;
+            L -> M : /SIG9;
+            M -> L : /SIG6;
+        }
+        state G {
+            enter abstract T;
+        }
+        ! H -> G : /SIG8;
+        [*] -> F;
+        F -> W : if [z < 1200];
+        W -> H : /SIG2;
+    }
+    event SIG3 named 'Sig3';
+    event SIG9 named 'Sig9';
+    event SIG1 named 'Sig1';
+    event SIG10 named 'Sig10';
+    event SIG2 named 'Sig2';
+    event SIG6 named 'Sig6';
+    event SIG8 named 'Sig8';
+    event SIG7 named 'Sig7';
+    event SIG4 named 'Sig4';
+    event SIG5 named 'Sig5';
+    event SIG11 named 'Sig11';
+    event SIG12 named 'Sig12';
+    event SIG13 named 'Sig13';
+    event SIG14 named 'Sig14';
+    event SIG15 named 'Sig15';
+    event SIG16 named 'Sig16';
+    event SIG17 named 'Sig17';
+    event SIG18 named 'Sig18';
+    [*] -> Idle;
+    Idle -> Control : /SIG1;
+}

@@ -1212,3 +1212,21 @@ fabric.properties
 !/runs/artifacts
 /runs/artifacts/*
 /app/ui/*_ui.py
+
+# Project-specific
+.vscode/
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+pip-wheel-metadata/
+
+# Keep packaging specs under version control
+!main.spec
+!fcstm-ui.spec

@@ -1,0 +1,32 @@
+state FeiKong named '飞控' {
+    state XiaDian named '下电';
+    state ShangDian named '上电' {
+        state QiKong named '启控';
+        state ZiJian named '自检';
+        state ShuJuZhuangDing named '数据装订';
+        state HongFaAnKong named '触发安控';
+        [*] -> ZiJian;
+        ZiJian -> ShuJuZhuangDing;
+        ShuJuZhuangDing -> QiKong : /T0;
+        QiKong -> HongFaAnKong : /ZI_HUI;
+        QiKong -> HongFaAnKong : /DI_MIAN_ZI_HUI_ZHI_LING;
+    }
+    event T0;
+    event GONG_JI named '攻击';
+    event FA_DONG_JI_WEN_DING_GONG_ZUO named '发动机稳定工作';
+    event LING_HANG_LU_DIAN_ZHUAN_WAN_JIE_SHU named '零航路点转弯结束';
+    event DAO_YIN_TOU_WEN_DING_SHU_CHU named '导引头稳定输出';
+    event ZI_HUI named '自毁';
+    event DI_MIAN_ZI_HUI_ZHI_LING named '地面自毁指令';
+    event SHANG_DIAN named '上电';
+    event XIA_DIAN named '下电';
+    event DAO_DA_FA_DONG_JI_DIAN_HUO_GAO_DU named '到达发动机点火高度';
+    event DAO_DA_LEI_DA_KAI_JI_JU_CHI named '到达雷达开机距离';
+    event DAO_DA_FU_YANG_JIAO_QIE_HUAN_GAO_DU named '到达俯仰角切换高度';
+    event DAO_DA_P1GAO_DU named '到达P1高度';
+    event DAO_DA_GONG_JI_RU_SHE_JIAO_JIAO_DU named '到达攻击入射角角度';
+    event DAO_DA_ZHUAN_WAN_DIAN_JU_CHI named '到达转弯点距离';
+    [*] -> XiaDian;
+    ShangDian -> XiaDian : /XIA_DIAN;
+    XiaDian -> ShangDian : /SHANG_DIAN;
+}

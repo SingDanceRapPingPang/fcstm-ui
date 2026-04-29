@@ -1,0 +1,19 @@
+def int counter = 0;
+
+state SimpleMachine {
+    state Idle;
+    state Running;
+    state Stopped;
+
+    [*] -> Idle;
+
+    Idle -> Running :: Start effect {
+        counter = 0;
+    };
+
+    Running -> Stopped :: Stop effect {
+        counter = counter + 1;
+    };
+
+    Stopped -> Idle :: Reset;
+}

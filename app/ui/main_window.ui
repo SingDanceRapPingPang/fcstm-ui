@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1059</width>
-    <height>867</height>
+    <width>1300</width>
+    <height>920</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>fcstm</string>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1200</width>
+    <height>820</height>
+   </size>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -156,7 +162,128 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="5,3">
+          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,5,3">
+           <item>
+            <widget class="QFrame" name="frame_state_machine_files">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_state_machine_files">
+              <item>
+               <widget class="QLabel" name="label_state_machine_files">
+                <property name="font">
+                 <font>
+                  <family>微软雅黑</family>
+                  <pointsize>10</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>状态机文件 / 子模型</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTreeWidget" name="tree_state_machine_files">
+                <property name="font">
+                 <font>
+                  <family>微软雅黑</family>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="editTriggers">
+                 <set>QAbstractItemView::NoEditTriggers</set>
+                </property>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <attribute name="headerVisible">
+                 <bool>true</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>模型</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>来源</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_state_machine_file_buttons">
+                <item>
+                 <widget class="QPushButton" name="button_import_state_machine_files">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>9</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>导入</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="button_remove_state_machine_file">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>9</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>移除</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="button_clear_state_machine_files">
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>9</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>清空</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_current_state_machine">
+                <property name="font">
+                 <font>
+                  <family>微软雅黑</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>当前：未选择</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item>
             <widget class="QFrame" name="frame_state_machine_info">
              <property name="frameShape">
@@ -213,12 +340,31 @@
                     <pointsize>11</pointsize>
                    </font>
                   </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>150</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_lifecycle">
                   <property name="sizePolicy">
@@ -241,24 +387,82 @@
                   </property>
                  </widget>
                 </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
-                 <widget class="QTextEdit" name="edit_lifecycle">
+                 <widget class="QPushButton" name="button_lifecycle">
+                  <property name="visible">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <family>微软雅黑</family>
-                    <pointsize>11</pointsize>
+                    <pointsize>10</pointsize>
                    </font>
+                  </property>
+                  <property name="text">
+                   <string>添加</string>
                   </property>
                  </widget>
                 </item>
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_12">
+                <item>
+                 <widget class="QTableWidget" name="table_lifecycle">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <column>
+                   <property name="text">
+                    <string>类型</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>是否抽象</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>操作</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>注释</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1,0">
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>150</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_transition">
                   <property name="sizePolicy">
@@ -281,24 +485,57 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QPushButton" name="button_transition">
+                  <property name="visible">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>添加</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0">
                 <item>
-                 <widget class="QTextEdit" name="edit_state_transition">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                 <widget class="QTableWidget" name="table_transition">
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
                   </property>
-                  <property name="font">
-                   <font>
-                    <family>微软雅黑</family>
-                    <pointsize>11</pointsize>
-                   </font>
-                  </property>
+                  <column>
+                   <property name="text">
+                    <string>源状态</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>目标状态</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>事件</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>条件</string>
+                   </property>
+                  </column>
                  </widget>
                 </item>
                </layout>
@@ -404,6 +641,9 @@
                     </item>
                     <item alignment="Qt::AlignRight">
                      <widget class="QPushButton" name="button_add_state">
+                      <property name="visible">
+                       <bool>false</bool>
+                      </property>
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -441,6 +681,12 @@
               </item>
               <item>
                <widget class="QTreeWidget" name="tree_all_state">
+                <property name="font">
+                 <font>
+                  <family>微软雅黑</family>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <column>
                  <property name="text">
                   <string notr="true">1</string>
@@ -449,124 +695,6 @@
                </widget>
               </item>
              </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QFrame" name="frame_state_button">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <property name="spacing">
-            <number>20</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="button_import_state_machine">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>35</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>微软雅黑</family>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>导入</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="button_export_state_machine">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>35</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>微软雅黑</family>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>导出</string>
-             </property>
-             <property name="autoDefault">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="button_graph_gen">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>35</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>微软雅黑</family>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>状态机图生成</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="button_validate_state_machine">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>35</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>微软雅黑</family>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>状态机验证</string>
-             </property>
             </widget>
            </item>
           </layout>
@@ -583,18 +711,54 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1059</width>
-     <height>23</height>
+     <width>1300</width>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>文件</string>
     </property>
+    <addaction name="action_import_state_machine"/>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menu_tool">
+    <property name="title">
+     <string>工具</string>
+    </property>
+    <addaction name="action_reachability_val"/>
+    <addaction name="action_exclusive_val"/>
+    <addaction name="action_simulate"/>
+    <addaction name="action_graph_gen"/>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_tool"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_reachability_val">
+   <property name="text">
+    <string>可达性验证</string>
+   </property>
+  </action>
+  <action name="action_simulate">
+   <property name="text">
+    <string>模型仿真</string>
+   </property>
+  </action>
+  <action name="action_graph_gen">
+   <property name="text">
+    <string>状态图生成</string>
+   </property>
+  </action>
+  <action name="action_import_state_machine">
+   <property name="text">
+    <string>导入</string>
+   </property>
+  </action>
+  <action name="action_exclusive_val">
+   <property name="text">
+    <string>互斥性验证</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

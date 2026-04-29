@@ -6,49 +6,611 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>966</width>
-    <height>800</height>
+    <width>1120</width>
+    <height>860</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>980</width>
+    <height>720</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>状态机模型图</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="2">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+  <layout class="QVBoxLayout" name="verticalLayout_main">
+   <item>
+    <widget class="QGroupBox" name="groupBox_graph_source">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeHint" stdset="0">
+     <property name="maximumSize">
       <size>
-       <width>40</width>
-       <height>20</height>
+       <width>16777215</width>
+       <height>86</height>
       </size>
      </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="button_export_graph">
-     <property name="text">
-      <string>导出图像</string>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>10</pointsize>
+      </font>
      </property>
+     <property name="title">
+      <string>生成对象</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_graph_source">
+      <item>
+       <widget class="QLabel" name="label_state_machine">
+        <property name="text">
+         <string>子状态机：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_state_machine">
+        <property name="minimumSize">
+         <size>
+          <width>260</width>
+          <height>32</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_detail_level">
+        <property name="text">
+         <string>详细级别：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_detail_level">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>minimal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>normal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>full</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_graph_source">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button_generate_graph">
+        <property name="minimumSize">
+         <size>
+          <width>110</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>重新生成</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_export_format">
+        <property name="text">
+         <string>导出格式：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_export_format">
+        <item>
+         <property name="text">
+          <string>PNG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SVG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PDF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PUML</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button_export_graph">
+        <property name="minimumSize">
+         <size>
+          <width>110</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>导出图像</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="0">
-    <spacer name="horizontalSpacer">
+   <item>
+    <widget class="QSplitter" name="splitter_graph">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0" colspan="3">
-    <widget class="QWidget" name="widget_graph_container" native="true"/>
+     <widget class="QWidget" name="widget_graph_container" native="true"/>
+     <widget class="QScrollArea" name="scrollArea_options">
+      <property name="minimumSize">
+       <size>
+        <width>260</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>330</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_options">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>300</width>
+         <height>980</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_options">
+        <item>
+         <widget class="QGroupBox" name="groupBox_variables">
+          <property name="title">
+           <string>变量定义</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_variables">
+           <item row="0" column="0" colspan="2">
+            <widget class="QCheckBox" name="check_show_variable_definitions">
+             <property name="text">
+              <string>显示变量定义</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_variable_display_mode">
+             <property name="text">
+              <string>显示方式：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="combo_variable_display_mode">
+             <item><property name="text"><string>legend</string></property></item>
+             <item><property name="text"><string>note</string></property></item>
+             <item><property name="text"><string>hide</string></property></item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_variable_legend_position">
+             <property name="text">
+              <string>图例位置：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="combo_variable_legend_position">
+             <item><property name="text"><string>top left</string></property></item>
+             <item><property name="text"><string>top center</string></property></item>
+             <item><property name="text"><string>top right</string></property></item>
+             <item><property name="text"><string>bottom left</string></property></item>
+             <item><property name="text"><string>bottom center</string></property></item>
+             <item><property name="text"><string>bottom right</string></property></item>
+             <item><property name="text"><string>left</string></property></item>
+             <item><property name="text"><string>right</string></property></item>
+             <item><property name="text"><string>center</string></property></item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_state_display">
+          <property name="title">
+           <string>状态显示</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_state_display">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_state_name_format">
+             <property name="text">
+              <string>状态名称格式：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="edit_state_name_format">
+             <property name="text">
+              <string>extra_name</string>
+             </property>
+             <property name="placeholderText">
+              <string>name,extra_name,path</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QCheckBox" name="check_show_pseudo_state_style">
+             <property name="text">
+              <string>显示伪状态样式</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="check_collapse_empty_states">
+             <property name="text">
+              <string>折叠空状态</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_lifecycle_actions">
+          <property name="title">
+           <string>生命周期动作</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_lifecycle_actions">
+           <item row="0" column="0" colspan="2">
+            <widget class="QCheckBox" name="check_show_lifecycle_actions">
+             <property name="text">
+              <string>显示生命周期动作</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="check_show_enter_actions">
+             <property name="text">
+              <string>enter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCheckBox" name="check_show_during_actions">
+             <property name="text">
+              <string>during</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="check_show_exit_actions">
+             <property name="text">
+              <string>exit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QCheckBox" name="check_show_aspect_actions">
+             <property name="text">
+              <string>aspect</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="check_show_abstract_actions">
+             <property name="text">
+              <string>abstract</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QCheckBox" name="check_show_concrete_actions">
+             <property name="text">
+              <string>concrete</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_abstract_action_marker">
+             <property name="text">
+              <string>抽象标记：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="combo_abstract_action_marker">
+             <item><property name="text"><string>text</string></property></item>
+             <item><property name="text"><string>symbol</string></property></item>
+             <item><property name="text"><string>none</string></property></item>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_max_action_lines">
+             <property name="text">
+              <string>动作行数：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QSpinBox" name="spin_max_action_lines">
+             <property name="specialValueText">
+              <string>不限制</string>
+             </property>
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>999</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_transitions">
+          <property name="title">
+           <string>转移</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_transitions">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="check_show_transition_guards">
+             <property name="text">
+              <string>显示条件</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="check_show_transition_effects">
+             <property name="text">
+              <string>显示动作</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_transition_effect_mode">
+             <property name="text">
+              <string>动作显示：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="combo_transition_effect_mode">
+             <item><property name="text"><string>note</string></property></item>
+             <item><property name="text"><string>inline</string></property></item>
+             <item><property name="text"><string>hide</string></property></item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_events">
+          <property name="title">
+           <string>事件</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_events">
+           <item row="0" column="0" colspan="2">
+            <widget class="QCheckBox" name="check_show_events">
+             <property name="text">
+              <string>显示事件</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_event_name_format">
+             <property name="text">
+              <string>事件名称格式：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="edit_event_name_format">
+             <property name="text">
+              <string>extra_name,relpath</string>
+             </property>
+             <property name="placeholderText">
+              <string>name,extra_name,path,relpath</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_event_visualization_mode">
+             <property name="text">
+              <string>事件视图：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="combo_event_visualization_mode">
+             <item><property name="text"><string>none</string></property></item>
+             <item><property name="text"><string>color</string></property></item>
+             <item><property name="text"><string>legend</string></property></item>
+             <item><property name="text"><string>both</string></property></item>
+             <item><property name="text"><string>dependency_view</string></property></item>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_event_legend_position">
+             <property name="text">
+              <string>图例位置：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QComboBox" name="combo_event_legend_position">
+             <item><property name="text"><string>right</string></property></item>
+             <item><property name="text"><string>top left</string></property></item>
+             <item><property name="text"><string>top center</string></property></item>
+             <item><property name="text"><string>top right</string></property></item>
+             <item><property name="text"><string>bottom left</string></property></item>
+             <item><property name="text"><string>bottom center</string></property></item>
+             <item><property name="text"><string>bottom right</string></property></item>
+             <item><property name="text"><string>left</string></property></item>
+             <item><property name="text"><string>center</string></property></item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_hierarchy">
+          <property name="title">
+           <string>层级与样式</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_hierarchy">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_max_depth">
+             <property name="text">
+              <string>最大层级：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="spin_max_depth">
+             <property name="specialValueText">
+              <string>不限制</string>
+             </property>
+             <property name="minimum">
+              <number>-1</number>
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="value">
+              <number>-1</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_collapsed_state_marker">
+             <property name="text">
+              <string>折叠标记：</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="edit_collapsed_state_marker">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="check_use_skinparam">
+             <property name="text">
+              <string>skinparam</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QCheckBox" name="check_use_stereotypes">
+             <property name="text">
+              <string>stereotypes</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_custom_colors">
+          <property name="title">
+           <string>事件自定义颜色</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_custom_colors">
+           <item>
+            <widget class="QPlainTextEdit" name="text_custom_colors">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="placeholderText">
+              <string>Root.Start=#4E79A7
+Root.Stop=#E15759</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="button_reset_graph_options">
+          <property name="text">
+           <string>恢复默认选项</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_options">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>

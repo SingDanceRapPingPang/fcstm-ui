@@ -1,0 +1,1341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Blocks="http://www.ht0003.com/sds/sysml/1.6/SysML/Blocks" xmlns:DiagramRepresentation="http://www.ht0003.com/sds/1.0.0/DiagramRepresentation" xmlns:Diagrams="http://www.ht0003.com/sds/1.0.0/Diagrams" xmlns:PortsAndFlows="http://www.ht0003.com/sds/sysml/1.6/SysML/PortsAndFlows" xmlns:domain="http://www.sysdesim.arch/uml2/stereotype" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://www.ht0003.com/sds/sysml/1.6/SysML/Blocks http://www.ht0003.com/sds/sysml/1.6/SysML#//blocks http://www.ht0003.com/sds/sysml/1.6/SysML/PortsAndFlows http://www.ht0003.com/sds/sysml/1.6/SysML#//portsandflows">
+  <uml:Model xmi:id="1756173629842__cTYXIIIgEfCCie-D41A3ZA" name="model">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXIYIgEfCCie-D41A3ZA" source="SDSDiagram"/>
+    <ownedComment xmi:type="uml:Comment" xmi:id="1756173629842__cTYXIoIgEfCCie-D41A3ZA">
+      <body>Author:luoning.&amp;#10;Created:2025-08-26 10:00:29.&amp;#10;Comment:新建项目工程.&amp;#10;</body>
+    </ownedComment>
+    <packagedElement xmi:type="uml:Package" xmi:id="_yyIUwIIjEfCCie-D41A3ZA" name="测试用例">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_0fX5sIIjEfCCie-D41A3ZA" source="SDSDiagram">
+        <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_EvpsMCZlEfGaK8PBrGCQ7Q" name="测试用例" context="_yyIUwIIjEfCCie-D41A3ZA" ownerOfDiagram="_yyIUwIIjEfCCie-D41A3ZA" notationId="c933db94-eead-4784-861e-ba00f894453f.dgm" kindId="BlockDefinationDiagram">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_EvqTQCZlEfGaK8PBrGCQ7Q" source="SDSDiagram">
+            <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_Evq6UCZlEfGaK8PBrGCQ7Q" type="BlockDefinationDiagram" usedObjects="_FEcQcCZlEfGaK8PBrGCQ7Q _LnbcUCZlEfGaK8PBrGCQ7Q _OXWmQCZlEfGaK8PBrGCQ7Q _VV00QCZlEfGaK8PBrGCQ7Q _XM2nUCZlEfGaK8PBrGCQ7Q _hPGvYCZlEfGaK8PBrGCQ7Q _oTIy0CZlEfGaK8PBrGCQ7Q">
+              <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_EvsIcCZlEfGaK8PBrGCQ7Q" streamContentID="c933db94-eead-4784-861e-ba00f894453f"/>
+            </contents>
+          </eAnnotations>
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_EvtWkCZlEfGaK8PBrGCQ7Q" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_EvtWkSZlEfGaK8PBrGCQ7Q" base="_EvpsMCZlEfGaK8PBrGCQ7Q">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+            </contents>
+          </eAnnotations>
+        </contents>
+      </eAnnotations>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_M64G8IMvEfC7Audqg6Dubw" name="Sig3">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Oi-GIIMvEfC7Audqg6Dubw" name="Lon0">
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_Pjd50IMvEfC7Audqg6Dubw" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_OuTzcIMvEfC7Audqg6Dubw" name="Lat0">
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_QCJZ4IMvEfC7Audqg6Dubw" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PGb_kIMvEfC7Audqg6Dubw" name="Height0">
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_Q81ggIMvEfC7Audqg6Dubw" name=""/>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_w2ug8KmUEfCWQeyFhegKoA" name="Sig9">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_zGUlAKmUEfCWQeyFhegKoA" name="h">
+          <type xmi:type="uml:DataType" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_gHFIwJFcEe26gOIaj8nrnA"/>
+          <defaultValue xmi:type="uml:OpaqueExpression" xmi:id="_0dArIKmUEfCWQeyFhegKoA" name="">
+            <language></language>
+            <body>0</body>
+          </defaultValue>
+        </ownedAttribute>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_X7qVEKmVEfCWQeyFhegKoA" name="Sig1"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_qf6TYKmVEfCWQeyFhegKoA" name="Sig10"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_sh7OcKmVEfCWQeyFhegKoA" name="Sig2"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_u6u44KmVEfCWQeyFhegKoA" name="Sig6"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_A4Z_YKmWEfCWQeyFhegKoA" name="Sig8"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_FRoCYKmWEfCWQeyFhegKoA" name="Sig7"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_Ce--0KmaEfCWQeyFhegKoA" name="Sig4"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_sJLwwKm1EfCWQeyFhegKoA" name="Sig5"/>
+      <packagedElement xmi:type="uml:Class" xmi:id="_qAx7MCQGEfGBBP-2kAbLRg" name="测试用例" classifierBehavior="_tx-U4CQGEfGBBP-2kAbLRg">
+        <ownedBehavior xmi:type="uml:Interaction" xmi:id="_tx-U4CQGEfGBBP-2kAbLRg" name="测试用例">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_t1b4kCQGEfGBBP-2kAbLRg" source="SDSDiagram">
+            <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_t1e74CQGEfGBBP-2kAbLRg" name="测试用例1" context="_tx-U4CQGEfGBBP-2kAbLRg" ownerOfDiagram="_tx-U4CQGEfGBBP-2kAbLRg" notationId="0a6242d9-fd93-48e6-ab22-83923db21510.dgm" kindId="SysML Sequence Diagram">
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_t1e74SQGEfGBBP-2kAbLRg" source="SDSDiagram">
+                <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_t1fi8CQGEfGBBP-2kAbLRg" type="SysML Sequence Diagram" usedObjects="_tx-U4CQGEfGBBP-2kAbLRg _8XZGICQGEfGBBP-2kAbLRg _8twXtCQGEfGBBP-2kAbLRg _PtYDYCQHEfGBBP-2kAbLRg _R4wV0CQHEfGBBP-2kAbLRg _aV3sECQHEfGBBP-2kAbLRg _aXfcsCQHEfGBBP-2kAbLRg _lH5rQCQHEfGBBP-2kAbLRg _OZ3XoCQIEfGBBP-2kAbLRg _Ob0fdCQIEfGBBP-2kAbLRg _OdkL5CQIEfGBBP-2kAbLRg _qrKqECQIEfGBBP-2kAbLRg _qtZesCQIEfGBBP-2kAbLRg _qviMsCQIEfGBBP-2kAbLRg _5LhVICQIEfGBBP-2kAbLRg _5M_UwCQIEfGBBP-2kAbLRg _5OOD1CQIEfGBBP-2kAbLRg _9eUAACQIEfGBBP-2kAbLRg _DIhJwCQJEfGBBP-2kAbLRg _DKAXhCQJEfGBBP-2kAbLRg _DLY3lCQJEfGBBP-2kAbLRg _Om878CQJEfGBBP-2kAbLRg _OpCmpCQJEfGBBP-2kAbLRg _Oq_HYCQJEfGBBP-2kAbLRg _JEPE0CQKEfGBBP-2kAbLRg _JFlvsCQKEfGBBP-2kAbLRg _JGyplCQKEfGBBP-2kAbLRg _0jTh8CQKEfGBBP-2kAbLRg _GVfxMCQLEfGBBP-2kAbLRg _GXofNCQLEfGBBP-2kAbLRg _GZuJ5CQLEfGBBP-2kAbLRg _T4zlMCQLEfGBBP-2kAbLRg _T6tpsCQLEfGBBP-2kAbLRg _T8E7pCQLEfGBBP-2kAbLRg _ZEsbQCQLEfGBBP-2kAbLRg _ZGhAMCQLEfGBBP-2kAbLRg _ZH3EBCQLEfGBBP-2kAbLRg _bdNKwCQLEfGBBP-2kAbLRg _belq1CQLEfGBBP-2kAbLRg _bf0Z5CQLEfGBBP-2kAbLRg _nY7V4CQLEfGBBP-2kAbLRg _naNvUCQLEfGBBP-2kAbLRg _nb9bwCQLEfGBBP-2kAbLRg _r1x7sCQLEfGBBP-2kAbLRg _r3ZsUCQLEfGBBP-2kAbLRg _r5G8gCQLEfGBBP-2kAbLRg _zQZTICQLEfGBBP-2kAbLRg _zR4g5CQLEfGBBP-2kAbLRg _zTYVsCQLEfGBBP-2kAbLRg _6x2SYCQLEfGBBP-2kAbLRg _6zVgICQLEfGBBP-2kAbLRg _60hy9CQLEfGBBP-2kAbLRg _ANmwcCQMEfGBBP-2kAbLRg _APY5JCQMEfGBBP-2kAbLRg _AQnBJCQMEfGBBP-2kAbLRg _HmlJICQMEfGBBP-2kAbLRg _Hn6l5CQMEfGBBP-2kAbLRg _HpIG1CQMEfGBBP-2kAbLRg _O5tYgCQMEfGBBP-2kAbLRg _O7C1RCQMEfGBBP-2kAbLRg _O8sbFCQMEfGBBP-2kAbLRg _BXTRgCQOEfGBBP-2kAbLRg _FJDE0CQOEfGBBP-2kAbLRg _FKi5oCQOEfGBBP-2kAbLRg _Hq8Z0CQOEfGBBP-2kAbLRg _ungVECQOEfGBBP-2kAbLRg _4kZcACQOEfGBBP-2kAbLRg _7WizgCQOEfGBBP-2kAbLRg _-PwcUCQOEfGBBP-2kAbLRg _Div_8CQPEfGBBP-2kAbLRg _HgPwQCQPEfGBBP-2kAbLRg _KRehwCQPEfGBBP-2kAbLRg _ORCHkCQPEfGBBP-2kAbLRg _RJmQICQPEfGBBP-2kAbLRg">
+                  <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_t2SNICQGEfGBBP-2kAbLRg" streamContentID="0a6242d9-fd93-48e6-ab22-83923db21510"/>
+                </contents>
+              </eAnnotations>
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_t2S0MCQGEfGBBP-2kAbLRg" source="http://www.sysdesim.arch/uml2/stereotype">
+                <contents xmi:type="domain:StereotypeInstance" xmi:id="_t2S0MSQGEfGBBP-2kAbLRg" base="_t1e74CQGEfGBBP-2kAbLRg">
+                  <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                </contents>
+              </eAnnotations>
+            </contents>
+          </eAnnotations>
+          <ownedRule xmi:type="uml:TimeConstraint" xmi:id="_lH5rQCQHEfGBBP-2kAbLRg" name="" constrainedElement="_aXfcsCQHEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:TimeInterval" xmi:id="_lOiewCQHEfGBBP-2kAbLRg" name="TimeInterval1" max="_lNvNgCQHEfGBBP-2kAbLRg" min="_lMXUgCQHEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:TimeConstraint" xmi:id="_Hq8Z0CQOEfGBBP-2kAbLRg" name="" constrainedElement="_FKi5oCQOEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:TimeInterval" xmi:id="_HwzxQCQOEfGBBP-2kAbLRg" name="TimeInterval1" max="_HwN7YCQOEfGBBP-2kAbLRg" min="_Hu3QgCQOEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_ungVECQOEfGBBP-2kAbLRg" name="" constrainedElement="_OdkL5CQIEfGBBP-2kAbLRg _qviMsCQIEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_uutJQSQOEfGBBP-2kAbLRg" name="DurationInterval1" max="_uutJQCQOEfGBBP-2kAbLRg" min="_utDjcCQOEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_4kZcACQOEfGBBP-2kAbLRg" name="" constrainedElement="_JGyplCQKEfGBBP-2kAbLRg _T8E7pCQLEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_4q8v8SQOEfGBBP-2kAbLRg" name="DurationInterval1" max="_4q8v8CQOEfGBBP-2kAbLRg" min="_4pdiMCQOEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_7WizgCQOEfGBBP-2kAbLRg" name="" constrainedElement="_T8E7pCQLEfGBBP-2kAbLRg _ZH3EBCQLEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_7eAtcSQOEfGBBP-2kAbLRg" name="DurationInterval1" max="_7eAtcCQOEfGBBP-2kAbLRg" min="_7clxICQOEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_-PwcUCQOEfGBBP-2kAbLRg" name="" constrainedElement="_ZH3EBCQLEfGBBP-2kAbLRg _bf0Z5CQLEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_-W8pcSQOEfGBBP-2kAbLRg" name="DurationInterval1" max="_-W8pcCQOEfGBBP-2kAbLRg" min="_-VdbsCQOEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_Div_8CQPEfGBBP-2kAbLRg" name="" constrainedElement="_nb9bwCQLEfGBBP-2kAbLRg _r5G8gCQLEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_DprHUCQPEfGBBP-2kAbLRg" name="DurationInterval1" max="_Dpm14CQPEfGBBP-2kAbLRg" min="_DntYcCQPEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_HgPwQCQPEfGBBP-2kAbLRg" name="" constrainedElement="_zTYVsCQLEfGBBP-2kAbLRg _60hy9CQLEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_HmtkoCQPEfGBBP-2kAbLRg" name="DurationInterval1" max="_HmrvcCQPEfGBBP-2kAbLRg" min="_Hk4YoCQPEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_KRehwCQPEfGBBP-2kAbLRg" name="" constrainedElement="_60hy9CQLEfGBBP-2kAbLRg _AQnBJCQMEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_KX-LUCQPEfGBBP-2kAbLRg" name="DurationInterval1" max="_KX8WICQPEfGBBP-2kAbLRg" min="_KWXo0CQPEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_ORCHkCQPEfGBBP-2kAbLRg" name="" constrainedElement="_AQnBJCQMEfGBBP-2kAbLRg _DLY3lCQJEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_OXLy4SQPEfGBBP-2kAbLRg" name="DurationInterval1" max="_OXLy4CQPEfGBBP-2kAbLRg" min="_OVOEACQPEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedRule xmi:type="uml:DurationConstraint" xmi:id="_RJmQICQPEfGBBP-2kAbLRg" name="" constrainedElement="_DLY3lCQJEfGBBP-2kAbLRg _Oq_HYCQJEfGBBP-2kAbLRg">
+            <specification xmi:type="uml:DurationInterval" xmi:id="_RRiEISQPEfGBBP-2kAbLRg" name="DurationInterval1" max="_RRiEICQPEfGBBP-2kAbLRg" min="_RPv7cCQPEfGBBP-2kAbLRg"/>
+          </ownedRule>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="_8YItACQGEfGBBP-2kAbLRg" name="控制"/>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="_8uzgkCQGEfGBBP-2kAbLRg" name="模块"/>
+          <lifeline xmi:type="uml:Lifeline" xmi:id="_8XZGICQGEfGBBP-2kAbLRg" name="控制" represents="_8YItACQGEfGBBP-2kAbLRg" coveredBy="_PtYDYCQHEfGBBP-2kAbLRg codex_fix_a0_frag codex_fix_b0_frag _R4wV0CQHEfGBBP-2kAbLRg codex_fix_a1_frag codex_fix_b1_frag _aV3sECQHEfGBBP-2kAbLRg _abpj8CQHEfGBBP-2kAbLRg _aZMF0CQHEfGBBP-2kAbLRg _OZ3XoCQIEfGBBP-2kAbLRg _OhtsECQIEfGBBP-2kAbLRg _qtZesCQIEfGBBP-2kAbLRg _qx49ICQIEfGBBP-2kAbLRg _5M_UwCQIEfGBBP-2kAbLRg _5QacMCQIEfGBBP-2kAbLRg _9eUAACQIEfGBBP-2kAbLRg _DIhJwCQJEfGBBP-2kAbLRg _DO760CQJEfGBBP-2kAbLRg _OpCmpCQJEfGBBP-2kAbLRg _OtLfwCQJEfGBBP-2kAbLRg _JEPE0CQKEfGBBP-2kAbLRg _JKMi4CQKEfGBBP-2kAbLRg _0jTh8CQKEfGBBP-2kAbLRg _GVfxMCQLEfGBBP-2kAbLRg _GeQroCQLEfGBBP-2kAbLRg _T4zlMCQLEfGBBP-2kAbLRg _T_ifUCQLEfGBBP-2kAbLRg _ZEsbQCQLEfGBBP-2kAbLRg _ZLJokCQLEfGBBP-2kAbLRg _belq1CQLEfGBBP-2kAbLRg _bh9u8CQLEfGBBP-2kAbLRg _nY7V4CQLEfGBBP-2kAbLRg _nf3EUCQLEfGBBP-2kAbLRg _r3ZsUCQLEfGBBP-2kAbLRg _r78OECQLEfGBBP-2kAbLRg _zQZTICQLEfGBBP-2kAbLRg _zWt9kCQLEfGBBP-2kAbLRg _6x2SYCQLEfGBBP-2kAbLRg _6386YCQLEfGBBP-2kAbLRg _APY5JCQMEfGBBP-2kAbLRg _ATA04CQMEfGBBP-2kAbLRg _HmlJICQMEfGBBP-2kAbLRg _HrNxgCQMEfGBBP-2kAbLRg _O5tYgCQMEfGBBP-2kAbLRg _O_FAsCQMEfGBBP-2kAbLRg _BXTRgCQOEfGBBP-2kAbLRg _FJDE0CQOEfGBBP-2kAbLRg _FONRoCQOEfGBBP-2kAbLRg _FMlhACQOEfGBBP-2kAbLRg"/>
+          <lifeline xmi:type="uml:Lifeline" xmi:id="_8twXtCQGEfGBBP-2kAbLRg" name="模块" represents="_8uzgkCQGEfGBBP-2kAbLRg" coveredBy="_Ob0fdCQIEfGBBP-2kAbLRg _OfpPgCQIEfGBBP-2kAbLRg _qrKqECQIEfGBBP-2kAbLRg _qz-AwCQIEfGBBP-2kAbLRg _5LhVICQIEfGBBP-2kAbLRg _5RtcsCQIEfGBBP-2kAbLRg _DKAXhCQJEfGBBP-2kAbLRg _DNsksCQJEfGBBP-2kAbLRg _Om878CQJEfGBBP-2kAbLRg _OumcECQJEfGBBP-2kAbLRg _JFlvsCQKEfGBBP-2kAbLRg _JI5iYCQKEfGBBP-2kAbLRg _GXofNCQLEfGBBP-2kAbLRg _GccGsCQLEfGBBP-2kAbLRg _T6tpsCQLEfGBBP-2kAbLRg _T-O3wCQLEfGBBP-2kAbLRg _ZGhAMCQLEfGBBP-2kAbLRg _ZJ5EUCQLEfGBBP-2kAbLRg _bdNKwCQLEfGBBP-2kAbLRg _bjXdICQLEfGBBP-2kAbLRg _naNvUCQLEfGBBP-2kAbLRg _neRI4CQLEfGBBP-2kAbLRg _r1x7sCQLEfGBBP-2kAbLRg _r9ftQCQLEfGBBP-2kAbLRg _zR4g5CQLEfGBBP-2kAbLRg _zVeAYCQLEfGBBP-2kAbLRg _6zVgICQLEfGBBP-2kAbLRg _62s9MCQLEfGBBP-2kAbLRg _ANmwcCQMEfGBBP-2kAbLRg _AUPj8CQMEfGBBP-2kAbLRg _Hn6l5CQMEfGBBP-2kAbLRg _HseVwCQMEfGBBP-2kAbLRg _O7C1RCQMEfGBBP-2kAbLRg _PA3wcCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_5RtcsCQIEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_5OOD1CQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_5QacMCQIEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_5OOD1CQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="_PtYDYCQHEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="_Pu0N0CQHEfGBBP-2kAbLRg" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="_PvdHACQHEfGBBP-2kAbLRg">
+                <language>English</language>
+                <body>y=2300</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="codex_fix_a0_frag" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="codex_fix_a0_constraint" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="codex_fix_a0_expr">
+                <language>English</language>
+                <body>z=2000</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="codex_fix_b0_frag" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="codex_fix_b0_constraint" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="codex_fix_b0_expr">
+                <language>English</language>
+                <body>z=1800</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_abpj8CQHEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_aXfcsCQHEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_aZMF0CQHEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_aXfcsCQHEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="_R4wV0CQHEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="_R6L5MCQHEfGBBP-2kAbLRg" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="_R6rocCQHEfGBBP-2kAbLRg">
+                <language>English</language>
+                <body>y=2099</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="codex_fix_a1_frag" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="codex_fix_a1_constraint" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="codex_fix_a1_expr">
+                <language>English</language>
+                <body>z=1300</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="codex_fix_b1_frag" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="codex_fix_b1_constraint" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="codex_fix_b1_expr">
+                <language>English</language>
+                <body>z=1100</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_OhtsECQIEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_OdkL5CQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_OfpPgCQIEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_OdkL5CQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="_BXTRgCQOEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="_BZPLMCQOEfGBBP-2kAbLRg" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="_BZ_ZICQOEfGBBP-2kAbLRg">
+                <language>English</language>
+                <body>y=1300</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_FONRoCQOEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_FKi5oCQOEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_FMlhACQOEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_FKi5oCQOEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="_0jTh8CQKEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="_0lhvgCQKEfGBBP-2kAbLRg" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="_0micICQKEfGBBP-2kAbLRg">
+                <language>English</language>
+                <body>y=1199</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_GeQroCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_GZuJ5CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_GccGsCQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_GZuJ5CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_qz-AwCQIEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_qviMsCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_qx49ICQIEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_qviMsCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_JKMi4CQKEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_JGyplCQKEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_JI5iYCQKEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_JGyplCQKEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_T_ifUCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_T8E7pCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_T-O3wCQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_T8E7pCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_ZLJokCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_ZH3EBCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_ZJ5EUCQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_ZH3EBCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_bjXdICQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_bf0Z5CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_bh9u8CQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_bf0Z5CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_nf3EUCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_nb9bwCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_neRI4CQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_nb9bwCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_r9ftQCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_r5G8gCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_r78OECQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_r5G8gCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_zWt9kCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_zTYVsCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_zVeAYCQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_zTYVsCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_6386YCQLEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_60hy9CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_62s9MCQLEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_60hy9CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_AUPj8CQMEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_AQnBJCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_ATA04CQMEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_AQnBJCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:StateInvariant" xmi:id="_9eUAACQIEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg">
+            <invariant xmi:type="uml:Constraint" xmi:id="_9f8-wCQIEfGBBP-2kAbLRg" name="">
+              <specification xmi:type="uml:OpaqueExpression" xmi:id="_9hDK8CQIEfGBBP-2kAbLRg">
+                <language>English</language>
+                <body>Rmt=4999</body>
+              </specification>
+            </invariant>
+          </fragment>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_DO760CQJEfGBBP-2kAbLRg" name="sendEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_DLY3lCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_DNsksCQJEfGBBP-2kAbLRg" name="receiveEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_DLY3lCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_OumcECQJEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_Oq_HYCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_OtLfwCQJEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_Oq_HYCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_HseVwCQMEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_HpIG1CQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_HrNxgCQMEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_HpIG1CQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_PA3wcCQMEfGBBP-2kAbLRg" name="sendEvent" covered="_8twXtCQGEfGBBP-2kAbLRg" message="_O8sbFCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_O_FAsCQMEfGBBP-2kAbLRg" name="receiveEvent" covered="_8XZGICQGEfGBBP-2kAbLRg" message="_O8sbFCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_aV3sECQHEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_abpj8CQHEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_OZ3XoCQIEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_OhtsECQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_Ob0fdCQIEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_OfpPgCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_qrKqECQIEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_qz-AwCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_qtZesCQIEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_qx49ICQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_5LhVICQIEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_5RtcsCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_5M_UwCQIEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_5QacMCQIEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_DIhJwCQJEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_DO760CQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_DKAXhCQJEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_DNsksCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_Om878CQJEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_OumcECQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_OpCmpCQJEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_OtLfwCQJEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_JEPE0CQKEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_JKMi4CQKEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_JFlvsCQKEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_JI5iYCQKEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_GVfxMCQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_GeQroCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_GXofNCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_GccGsCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_T4zlMCQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_T_ifUCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_T6tpsCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_T-O3wCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_ZEsbQCQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_ZLJokCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_ZGhAMCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_ZJ5EUCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_bdNKwCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_bjXdICQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_belq1CQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_bh9u8CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_nY7V4CQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_nf3EUCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_naNvUCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_neRI4CQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_r1x7sCQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_r9ftQCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_r3ZsUCQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_r78OECQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_zQZTICQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_zWt9kCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_zR4g5CQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_zVeAYCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_6x2SYCQLEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_6386YCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_6zVgICQLEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_62s9MCQLEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_ANmwcCQMEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_AUPj8CQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_APY5JCQMEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_ATA04CQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_HmlJICQMEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_HseVwCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_Hn6l5CQMEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_HrNxgCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_O5tYgCQMEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_PA3wcCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_O7C1RCQMEfGBBP-2kAbLRg" name="" covered="_8twXtCQGEfGBBP-2kAbLRg" start="_O_FAsCQMEfGBBP-2kAbLRg"/>
+          <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="_FJDE0CQOEfGBBP-2kAbLRg" name="" covered="_8XZGICQGEfGBBP-2kAbLRg" start="_FONRoCQOEfGBBP-2kAbLRg"/>
+          <message xmi:type="uml:Message" xmi:id="_5OOD1CQIEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_5QacMCQIEfGBBP-2kAbLRg" sendEvent="_5RtcsCQIEfGBBP-2kAbLRg" signature="_X7qVEKmVEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_aXfcsCQHEfGBBP-2kAbLRg" name="" receiveEvent="_aZMF0CQHEfGBBP-2kAbLRg" sendEvent="_abpj8CQHEfGBBP-2kAbLRg"/>
+          <message xmi:type="uml:Message" xmi:id="_OdkL5CQIEfGBBP-2kAbLRg" name="发动机点火" receiveEvent="_OfpPgCQIEfGBBP-2kAbLRg" sendEvent="_OhtsECQIEfGBBP-2kAbLRg" signature="_-qK7sCZkEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_FKi5oCQOEfGBBP-2kAbLRg" name="" receiveEvent="_FMlhACQOEfGBBP-2kAbLRg" sendEvent="_FONRoCQOEfGBBP-2kAbLRg"/>
+          <message xmi:type="uml:Message" xmi:id="_GZuJ5CQLEfGBBP-2kAbLRg" name="切换程序角" messageSort="asynchCall" receiveEvent="_GccGsCQLEfGBBP-2kAbLRg" sendEvent="_GeQroCQLEfGBBP-2kAbLRg" signature="_hPGvYCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_qviMsCQIEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_qx49ICQIEfGBBP-2kAbLRg" sendEvent="_qz-AwCQIEfGBBP-2kAbLRg" signature="_sh7OcKmVEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_JGyplCQKEfGBBP-2kAbLRg" name="启动高度控制" messageSort="asynchCall" receiveEvent="_JI5iYCQKEfGBBP-2kAbLRg" sendEvent="_JKMi4CQKEfGBBP-2kAbLRg" signature="_FEcQcCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_T8E7pCQLEfGBBP-2kAbLRg" name="平飞" messageSort="asynchCall" receiveEvent="_T-O3wCQLEfGBBP-2kAbLRg" sendEvent="_T_ifUCQLEfGBBP-2kAbLRg" signature="_oTIy0CZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_ZH3EBCQLEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_ZJ5EUCQLEfGBBP-2kAbLRg" sendEvent="_ZLJokCQLEfGBBP-2kAbLRg" signature="_w2ug8KmUEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_bf0Z5CQLEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_bh9u8CQLEfGBBP-2kAbLRg" sendEvent="_bjXdICQLEfGBBP-2kAbLRg" signature="_u6u44KmVEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_nb9bwCQLEfGBBP-2kAbLRg" name="第一次航路转弯" messageSort="asynchCall" receiveEvent="_neRI4CQLEfGBBP-2kAbLRg" sendEvent="_nf3EUCQLEfGBBP-2kAbLRg" signature="_LnbcUCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_r5G8gCQLEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_r78OECQLEfGBBP-2kAbLRg" sendEvent="_r9ftQCQLEfGBBP-2kAbLRg" signature="_Ce--0KmaEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_zTYVsCQLEfGBBP-2kAbLRg" name="直飞" messageSort="asynchCall" receiveEvent="_zVeAYCQLEfGBBP-2kAbLRg" sendEvent="_zWt9kCQLEfGBBP-2kAbLRg" signature="_OXWmQCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_60hy9CQLEfGBBP-2kAbLRg" name="启动转弯控制" messageSort="asynchCall" receiveEvent="_62s9MCQLEfGBBP-2kAbLRg" sendEvent="_6386YCQLEfGBBP-2kAbLRg" signature="_VV00QCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_AQnBJCQMEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_ATA04CQMEfGBBP-2kAbLRg" sendEvent="_AUPj8CQMEfGBBP-2kAbLRg" signature="_Ce--0KmaEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_DLY3lCQJEfGBBP-2kAbLRg" name="启动导引头控制" messageSort="asynchCall" receiveEvent="_DNsksCQJEfGBBP-2kAbLRg" sendEvent="_DO760CQJEfGBBP-2kAbLRg" signature="_XM2nUCZlEfGaK8PBrGCQ7Q"/>
+          <message xmi:type="uml:Message" xmi:id="_Oq_HYCQJEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_OtLfwCQJEfGBBP-2kAbLRg" sendEvent="_OumcECQJEfGBBP-2kAbLRg" signature="_sJLwwKm1EfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_HpIG1CQMEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_HrNxgCQMEfGBBP-2kAbLRg" sendEvent="_HseVwCQMEfGBBP-2kAbLRg" signature="_A4Z_YKmWEfCWQeyFhegKoA"/>
+          <message xmi:type="uml:Message" xmi:id="_O8sbFCQMEfGBBP-2kAbLRg" name="" messageSort="asynchCall" receiveEvent="_O_FAsCQMEfGBBP-2kAbLRg" sendEvent="_PA3wcCQMEfGBBP-2kAbLRg" signature="_FRoCYKmWEfCWQeyFhegKoA"/>
+        </ownedBehavior>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeObservation" xmi:id="_lIjykCQHEfGBBP-2kAbLRg" name="" event="_aXfcsCQHEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeObservation" xmi:id="_lJ6dcCQHEfGBBP-2kAbLRg" name="" event="_aXfcsCQHEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lLtNMCQHEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_lMXUgCQHEfGBBP-2kAbLRg" name="timeExpression" observation="_lIjykCQHEfGBBP-2kAbLRg">
+          <expr xmi:type="uml:LiteralString" xmi:id="_lMXUgSQHEfGBBP-2kAbLRg" name="0s" value="0s"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_lNCp8CQHEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_lNvNgCQHEfGBBP-2kAbLRg" name="timeExpression" observation="_lJ6dcCQHEfGBBP-2kAbLRg">
+          <expr xmi:type="uml:LiteralString" xmi:id="_lNvNgSQHEfGBBP-2kAbLRg" name="1s" value="1s"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeObservation" xmi:id="_HriPsCQOEfGBBP-2kAbLRg" name="" event="_FKi5oCQOEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeObservation" xmi:id="_HsuigCQOEfGBBP-2kAbLRg" name="" event="_FKi5oCQOEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_HuD_QCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_Hu3QgCQOEfGBBP-2kAbLRg" name="timeExpression" observation="_HriPsCQOEfGBBP-2kAbLRg">
+          <expr xmi:type="uml:LiteralString" xmi:id="_Hu3QgSQOEfGBBP-2kAbLRg" name="0s" value="0s"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_HveUgCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_HwN7YCQOEfGBBP-2kAbLRg" name="timeExpression" observation="_HsuigCQOEfGBBP-2kAbLRg">
+          <expr xmi:type="uml:LiteralString" xmi:id="_HwN7YSQOEfGBBP-2kAbLRg" name="1s" value="1s"/>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_unkmgCQOEfGBBP-2kAbLRg" name="" event="_OdkL5CQIEfGBBP-2kAbLRg _qviMsCQIEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_upfSECQOEfGBBP-2kAbLRg" name="" event="_OdkL5CQIEfGBBP-2kAbLRg _qviMsCQIEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_urbLwCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_usT8kCQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_utDjcCQOEfGBBP-2kAbLRg" name="MinDuration1" observation="_unkmgCQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_usT8kSQOEfGBBP-2kAbLRg" name="Literal" value="20s-30s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_utDjcSQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_utzxYCQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_uutJQCQOEfGBBP-2kAbLRg" name="MaxDuration1" observation="_upfSECQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_utzxYSQOEfGBBP-2kAbLRg" name="Literal" value="20s-30s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_4kZcASQOEfGBBP-2kAbLRg" name="" event="_JGyplCQKEfGBBP-2kAbLRg _T8E7pCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_4mWj0CQOEfGBBP-2kAbLRg" name="" event="_JGyplCQKEfGBBP-2kAbLRg _T8E7pCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_4n8fQCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_4opC0CQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_4pdiMCQOEfGBBP-2kAbLRg" name="MinDuration1" observation="_4kZcASQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_4opC0SQOEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_4pf-cCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_4qNJECQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_4q8v8CQOEfGBBP-2kAbLRg" name="MaxDuration1" observation="_4mWj0CQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_4qNJESQOEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_7Wr9cCQOEfGBBP-2kAbLRg" name="" event="_T8E7pCQLEfGBBP-2kAbLRg _ZH3EBCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_7YxoICQOEfGBBP-2kAbLRg" name="" event="_T8E7pCQLEfGBBP-2kAbLRg _ZH3EBCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_7ath0CQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_7boH0CQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_7clxICQOEfGBBP-2kAbLRg" name="MinDuration1" observation="_7Wr9cCQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_7boH0SQOEfGBBP-2kAbLRg" name="Literal" value="15s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_7cnmUCQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_7da3kCQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_7eAtcCQOEfGBBP-2kAbLRg" name="MaxDuration1" observation="_7YxoICQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_7da3kSQOEfGBBP-2kAbLRg" name="Literal" value="15s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_-P5mQCQOEfGBBP-2kAbLRg" name="" event="_ZH3EBCQLEfGBBP-2kAbLRg _bf0Z5CQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_-SAfECQOEfGBBP-2kAbLRg" name="" event="_ZH3EBCQLEfGBBP-2kAbLRg _bf0Z5CQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_-TrTACQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_-Ua54CQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_-VdbsCQOEfGBBP-2kAbLRg" name="MinDuration1" observation="_-P5mQCQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_-Ua54SQOEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_-VdbsSQOEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_-WWzkCQOEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_-W8pcCQOEfGBBP-2kAbLRg" name="MaxDuration1" observation="_-SAfECQOEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_-WWzkSQOEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_Di0RYCQPEfGBBP-2kAbLRg" name="" event="_nb9bwCQLEfGBBP-2kAbLRg _r5G8gCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_DksgsCQPEfGBBP-2kAbLRg" name="" event="_nb9bwCQLEfGBBP-2kAbLRg _r5G8gCQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_DmQm8CQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_Dm4SACQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_DntYcCQPEfGBBP-2kAbLRg" name="MinDuration1" observation="_Di0RYCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_Dm4SASQPEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_Dny4ACQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_DowhUCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_Dpm14CQPEfGBBP-2kAbLRg" name="MaxDuration1" observation="_DksgsCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_DowhUSQPEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_HgSMgCQPEfGBBP-2kAbLRg" name="" event="_zTYVsCQLEfGBBP-2kAbLRg _60hy9CQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_Hhl0ECQPEfGBBP-2kAbLRg" name="" event="_zTYVsCQLEfGBBP-2kAbLRg _60hy9CQLEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_Hi-7MCQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_Hj2d4CQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_Hk4YoCQPEfGBBP-2kAbLRg" name="MinDuration1" observation="_HgSMgCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_Hj2d4SQPEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_Hk604CQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_HlmxYCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_HmrvcCQPEfGBBP-2kAbLRg" name="MaxDuration1" observation="_Hhl0ECQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_HlmxYSQPEfGBBP-2kAbLRg" name="Literal" value="10s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_KRkoYCQPEfGBBP-2kAbLRg" name="" event="_60hy9CQLEfGBBP-2kAbLRg _AQnBJCQMEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_KThJICQPEfGBBP-2kAbLRg" name="" event="_60hy9CQLEfGBBP-2kAbLRg _AQnBJCQMEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_KU0JoCQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_KVuvoCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_KWXo0CQPEfGBBP-2kAbLRg" name="MinDuration1" observation="_KRkoYCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_KVuvoSQPEfGBBP-2kAbLRg" name="Literal" value="5s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_KWY28CQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_KXC-QCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_KX8WICQPEfGBBP-2kAbLRg" name="MaxDuration1" observation="_KThJICQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_KXC-QSQPEfGBBP-2kAbLRg" name="Literal" value="5s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_ORCHkSQPEfGBBP-2kAbLRg" name="" event="_AQnBJCQMEfGBBP-2kAbLRg _DLY3lCQJEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_OSOaYCQPEfGBBP-2kAbLRg" name="" event="_AQnBJCQMEfGBBP-2kAbLRg _DLY3lCQJEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_OTlsUCQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_OULiMCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_OVOEACQPEfGBBP-2kAbLRg" name="MinDuration1" observation="_ORCHkSQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_OULiMSQPEfGBBP-2kAbLRg" name="Literal" value="30s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_OVOEASQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_OWaW0CQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_OXLy4CQPEfGBBP-2kAbLRg" name="MaxDuration1" observation="_OSOaYCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_OWaW0SQPEfGBBP-2kAbLRg" name="Literal" value="30s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_RJmQISQPEfGBBP-2kAbLRg" name="" event="_DLY3lCQJEfGBBP-2kAbLRg _Oq_HYCQJEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:DurationObservation" xmi:id="_RLrTwCQPEfGBBP-2kAbLRg" name="" event="_DLY3lCQJEfGBBP-2kAbLRg _Oq_HYCQJEfGBBP-2kAbLRg"/>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_RN0BwCQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_RO2jkCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_RPv7cCQPEfGBBP-2kAbLRg" name="MinDuration1" observation="_RJmQISQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_RO2jkSQPEfGBBP-2kAbLRg" name="Literal" value="5s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:TimeEvent" xmi:id="_RP5scCQPEfGBBP-2kAbLRg" name="" isRelative="true">
+        <when xmi:type="uml:TimeExpression" xmi:id="_RQydQCQPEfGBBP-2kAbLRg" name="timeExpression">
+          <expr xmi:type="uml:Duration" xmi:id="_RRiEICQPEfGBBP-2kAbLRg" name="MaxDuration1" observation="_RLrTwCQPEfGBBP-2kAbLRg">
+            <expr xmi:type="uml:LiteralString" xmi:id="_RQydQSQPEfGBBP-2kAbLRg" name="Literal" value="5s"/>
+          </expr>
+        </when>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="_3BmJYIIkEfCCie-D41A3ZA" name="StateMachine" classifierBehavior="_6t5EAIMsEfC7Audqg6Dubw">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_2fdKMIJnEfCCie-D41A3ZA" name="current_stage" type="__SP1gIJnEfCCie-D41A3ZA" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwwmrB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwwmrR7MEfGGNsa3HI5OOQ" base="_2fdKMIJnEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:InstanceValue" xmi:id="_zrdjIIJoEfCCie-D41A3ZA" name="" instance="_ECTrMIJoEfCCie-D41A3ZA"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_2tls0IJnEfCCie-D41A3ZA" name="next_stage" type="__SP1gIJnEfCCie-D41A3ZA" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwwmrh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwwmrx7MEfGGNsa3HI5OOQ" base="_2tls0IJnEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:InstanceValue" xmi:id="_0B9-oIJoEfCCie-D41A3ZA" name="" instance="_ECTrMIJoEfCCie-D41A3ZA"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_20V1EIJnEfCCie-D41A3ZA" name="seeker_state_" type="_IJbRkIJoEfCCie-D41A3ZA" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNsB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNsR7MEfGGNsa3HI5OOQ" base="_20V1EIJnEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:InstanceValue" xmi:id="_S8UMYIJoEfCCie-D41A3ZA" name="" instance="_JXSL0IJoEfCCie-D41A3ZA"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_25ZUMIJnEfCCie-D41A3ZA" name="DeltQz" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNsh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNsx7MEfGGNsa3HI5OOQ" base="_25ZUMIJnEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_UOSxoIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_Ut43sIJoEfCCie-D41A3ZA" name="DeltQy" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNtB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNtR7MEfGGNsa3HI5OOQ" base="_Ut43sIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_XI_oMIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_VFNLgIJoEfCCie-D41A3ZA" name="Path_Point_Number" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNth7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNtx7MEfGGNsa3HI5OOQ" base="_VFNLgIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralInteger" xmi:id="_YrG7MIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_a9Yf0IJoEfCCie-D41A3ZA" name="DDNUM" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNuB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNuR7MEfGGNsa3HI5OOQ" base="_a9Yf0IJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralInteger" xmi:id="_cMf-UIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_c1htMIJoEfCCie-D41A3ZA" name="Hd" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNuh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNux7MEfGGNsa3HI5OOQ" base="_c1htMIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_edtzAIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_dAMFEIJoEfCCie-D41A3ZA" name="H" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNvB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNvR7MEfGGNsa3HI5OOQ" base="_dAMFEIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_fc_esIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_dKpBkIJoEfCCie-D41A3ZA" name="Zeta0" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNvh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNvx7MEfGGNsa3HI5OOQ" base="_dKpBkIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_goxVUIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_hCO-MIJoEfCCie-D41A3ZA" name="Path_Psi" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNwB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNwR7MEfGGNsa3HI5OOQ" base="_hCO-MIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ieFRIIJoEfCCie-D41A3ZA" name="" value="8"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_ieCN0IJoEfCCie-D41A3ZA" name="" value="8"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_i2zTIIJoEfCCie-D41A3ZA" name="Qy" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNwh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwxNwx7MEfGGNsa3HI5OOQ" base="_i2zTIIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_kCDlUIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_kjKuUIJoEfCCie-D41A3ZA" name="Qz" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwxNxB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0wB7MEfGGNsa3HI5OOQ" base="_kjKuUIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_lXwM8IJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_mDlYMIJoEfCCie-D41A3ZA" name="rmt" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwx0wR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0wh7MEfGGNsa3HI5OOQ" base="_mDlYMIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_nAByUIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="codex_fix_z_property" name="z" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="codex_fix_z_annotation" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="codex_fix_z_stereotype" base="codex_fix_z_property">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="codex_fix_z_default" name="" value="2000"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_nj2REIJoEfCCie-D41A3ZA" name="Longitude" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwx0wx7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0xB7MEfGGNsa3HI5OOQ" base="_nj2REIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_pOCiAIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_pslfMIJoEfCCie-D41A3ZA" name="Latitude" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwx0xR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0xh7MEfGGNsa3HI5OOQ" base="_pslfMIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_q1QXcIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_rGzacIJoEfCCie-D41A3ZA" name="A" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwx0xx7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0yB7MEfGGNsa3HI5OOQ" base="_rGzacIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_sCDhwIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_vhjugIJoEfCCie-D41A3ZA" name="atc" aggregation="composite">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwx0yR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+            <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwx0yh7MEfGGNsa3HI5OOQ" base="_vhjugIJoEfCCie-D41A3ZA">
+              <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_8jzrcH1LEeuhNZaJVx1XhQ"/>
+            </contents>
+          </eAnnotations>
+          <defaultValue xmi:type="uml:LiteralReal" xmi:id="_wb86MIJoEfCCie-D41A3ZA" name=""/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_nOvB0IMaEfC7Audqg6Dubw" name="p_time" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_o-DDUIMaEfC7Audqg6Dubw" name="p_cmd_start" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_pcerwIMaEfC7Audqg6Dubw" name="p_cmd_attack" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_tUHEoIMaEfC7Audqg6Dubw" name="p_cmd_routefly" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_vkQiUIMaEfC7Audqg6Dubw" name="p_seeker" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_xiaREIMaEfC7Audqg6Dubw" name="p_cmd_engine_ig" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_zqhNEIMaEfC7Audqg6Dubw" name="p_guidance" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_1eH4sIMaEfC7Audqg6Dubw" name="p_ins" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_46XWEIMaEfC7Audqg6Dubw" name="p_ev_t0" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_5klXwIMaEfC7Audqg6Dubw" name="p_info" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_6R37kIMaEfC7Audqg6Dubw" name="p_load" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_6yac0IMaEfC7Audqg6Dubw" name="p_seeker_in" aggregation="composite"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_BHSUMIMbEfC7Audqg6Dubw" name="p_ev_engine_stable" aggregation="composite"/>
+        <ownedBehavior xmi:type="uml:StateMachine" xmi:id="_6t5EAIMsEfC7Audqg6Dubw" name="StateMachine">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_6t-jkIMsEfC7Audqg6Dubw" source="SDSDiagram">
+            <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_6t_KoIMsEfC7Audqg6Dubw" name="StateMachine" context="_6t5EAIMsEfC7Audqg6Dubw" ownerOfDiagram="_6t5EAIMsEfC7Audqg6Dubw" notationId="245b8bab-801a-4138-a004-b02e7640a318.dgm" kindId="SysML State Machine Diagram">
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_6t_KoYMsEfC7Audqg6Dubw" source="SDSDiagram">
+                <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_6t_KooMsEfC7Audqg6Dubw" type="SysML State Machine Diagram" usedObjects="_60KrIIMsEfC7Audqg6Dubw _TTpRwIMtEfC7Audqg6Dubw _WCk9MIMtEfC7Audqg6Dubw _ZqPncIMtEfC7Audqg6Dubw _b4ckYIMtEfC7Audqg6Dubw _fqG4IIMtEfC7Audqg6Dubw _gUjjUIMtEfC7Audqg6Dubw _gtxUkIMtEfC7Audqg6Dubw _vJtw4KllEfCWQeyFhegKoA _7aDhIKllEfCWQeyFhegKoA _YoFPoKloEfCWQeyFhegKoA _50piMKloEfCWQeyFhegKoA _ZxrfgKlpEfCWQeyFhegKoA _l1AHcKlpEfCWQeyFhegKoA _pqsmoKlpEfCWQeyFhegKoA _qSF90KlpEfCWQeyFhegKoA _q0W9YKlpEfCWQeyFhegKoA _sP6VYKlpEfCWQeyFhegKoA _ujNNsKlpEfCWQeyFhegKoA _wOylwKlpEfCWQeyFhegKoA _wrPRMKlpEfCWQeyFhegKoA _xGwvkKlpEfCWQeyFhegKoA _osuGAKlqEfCWQeyFhegKoA _qjA5QKlqEfCWQeyFhegKoA _vn8ywKlqEfCWQeyFhegKoA _wHgckKlqEfCWQeyFhegKoA _wtkXAKlqEfCWQeyFhegKoA _yaGKQKlqEfCWQeyFhegKoA _YxG2gKltEfCWQeyFhegKoA _ZGMVsKltEfCWQeyFhegKoA _k0SUgKltEfCWQeyFhegKoA _phzMgKltEfCWQeyFhegKoA _qXTRIKltEfCWQeyFhegKoA _s0N_gKltEfCWQeyFhegKoA _unIuoKltEfCWQeyFhegKoA _yUkCoKltEfCWQeyFhegKoA _y6GYoKltEfCWQeyFhegKoA _04D6IKltEfCWQeyFhegKoA _PbzekKluEfCWQeyFhegKoA _SE8EAKluEfCWQeyFhegKoA _Td6CEKluEfCWQeyFhegKoA _TyhAIKluEfCWQeyFhegKoA _cVVVwKluEfCWQeyFhegKoA _PDlogKmSEfCWQeyFhegKoA _cjDeUKmSEfCWQeyFhegKoA _-rxaoKmTEfCWQeyFhegKoA _PmEtsKmWEfCWQeyFhegKoA _ryCNIKmWEfCWQeyFhegKoA">
+                  <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_6uBm4IMsEfC7Audqg6Dubw" streamContentID="245b8bab-801a-4138-a004-b02e7640a318"/>
+                </contents>
+              </eAnnotations>
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwzC8B7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwzC8R7MEfGGNsa3HI5OOQ" base="_6t_KoIMsEfC7Audqg6Dubw">
+                  <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                </contents>
+              </eAnnotations>
+            </contents>
+          </eAnnotations>
+          <region xmi:type="uml:Region" xmi:id="_6t_Ko4MsEfC7Audqg6Dubw" name="">
+            <transition xmi:type="uml:Transition" xmi:id="_fqG4IIMtEfC7Audqg6Dubw" name="" source="_TTpRwIMtEfC7Audqg6Dubw" target="_YoFPoKloEfCWQeyFhegKoA">
+              <trigger xmi:type="uml:Trigger" xmi:id="_bPogsKloEfCWQeyFhegKoA" name="" event="_bPuAQKloEfCWQeyFhegKoA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_gUjjUIMtEfC7Audqg6Dubw" name="" source="_WCk9MIMtEfC7Audqg6Dubw" target="_ZqPncIMtEfC7Audqg6Dubw">
+              <trigger xmi:type="uml:Trigger" xmi:id="_CGYgUKmUEfCWQeyFhegKoA" name="" event="_CGbjoKmUEfCWQeyFhegKoA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_gtxUkIMtEfC7Audqg6Dubw" name="" source="_ZqPncIMtEfC7Audqg6Dubw" target="_PbzekKluEfCWQeyFhegKoA">
+              <trigger xmi:type="uml:Trigger" xmi:id="_knruMKm1EfCWQeyFhegKoA" name="" event="_knuKcKm1EfCWQeyFhegKoA"/>
+            </transition>
+            <transition xmi:type="uml:Transition" xmi:id="_vJtw4KllEfCWQeyFhegKoA" name="" source="_60KrIIMsEfC7Audqg6Dubw" target="_TTpRwIMtEfC7Audqg6Dubw"/>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="_60KrIIMsEfC7Audqg6Dubw"/>
+            <subvertex xmi:type="uml:State" xmi:id="_TTpRwIMtEfC7Audqg6Dubw" name="Idle"/>
+            <subvertex xmi:type="uml:State" xmi:id="_YoFPoKloEfCWQeyFhegKoA" name="Control">
+              <region xmi:type="uml:Region" xmi:id="_YoJhEKloEfCWQeyFhegKoA" name="">
+                <transition xmi:type="uml:Transition" xmi:id="_wrPRMKlpEfCWQeyFhegKoA" name="" source="_wOylwKlpEfCWQeyFhegKoA" target="_50piMKloEfCWQeyFhegKoA"/>
+                <transition xmi:type="uml:Transition" xmi:id="_xGwvkKlpEfCWQeyFhegKoA" name="" source="_50piMKloEfCWQeyFhegKoA" target="_WCk9MIMtEfC7Audqg6Dubw">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_611D0KmTEfCWQeyFhegKoA" name="" event="_614HIKmTEfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_SE8EAKluEfCWQeyFhegKoA" name="" source="_PbzekKluEfCWQeyFhegKoA" target="_b4ckYIMtEfC7Audqg6Dubw">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_vljxAKm1EfCWQeyFhegKoA" name="" event="_vlk_IKm1EfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_-rxaoKmTEfCWQeyFhegKoA" name="" guard="__8eNgKmTEfCWQeyFhegKoA" source="_50piMKloEfCWQeyFhegKoA" target="_WCk9MIMtEfC7Audqg6Dubw">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="__8eNgKmTEfCWQeyFhegKoA" name="">
+                    <specification xmi:type="uml:OpaqueExpression" xmi:id="__8fboKmTEfCWQeyFhegKoA">
+                      <language>English</language>
+                      <body>y&lt;2200</body>
+                    </specification>
+                  </ownedRule>
+                </transition>
+                <subvertex xmi:type="uml:State" xmi:id="_WCk9MIMtEfC7Audqg6Dubw" name="B">
+                  <entry xmi:type="uml:Activity" xmi:id="_y_lgUKmTEfCWQeyFhegKoA" name="P1">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_y_s1EKmTEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_y_uDMKmTEfCWQeyFhegKoA" name="P1" context="_y_lgUKmTEfCWQeyFhegKoA" ownerOfDiagram="_y_lgUKmTEfCWQeyFhegKoA" notationId="67ad82b7-6613-4242-b75d-2df1dcadbd48.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_y_uDMamTEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_y_uqQKmTEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_y_xGgKmTEfCWQeyFhegKoA" streamContentID="67ad82b7-6613-4242-b75d-2df1dcadbd48"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-pFB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-pFR7MEfGGNsa3HI5OOQ" base="_y_uDMKmTEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_ZqPncIMtEfC7Audqg6Dubw" name="C"/>
+                <subvertex xmi:type="uml:State" xmi:id="_b4ckYIMtEfC7Audqg6Dubw" name="E">
+                  <doActivity xmi:type="uml:Activity" xmi:id="_Fp4j0Km2EfCWQeyFhegKoA" name="P3">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Fp7nIKm2EfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_Fp8OMKm2EfCWQeyFhegKoA" name="P3" context="_Fp4j0Km2EfCWQeyFhegKoA" ownerOfDiagram="_Fp4j0Km2EfCWQeyFhegKoA" notationId="b471fc67-2aec-42f5-8ca1-2ef048a81c44.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Fp81QKm2EfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_Fp9cUKm2EfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_Fp-qcKm2EfCWQeyFhegKoA" streamContentID="b471fc67-2aec-42f5-8ca1-2ef048a81c44"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_3Mh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_3Mx7MEfGGNsa3HI5OOQ" base="_Fp8OMKm2EfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </doActivity>
+                  <entry xmi:type="uml:Activity" xmi:id="_yZppQKm1EfCWQeyFhegKoA" name="P4">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yZtToKm1EfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_yZt6sKm1EfCWQeyFhegKoA" name="P4" context="_yZppQKm1EfCWQeyFhegKoA" ownerOfDiagram="_yZppQKm1EfCWQeyFhegKoA" notationId="7e6ebeb0-012d-46b3-92a4-0d1ebdd18180.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yZt6sam1EfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_yZuhwKm1EfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_yZw-AKm1EfCWQeyFhegKoA" streamContentID="7e6ebeb0-012d-46b3-92a4-0d1ebdd18180"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_3MB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_3MR7MEfGGNsa3HI5OOQ" base="_yZt6sKm1EfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_50piMKloEfCWQeyFhegKoA" name="A"/>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_wOylwKlpEfCWQeyFhegKoA"/>
+                <subvertex xmi:type="uml:State" xmi:id="_PbzekKluEfCWQeyFhegKoA" name="D">
+                  <entry xmi:type="uml:Activity" xmi:id="_LU4XwKm2EfCWQeyFhegKoA" name="P2">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_LU7bEKm2EfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_LU8pMKm2EfCWQeyFhegKoA" name="P2" context="_LU4XwKm2EfCWQeyFhegKoA" ownerOfDiagram="_LU4XwKm2EfCWQeyFhegKoA" notationId="a8fb2088-0bbb-4136-a667-1396d969615d.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_LU8pMam2EfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_LU9QQKm2EfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_LU_sgKm2EfCWQeyFhegKoA" streamContentID="a8fb2088-0bbb-4136-a667-1396d969615d"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_3NB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_3NR7MEfGGNsa3HI5OOQ" base="_LU8pMKm2EfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+              </region>
+              <region xmi:type="uml:Region" xmi:id="_iJq6oKloEfCWQeyFhegKoA" name="">
+                <transition xmi:type="uml:Transition" xmi:id="_qSF90KlpEfCWQeyFhegKoA" name="" source="_pqsmoKlpEfCWQeyFhegKoA" target="_7aDhIKllEfCWQeyFhegKoA">
+                  <effect xmi:type="uml:Activity" xmi:id="_tptvMKmQEfCWQeyFhegKoA" name="ABC" node="_tpvkYKmQEfCWQeyFhegKoA _tpxZkKmQEfCWQeyFhegKoA _tpzOwKmQEfCWQeyFhegKoA">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tp58cKmQEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_tp6jgKmQEfCWQeyFhegKoA" name="ABC" context="_tptvMKmQEfCWQeyFhegKoA" ownerOfDiagram="_tptvMKmQEfCWQeyFhegKoA" notationId="6d35c77e-6e3f-4704-a691-c75a345fa6cd.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tp6jgamQEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_tp6jgqmQEfCWQeyFhegKoA" type="Sysml Activity Diagram" usedObjects="_tpvkYKmQEfCWQeyFhegKoA _tpxZkKmQEfCWQeyFhegKoA _tpzOwKmQEfCWQeyFhegKoA _tp0c4KmQEfCWQeyFhegKoA _tp25IKmQEfCWQeyFhegKoA">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_tp7KkKmQEfCWQeyFhegKoA" streamContentID="6d35c77e-6e3f-4704-a691-c75a345fa6cd"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-pEB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-pER7MEfGGNsa3HI5OOQ" base="_tp6jgKmQEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="_tp0c4KmQEfCWQeyFhegKoA" name="" target="_tpxZkKmQEfCWQeyFhegKoA" source="_tpvkYKmQEfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_tp1D8KmQEfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="_tp25IKmQEfCWQeyFhegKoA" name="" target="_tpzOwKmQEfCWQeyFhegKoA" source="_tpxZkKmQEfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_tp3gMKmQEfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <node xmi:type="uml:InitialNode" xmi:id="_tpvkYKmQEfCWQeyFhegKoA" name="" outgoing="_tp0c4KmQEfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:CallBehaviorAction" xmi:id="_tpxZkKmQEfCWQeyFhegKoA" name="ABC" incoming="_tp0c4KmQEfCWQeyFhegKoA" outgoing="_tp25IKmQEfCWQeyFhegKoA" behavior="_CNCewKmQEfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:ActivityFinalNode" xmi:id="_tpzOwKmQEfCWQeyFhegKoA" name="" incoming="_tp25IKmQEfCWQeyFhegKoA"/>
+                  </effect>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_q0W9YKlpEfCWQeyFhegKoA" name="" source="_7aDhIKllEfCWQeyFhegKoA" target="_ZxrfgKlpEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_JV-lcKmSEfCWQeyFhegKoA" name="" event="_JWCP0KmSEfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_ujNNsKlpEfCWQeyFhegKoA" name="" source="_l1AHcKlpEfCWQeyFhegKoA" target="_sP6VYKlpEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_JcncIKmWEfCWQeyFhegKoA" name="" event="_Jcs7sKmWEfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_PDlogKmSEfCWQeyFhegKoA" name="" guard="_PvQbsKmSEfCWQeyFhegKoA" source="_7aDhIKllEfCWQeyFhegKoA" target="_ZxrfgKlpEfCWQeyFhegKoA">
+                  <ownedRule xmi:type="uml:Constraint" xmi:id="_PvQbsKmSEfCWQeyFhegKoA" name="">
+                    <specification xmi:type="uml:OpaqueExpression" xmi:id="_PvUtIKmSEfCWQeyFhegKoA">
+                      <language>English</language>
+                      <body>z&lt;1200</body>
+                    </specification>
+                  </ownedRule>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_cjDeUKmSEfCWQeyFhegKoA" name="" source="_ZxrfgKlpEfCWQeyFhegKoA" target="_l1AHcKlpEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_oYVqQKmSEfCWQeyFhegKoA" name="" event="_oYZ7sKmSEfCWQeyFhegKoA"/>
+                </transition>
+                <subvertex xmi:type="uml:State" xmi:id="_7aDhIKllEfCWQeyFhegKoA" name="F">
+                  <entry xmi:type="uml:Activity" xmi:id="_E60ToKmQEfCWQeyFhegKoA" name="L" node="_E89BoKmQEfCWQeyFhegKoA _E-HfQKmQEfCWQeyFhegKoA _wp_pUKmQEfCWQeyFhegKoA">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_E6-rsKmQEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_E6_SwKmQEfCWQeyFhegKoA" name="L" context="_E60ToKmQEfCWQeyFhegKoA" ownerOfDiagram="_E60ToKmQEfCWQeyFhegKoA" notationId="c2fbc895-db15-47f6-8d65-ad67fb466f67.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_E6_SwamQEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_E6_SwqmQEfCWQeyFhegKoA" type="Sysml Activity Diagram" usedObjects="_E89BoKmQEfCWQeyFhegKoA _E-HfQKmQEfCWQeyFhegKoA _wp_pUKmQEfCWQeyFhegKoA _HOM2EKmREfCWQeyFhegKoA _Hth2YKmREfCWQeyFhegKoA">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_E7Ag4KmQEfCWQeyFhegKoA" streamContentID="c2fbc895-db15-47f6-8d65-ad67fb466f67"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-CCB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-CCR7MEfGGNsa3HI5OOQ" base="_E6_SwKmQEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="_HOM2EKmREfCWQeyFhegKoA" name="" target="_wp_pUKmQEfCWQeyFhegKoA" source="_E89BoKmQEfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_HOUx4KmREfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="_Hth2YKmREfCWQeyFhegKoA" name="" target="_E-HfQKmQEfCWQeyFhegKoA" source="_wp_pUKmQEfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Htn9AKmREfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <node xmi:type="uml:InitialNode" xmi:id="_E89BoKmQEfCWQeyFhegKoA" name="" outgoing="_HOM2EKmREfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:ActivityFinalNode" xmi:id="_E-HfQKmQEfCWQeyFhegKoA" name="" incoming="_Hth2YKmREfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:OpaqueAction" xmi:id="_wp_pUKmQEfCWQeyFhegKoA" name="" incoming="_HOM2EKmREfCWQeyFhegKoA" outgoing="_Hth2YKmREfCWQeyFhegKoA">
+                      <language>English</language>
+                      <body>Mode=1;&#xD;
+theta_pr=theta_pr0;&#xD;
+dtheta_pr=0</body>
+                    </node>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_ZxrfgKlpEfCWQeyFhegKoA" name="W">
+                  <entry xmi:type="uml:Activity" xmi:id="_7VS48KmREfCWQeyFhegKoA" name="R" node="_7WYeEKmREfCWQeyFhegKoA _7Wqx8KmREfCWQeyFhegKoA _9-nroKmREfCWQeyFhegKoA">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7VY_kKmREfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_7VaNsKmREfCWQeyFhegKoA" name="R" context="_7VS48KmREfCWQeyFhegKoA" ownerOfDiagram="_7VS48KmREfCWQeyFhegKoA" notationId="d932d812-791b-4d79-be00-c55840e21b6c.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7Va0wKmREfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_7Va0wamREfCWQeyFhegKoA" type="Sysml Activity Diagram" usedObjects="_7WYeEKmREfCWQeyFhegKoA _7Wqx8KmREfCWQeyFhegKoA _9-nroKmREfCWQeyFhegKoA _-kD7AKmREfCWQeyFhegKoA __K__MKmREfCWQeyFhegKoA">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_7Vd4EKmREfCWQeyFhegKoA" streamContentID="d932d812-791b-4d79-be00-c55840e21b6c"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-pEh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-pEx7MEfGGNsa3HI5OOQ" base="_7VaNsKmREfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="_-kD7AKmREfCWQeyFhegKoA" name="" target="_9-nroKmREfCWQeyFhegKoA" source="_7WYeEKmREfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_-kFwMKmREfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <edge xmi:type="uml:ControlFlow" xmi:id="__K__MKmREfCWQeyFhegKoA" name="" target="_7Wqx8KmREfCWQeyFhegKoA" source="_9-nroKmREfCWQeyFhegKoA">
+                      <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="__LGF0KmREfCWQeyFhegKoA" value="1"/>
+                    </edge>
+                    <node xmi:type="uml:InitialNode" xmi:id="_7WYeEKmREfCWQeyFhegKoA" name="" outgoing="_-kD7AKmREfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:ActivityFinalNode" xmi:id="_7Wqx8KmREfCWQeyFhegKoA" name="" incoming="__K__MKmREfCWQeyFhegKoA"/>
+                    <node xmi:type="uml:OpaqueAction" xmi:id="_9-nroKmREfCWQeyFhegKoA" name="" incoming="_-kD7AKmREfCWQeyFhegKoA" outgoing="__K__MKmREfCWQeyFhegKoA"/>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_l1AHcKlpEfCWQeyFhegKoA" name="H">
+                  <region xmi:type="uml:Region" xmi:id="_l1BVkKlpEfCWQeyFhegKoA" name="">
+                    <transition xmi:type="uml:Transition" xmi:id="_vn8ywKlqEfCWQeyFhegKoA" name="" source="_osuGAKlqEfCWQeyFhegKoA" target="_qjA5QKlqEfCWQeyFhegKoA">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_3Lx-gKmUEfCWQeyFhegKoA" name="" event="_3L4FIKmUEfCWQeyFhegKoA"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_wHgckKlqEfCWQeyFhegKoA" name="" source="_qjA5QKlqEfCWQeyFhegKoA" target="_osuGAKlqEfCWQeyFhegKoA">
+                      <trigger xmi:type="uml:Trigger" xmi:id="_0dZ3QKmVEfCWQeyFhegKoA" name="" event="_0dcTgKmVEfCWQeyFhegKoA"/>
+                    </transition>
+                    <transition xmi:type="uml:Transition" xmi:id="_yaGKQKlqEfCWQeyFhegKoA" name="" source="_wtkXAKlqEfCWQeyFhegKoA" target="_osuGAKlqEfCWQeyFhegKoA">
+                      <effect xmi:type="uml:Activity" xmi:id="_m-34wKmZEfCWQeyFhegKoA" name="DEF" node="_m-6VAKmZEfCWQeyFhegKoA _m-7jIKmZEfCWQeyFhegKoA _m-9YUKmZEfCWQeyFhegKoA">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_m_EGAKmZEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_m_EtEKmZEfCWQeyFhegKoA" name="DEF" context="_m-34wKmZEfCWQeyFhegKoA" ownerOfDiagram="_m-34wKmZEfCWQeyFhegKoA" notationId="bdb86051-be8e-43ac-82d1-56740c519c99.dgm" kindId="Sysml Activity Diagram">
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_m_EtEamZEfCWQeyFhegKoA" source="SDSDiagram">
+                              <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_m_EtEqmZEfCWQeyFhegKoA" type="Sysml Activity Diagram" usedObjects="_m-6VAKmZEfCWQeyFhegKoA _m-7jIKmZEfCWQeyFhegKoA _m-9YUKmZEfCWQeyFhegKoA _m-_NgKmZEfCWQeyFhegKoA _m_BpwKmZEfCWQeyFhegKoA">
+                                <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_m_F7MKmZEfCWQeyFhegKoA" streamContentID="bdb86051-be8e-43ac-82d1-56740c519c99"/>
+                              </contents>
+                            </eAnnotations>
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-pFh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                              <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-pFx7MEfGGNsa3HI5OOQ" base="_m_EtEKmZEfCWQeyFhegKoA">
+                                <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                              </contents>
+                            </eAnnotations>
+                          </contents>
+                        </eAnnotations>
+                        <edge xmi:type="uml:ControlFlow" xmi:id="_m-_NgKmZEfCWQeyFhegKoA" name="" target="_m-7jIKmZEfCWQeyFhegKoA" source="_m-6VAKmZEfCWQeyFhegKoA">
+                          <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_m-_0kKmZEfCWQeyFhegKoA" value="1"/>
+                        </edge>
+                        <edge xmi:type="uml:ControlFlow" xmi:id="_m_BpwKmZEfCWQeyFhegKoA" name="" target="_m-9YUKmZEfCWQeyFhegKoA" source="_m-7jIKmZEfCWQeyFhegKoA">
+                          <weight xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_m_CQ0KmZEfCWQeyFhegKoA" value="1"/>
+                        </edge>
+                        <node xmi:type="uml:InitialNode" xmi:id="_m-6VAKmZEfCWQeyFhegKoA" name="" outgoing="_m-_NgKmZEfCWQeyFhegKoA"/>
+                        <node xmi:type="uml:CallBehaviorAction" xmi:id="_m-7jIKmZEfCWQeyFhegKoA" name="DEF" incoming="_m-_NgKmZEfCWQeyFhegKoA" outgoing="_m_BpwKmZEfCWQeyFhegKoA" behavior="_krCN4KmZEfCWQeyFhegKoA"/>
+                        <node xmi:type="uml:ActivityFinalNode" xmi:id="_m-9YUKmZEfCWQeyFhegKoA" name="" incoming="_m_BpwKmZEfCWQeyFhegKoA"/>
+                      </effect>
+                    </transition>
+                    <subvertex xmi:type="uml:State" xmi:id="_osuGAKlqEfCWQeyFhegKoA" name="L">
+                      <entry xmi:type="uml:Activity" xmi:id="_BLchEKmfEfCWQeyFhegKoA" name="N">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_BLdvMKmfEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_BLdvMamfEfCWQeyFhegKoA" name="N" context="_BLchEKmfEfCWQeyFhegKoA" ownerOfDiagram="_BLchEKmfEfCWQeyFhegKoA" notationId="c035ab34-4660-4840-9e56-3cc1b463efe8.dgm" kindId="Sysml Activity Diagram">
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_BLeWQKmfEfCWQeyFhegKoA" source="SDSDiagram">
+                              <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_BLeWQamfEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                                <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_BLe9UKmfEfCWQeyFhegKoA" streamContentID="c035ab34-4660-4840-9e56-3cc1b463efe8"/>
+                              </contents>
+                            </eAnnotations>
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QJB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                              <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QJR7MEfGGNsa3HI5OOQ" base="_BLdvMamfEfCWQeyFhegKoA">
+                                <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                              </contents>
+                            </eAnnotations>
+                          </contents>
+                        </eAnnotations>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:State" xmi:id="_qjA5QKlqEfCWQeyFhegKoA" name="M">
+                      <entry xmi:type="uml:Activity" xmi:id="_CzzmAKmfEfCWQeyFhegKoA" name="Q">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Cz0NEKmfEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_Cz00IKmfEfCWQeyFhegKoA" name="Q" context="_CzzmAKmfEfCWQeyFhegKoA" ownerOfDiagram="_CzzmAKmfEfCWQeyFhegKoA" notationId="8d141dd8-f078-4eea-a957-a0cfa6b26f23.dgm" kindId="Sysml Activity Diagram">
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_Cz00IamfEfCWQeyFhegKoA" source="SDSDiagram">
+                              <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_Cz00IqmfEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                                <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_Cz2CQKmfEfCWQeyFhegKoA" streamContentID="8d141dd8-f078-4eea-a957-a0cfa6b26f23"/>
+                              </contents>
+                            </eAnnotations>
+                            <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QJh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                              <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QJx7MEfGGNsa3HI5OOQ" base="_Cz00IKmfEfCWQeyFhegKoA">
+                                <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                              </contents>
+                            </eAnnotations>
+                          </contents>
+                        </eAnnotations>
+                      </entry>
+                    </subvertex>
+                    <subvertex xmi:type="uml:Pseudostate" xmi:id="_wtkXAKlqEfCWQeyFhegKoA"/>
+                  </region>
+                </subvertex>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_pqsmoKlpEfCWQeyFhegKoA"/>
+                <subvertex xmi:type="uml:State" xmi:id="_sP6VYKlpEfCWQeyFhegKoA" name="G">
+                  <entry xmi:type="uml:Activity" xmi:id="_JIRNsKmfEfCWQeyFhegKoA" name="T">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_JISb0KmfEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_JISb0amfEfCWQeyFhegKoA" name="T" context="_JIRNsKmfEfCWQeyFhegKoA" ownerOfDiagram="_JIRNsKmfEfCWQeyFhegKoA" notationId="d7934b5e-cd41-4f90-946f-19d7e4a20250.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_JISb0qmfEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_JISb06mfEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_JITC4KmfEfCWQeyFhegKoA" streamContentID="d7934b5e-cd41-4f90-946f-19d7e4a20250"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QKB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QKR7MEfGGNsa3HI5OOQ" base="_JISb0amfEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+              </region>
+              <region xmi:type="uml:Region" xmi:id="_jAOvMKloEfCWQeyFhegKoA" name="">
+                <transition xmi:type="uml:Transition" xmi:id="_k0SUgKltEfCWQeyFhegKoA" name="" source="_YxG2gKltEfCWQeyFhegKoA" target="_PmEtsKmWEfCWQeyFhegKoA"/>
+                <transition xmi:type="uml:Transition" xmi:id="_unIuoKltEfCWQeyFhegKoA" name="" source="_ZGMVsKltEfCWQeyFhegKoA" target="_phzMgKltEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_HGac8KmaEfCWQeyFhegKoA" name="" event="_HGdgQKmaEfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_yUkCoKltEfCWQeyFhegKoA" name="" source="_phzMgKltEfCWQeyFhegKoA" target="_qXTRIKltEfCWQeyFhegKoA"/>
+                <transition xmi:type="uml:Transition" xmi:id="_y6GYoKltEfCWQeyFhegKoA" name="" source="_qXTRIKltEfCWQeyFhegKoA" target="_phzMgKltEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_2iPeAKmvEfCWQeyFhegKoA" name="" event="_2iQsIKmvEfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_04D6IKltEfCWQeyFhegKoA" name="" source="_phzMgKltEfCWQeyFhegKoA" target="_s0N_gKltEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_7aKAcKm1EfCWQeyFhegKoA" name="" event="_7aL1oKm1EfCWQeyFhegKoA"/>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="_ryCNIKmWEfCWQeyFhegKoA" name="" source="_PmEtsKmWEfCWQeyFhegKoA" target="_ZGMVsKltEfCWQeyFhegKoA">
+                  <trigger xmi:type="uml:Trigger" xmi:id="_s_YKAKmWEfCWQeyFhegKoA" name="" event="_s_ZYIKmWEfCWQeyFhegKoA"/>
+                </transition>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_YxG2gKltEfCWQeyFhegKoA"/>
+                <subvertex xmi:type="uml:State" xmi:id="_ZGMVsKltEfCWQeyFhegKoA" name="K">
+                  <entry xmi:type="uml:Activity" xmi:id="_j_3NIKmdEfCWQeyFhegKoA" name="Z">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_j_30MKmdEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_j_4bQKmdEfCWQeyFhegKoA" name="Z" context="_j_3NIKmdEfCWQeyFhegKoA" ownerOfDiagram="_j_3NIKmdEfCWQeyFhegKoA" notationId="64a68a4c-763b-46e4-b98e-802fd50ebdac.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_j_4bQamdEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_j_4bQqmdEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_j_5CUKmdEfCWQeyFhegKoA" streamContentID="64a68a4c-763b-46e4-b98e-802fd50ebdac"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-pGB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-pGR7MEfGGNsa3HI5OOQ" base="_j_4bQKmdEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_phzMgKltEfCWQeyFhegKoA" name="S">
+                  <entry xmi:type="uml:Activity" xmi:id="_1ZtN0KmdEfCWQeyFhegKoA" name="U">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_1ZvDAKmdEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_1ZvqEKmdEfCWQeyFhegKoA" name="U" context="_1ZtN0KmdEfCWQeyFhegKoA" ownerOfDiagram="_1ZtN0KmdEfCWQeyFhegKoA" notationId="d232361d-268f-4434-85d3-b2017fa1bfe7.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_1ZvqEamdEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_1ZvqEqmdEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_1ZwRIKmdEfCWQeyFhegKoA" streamContentID="d232361d-268f-4434-85d3-b2017fa1bfe7"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QIB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QIR7MEfGGNsa3HI5OOQ" base="_1ZvqEKmdEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_s0N_gKltEfCWQeyFhegKoA" name="O">
+                  <entry xmi:type="uml:Activity" xmi:id="_NSiOsKmfEfCWQeyFhegKoA" name="Y">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_NSi1wKmfEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_NSi1wamfEfCWQeyFhegKoA" name="Y" context="_NSiOsKmfEfCWQeyFhegKoA" ownerOfDiagram="_NSiOsKmfEfCWQeyFhegKoA" notationId="8803fe1b-31ea-4601-a9bc-e68b00db56ff.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_NSjc0KmfEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_NSjc0amfEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_NSkD4KmfEfCWQeyFhegKoA" streamContentID="8803fe1b-31ea-4601-a9bc-e68b00db56ff"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QKh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QKx7MEfGGNsa3HI5OOQ" base="_NSi1wamfEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_qXTRIKltEfCWQeyFhegKoA" name="X">
+                  <entry xmi:type="uml:Activity" xmi:id="_4r5XUKmdEfCWQeyFhegKoA" name="I">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4r6lcKmdEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_4r7MgKmdEfCWQeyFhegKoA" name="I" context="_4r5XUKmdEfCWQeyFhegKoA" ownerOfDiagram="_4r5XUKmdEfCWQeyFhegKoA" notationId="6308ac8a-14c7-492a-8bc4-7992aea73eb4.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_4r7MgamdEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_4r7MgqmdEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_4r8aoKmdEfCWQeyFhegKoA" streamContentID="6308ac8a-14c7-492a-8bc4-7992aea73eb4"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QIh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QIx7MEfGGNsa3HI5OOQ" base="_4r7MgKmdEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="_PmEtsKmWEfCWQeyFhegKoA" name="J"/>
+              </region>
+              <region xmi:type="uml:Region" xmi:id="_jTVRYKloEfCWQeyFhegKoA" name="">
+                <transition xmi:type="uml:Transition" xmi:id="_cVVVwKluEfCWQeyFhegKoA" name="" source="_Td6CEKluEfCWQeyFhegKoA" target="_TyhAIKluEfCWQeyFhegKoA"/>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="_Td6CEKluEfCWQeyFhegKoA"/>
+                <subvertex xmi:type="uml:State" xmi:id="_TyhAIKluEfCWQeyFhegKoA" name="V">
+                  <entry xmi:type="uml:Activity" xmi:id="_tjStYKmsEfCWQeyFhegKoA" name="X">
+                    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tjTUcKmsEfCWQeyFhegKoA" source="SDSDiagram">
+                      <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_tjTUcamsEfCWQeyFhegKoA" name="X" context="_tjStYKmsEfCWQeyFhegKoA" ownerOfDiagram="_tjStYKmsEfCWQeyFhegKoA" notationId="6247e7a6-9504-451b-8b71-941dacd9185c.dgm" kindId="Sysml Activity Diagram">
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tjT7gKmsEfCWQeyFhegKoA" source="SDSDiagram">
+                          <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_tjT7gamsEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                            <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_tjUikKmsEfCWQeyFhegKoA" streamContentID="6247e7a6-9504-451b-8b71-941dacd9185c"/>
+                          </contents>
+                        </eAnnotations>
+                        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw_QLB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                          <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw_QLR7MEfGGNsa3HI5OOQ" base="_tjTUcamsEfCWQeyFhegKoA">
+                            <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                          </contents>
+                        </eAnnotations>
+                      </contents>
+                    </eAnnotations>
+                  </entry>
+                </subvertex>
+              </region>
+            </subvertex>
+          </region>
+        </ownedBehavior>
+        <ownedBehavior xmi:type="uml:Activity" xmi:id="_CNCewKmQEfCWQeyFhegKoA" name="ABC">
+          <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_L8kfIKmQEfCWQeyFhegKoA" source="SDSDiagram">
+            <contents xmi:type="Diagrams:SDSDiagram" xmi:id="_L8ltQKmQEfCWQeyFhegKoA" name="CalZetaSwitchAndPr0" context="_CNCewKmQEfCWQeyFhegKoA" ownerOfDiagram="_CNCewKmQEfCWQeyFhegKoA" notationId="a3b4a27c-b9c2-4934-bcfa-2de362c72358.dgm" kindId="Sysml Activity Diagram">
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_L8ltQamQEfCWQeyFhegKoA" source="SDSDiagram">
+                <contents xmi:type="DiagramRepresentation:DiagramRepresentation" xmi:id="_L8mUUKmQEfCWQeyFhegKoA" type="Sysml Activity Diagram">
+                  <binaryObject xmi:type="DiagramRepresentation:StreamIdentityBinaryObject" xmi:id="_L8nicKmQEfCWQeyFhegKoA" streamContentID="a3b4a27c-b9c2-4934-bcfa-2de362c72358"/>
+                </contents>
+              </eAnnotations>
+              <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xw-CCh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+                <contents xmi:type="domain:StereotypeInstance" xmi:id="_xw-CCx7MEfGGNsa3HI5OOQ" base="_L8ltQKmQEfCWQeyFhegKoA">
+                  <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_xTmxMK7dEeu2qI_7PGwqxg"/>
+                </contents>
+              </eAnnotations>
+            </contents>
+          </eAnnotations>
+        </ownedBehavior>
+        <ownedBehavior xmi:type="uml:Activity" xmi:id="_krCN4KmZEfCWQeyFhegKoA" name="DEF"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_nDOFsIJnEfCCie-D41A3ZA" name="RegisterTopic" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_nDOswIJnEfCCie-D41A3ZA" name="&amp;domain">
+            <type xmi:type="uml:Stereotype" href="pathmap://SysML16_PROFILES/sysml-extensions.profile.uml#_0gL8oLLoEeuf5bOSuACxqQ"/>
+          </ownedParameter>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_nDUzYIJnEfCCie-D41A3ZA" name="Input" visibility="public"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_nDWokIJnEfCCie-D41A3ZA" name="Run" visibility="public"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_nDYdwIJnEfCCie-D41A3ZA" name="Output" visibility="public"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_4lV4oIJnEfCCie-D41A3ZA" name="TranslateGuidance"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_8WgnsIJoEfCCie-D41A3ZA" name="StateMachine"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_d1op4IJpEfCCie-D41A3ZA" name="Initial" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_d1vXkIJpEfCCie-D41A3ZA" name="return" direction="return"/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_NV6YAKmNEfCWQeyFhegKoA" name="CalZetaSwitchAndPr0"/>
+        <nestedClassifier xmi:type="uml:Enumeration" xmi:id="__SP1gIJnEfCCie-D41A3ZA" name="Stage">
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_CXDqUIJoEfCCie-D41A3ZA" name="None"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_ECTrMIJoEfCCie-D41A3ZA" name="LoadData"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EITlgIJoEfCCie-D41A3ZA" name="Idle"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EOOnUIJoEfCCie-D41A3ZA" name="EngineIgnition"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EU7FMIJoEfCCie-D41A3ZA" name="RouteFly"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_G-M0kIJoEfCCie-D41A3ZA" name="Attack"/>
+        </nestedClassifier>
+        <nestedClassifier xmi:type="uml:Enumeration" xmi:id="_IJbRkIJoEfCCie-D41A3ZA" name="SeekerState">
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_JXSL0IJoEfCCie-D41A3ZA" name="Off"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_KwA5UIJoEfCCie-D41A3ZA" name="On"/>
+          <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_K4UgwIJoEfCCie-D41A3ZA" name="Stable"/>
+        </nestedClassifier>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_bPuAQKloEfCWQeyFhegKoA" name="" signal="_X7qVEKmVEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_CGbjoKmUEfCWQeyFhegKoA" name="" signal="_sh7OcKmVEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:ChangeEvent" xmi:id="_knuKcKm1EfCWQeyFhegKoA" name="">
+        <changeExpression xmi:type="uml:OpaqueExpression" xmi:id="_qC4yoKm1EfCWQeyFhegKoA" name="">
+          <body>R_mt&lt;5000</body>
+        </changeExpression>
+      </packagedElement>
+      <packagedElement xmi:type="uml:ChangeEvent" xmi:id="_614HIKmTEfCWQeyFhegKoA" name="">
+        <changeExpression xmi:type="uml:OpaqueExpression" xmi:id="_8nAGgKmTEfCWQeyFhegKoA" name="">
+          <language></language>
+          <body>y&lt;2200</body>
+        </changeExpression>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_vlk_IKm1EfCWQeyFhegKoA" name="" signal="_sJLwwKm1EfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:ChangeEvent" xmi:id="_JWCP0KmSEfCWQeyFhegKoA" name="">
+        <changeExpression xmi:type="uml:OpaqueExpression" xmi:id="_M8Ja4KmSEfCWQeyFhegKoA" name="">
+          <language></language>
+          <body>z&lt;1200</body>
+        </changeExpression>
+      </packagedElement>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_Jcs7sKmWEfCWQeyFhegKoA" name="" signal="_A4Z_YKmWEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_oYZ7sKmSEfCWQeyFhegKoA" name="" signal="_sh7OcKmVEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_3L4FIKmUEfCWQeyFhegKoA" name="" signal="_w2ug8KmUEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_0dcTgKmVEfCWQeyFhegKoA" name="" signal="_u6u44KmVEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_HGdgQKmaEfCWQeyFhegKoA" name="" signal="_Ce--0KmaEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_2iQsIKmvEfCWQeyFhegKoA" name="" signal="_Ce--0KmaEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_7aL1oKm1EfCWQeyFhegKoA" name="" signal="_FRoCYKmWEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:SignalEvent" xmi:id="_s_ZYIKmWEfCWQeyFhegKoA" name="" signal="_sh7OcKmVEfCWQeyFhegKoA"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_-qK7sCZkEfGaK8PBrGCQ7Q" name="Sig11"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_FEcQcCZlEfGaK8PBrGCQ7Q" name="Sig12"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_LnbcUCZlEfGaK8PBrGCQ7Q" name="Sig13"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_OXWmQCZlEfGaK8PBrGCQ7Q" name="Sig14"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_VV00QCZlEfGaK8PBrGCQ7Q" name="Sig15"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_XM2nUCZlEfGaK8PBrGCQ7Q" name="Sig16"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_hPGvYCZlEfGaK8PBrGCQ7Q" name="Sig17"/>
+      <packagedElement xmi:type="uml:Signal" xmi:id="_oTIy0CZlEfGaK8PBrGCQ7Q" name="Sig18"/>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXI4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXJIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard#/"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xws8QB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xws8QR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXI4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/Standard.profile.uml#_1"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXJYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXJoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_MVcY4A6vEey0yZHOgXORCw"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xws8Qh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjUB7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXJYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_qB6okHV_EeuLv4CJTW7N3w"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXJ4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXKIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/SimulationProfile.profile.uml#_0JguYADOEey2osNp1BFDrQ"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjUR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjUh7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXJ4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/SimulationProfile.profile.uml#_7NGXkOkBEeudKb4gifbFSQ"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXKYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXKoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/UIPrototypingProfile.profile.uml#_wMX_oO3kEeufv-wepAOgeA"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjUx7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjVB7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXKYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/UIPrototypingProfile.profile.uml#_layK4Ok6EeuRueHEtlfuZQ"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXK4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXLIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UML_PROFILES/DependencyMatrix.profile.uml#_tWAbgPZgEeuqpMQQX6G9NA"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjVR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjVh7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXK4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/DependencyMatrix.profile.uml#_qB6okHV_EeuLv4CJTW7N3w"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXLYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXLoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#/"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjVx7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjWB7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXLYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXL4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXMIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//activities"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjWR7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjWh7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXL4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_Activities"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXMYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXMoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//allocations"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwtjWx7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwtjXB7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXMYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_Allocations"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXM4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXNIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//blocks"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKYB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKYR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXM4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_Blocks"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXNYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXNoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//constraintblocks"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKYh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKYx7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXNYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_ConstraintBlocks"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXN4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXOIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//deprecatedelements"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKZB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKZR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXN4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_DeprecatedElements"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXOYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXOoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//modelelements"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKZh7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKZx7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXOYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_ModelElements"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXO4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXPIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//portsandflows"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKaB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKaR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXO4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_Ports_u0026Flows"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXPYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXPoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.ht0003.com/sds/sysml/1.6/SysML#//requirements"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKah7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKax7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXPYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SysML.profile.uml#SysML.package_packagedElement_Requirements"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXP4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXQIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://SysML16_PROFILES/sysml-extensions.profile.uml#_nWzR8PsdEeuOLcOGxqRZFA"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuKbB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuKbR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXP4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/sysml-extensions.profile.uml#_OY018LLmEeuf5bOSuACxqQ"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXQYIgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXQoIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://SysML16_PROFILES/SACustomizationForSysML.profile.uml#_73qvAEJ_EfCDQNDQ_BpU2w"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuxcB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuxcR7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXQYIgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SACustomizationForSysML.profile.uml#_8XSLkEJxEfCTGugH4uwNrg"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="1756173629842__cTYXQ4IgEfCCie-D41A3ZA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="1756173629842__cTYXRIIgEfCCie-D41A3ZA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://SysML16_PROFILES/SACustomizationForSysML.profile.uml#_732VMEJ_EfCDQNDQ_BpU2w"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xwuxch7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xwuxcx7MEfGGNsa3HI5OOQ" base="1756173629842__cTYXQ4IgEfCCie-D41A3ZA">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SACustomizationForSysML.profile.uml#_kDzkIEJyEfCTGugH4uwNrg"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_xpxN0B7MEfGGNsa3HI5OOQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xrK8AB7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xrK8AR7MEfGGNsa3HI5OOQ" base="_xpxN0B7MEfGGNsa3HI5OOQ">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML2_PROFILES/Validation_Profile.profile.uml#_11_5_f720368_1159529670215_231387_1"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_xrvjwB7MEfGGNsa3HI5OOQ">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_xrwK0B7MEfGGNsa3HI5OOQ" source="http://www.sysdesim.arch/uml2/stereotype">
+        <contents xmi:type="domain:StereotypeInstance" xmi:id="_xrwK0R7MEfGGNsa3HI5OOQ" base="_xrvjwB7MEfGGNsa3HI5OOQ">
+          <type xmi:type="uml:Stereotype" href="pathmap://UML_PROFILES/SDSProfile.profile.uml#_zouKwHV_EeuLv4CJTW7N3w"/>
+        </contents>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://SysML16_PROFILES/SACustomizationForRequirements.profile.uml#_18_0beta_8f90291_1391001597107_586303_6259"/>
+    </profileApplication>
+  </uml:Model>
+  <Blocks:Block xmi:id="_3Bqa0IIkEfCCie-D41A3ZA" base_Class="_3BmJYIIkEfCCie-D41A3ZA"/>
+  <Blocks:ValueType xmi:id="__SS40IJnEfCCie-D41A3ZA" base_DataType="__SP1gIJnEfCCie-D41A3ZA"/>
+  <Blocks:ValueType xmi:id="_IJdt0IJoEfCCie-D41A3ZA" base_DataType="_IJbRkIJoEfCCie-D41A3ZA"/>
+  <PortsAndFlows:ProxyPort xmi:id="_nOysMIMaEfC7Audqg6Dubw" base_Port="_nOvB0IMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_o-GtsIMaEfC7Audqg6Dubw" base_Port="_o-DDUIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_pckLUIMaEfC7Audqg6Dubw" base_Port="_pcerwIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_tUMkMIMaEfC7Audqg6Dubw" base_Port="_tUHEoIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_vkbhcIMaEfC7Audqg6Dubw" base_Port="_vkQiUIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_xig-wIMaEfC7Audqg6Dubw" base_Port="_xiaREIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_zqrlIIMaEfC7Audqg6Dubw" base_Port="_zqhNEIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_1eS30IMaEfC7Audqg6Dubw" base_Port="_1eH4sIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_46bAcIMaEfC7Audqg6Dubw" base_Port="_46XWEIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_5kppMIMaEfC7Audqg6Dubw" base_Port="_5klXwIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_6SAecIMaEfC7Audqg6Dubw" base_Port="_6R37kIMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_6yk04IMaEfC7Audqg6Dubw" base_Port="_6yac0IMaEfC7Audqg6Dubw"/>
+  <PortsAndFlows:ProxyPort xmi:id="_BHZB4IMbEfC7Audqg6Dubw" base_Port="_BHSUMIMbEfC7Audqg6Dubw"/>
+  <Blocks:Block xmi:id="_qCt04CQGEfGBBP-2kAbLRg" base_Class="_qAx7MCQGEfGBBP-2kAbLRg"/>
+</xmi:XMI>
