@@ -1,11 +1,20 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence
 
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.Qt import QDialog
-from PyQt5.QtCore import Qt
-from pyfcstm.convert.sysdesim import build_sysdesim_timeline_import_report
+from PyQt5.QtCore import QByteArray, Qt
+from PyQt5.QtSvg import QSvgWidget
+from pyfcstm.convert.sysdesim import (
+    build_overlay_from_diagnostics,
+    build_sysdesim_phase10_report,
+    build_sysdesim_timeline_import_report,
+    extract_sysdesim_interactions,
+    render_sysdesim_timeline_png,
+    render_sysdesim_timeline_svg,
+    run_sysdesim_static_pre_checks,
+)
 
 from app.utils.text_overflow import apply_text_overflow_handling, refresh_text_overflow
 from ..model import State, StateManager
@@ -19,6 +28,11 @@ class DialogSysdesimValidate(QDialog):
         self.state_managers = list(state_managers or [])
         self._xml_sources: Dict[str, List[StateManager]] = self._collect_xml_sources()
         self._last_report = None
+        self._last_phase10_report = None
+        self._last_static_diagnostics = []
+        self._last_overlay = None
+        self._last_svg_text = ""
+        self._last_run_kwargs: Dict[str, object] = {}
         self._init_ui()
         apply_text_overflow_handling(self)
         self._populate_xml_sources()
@@ -43,7 +57,8 @@ class DialogSysdesimValidate(QDialog):
         source_layout = QtWidgets.QGridLayout(source_group)
         self.combo_xml_source = QtWidgets.QComboBox()
         self.edit_machine_name = QtWidgets.QLineEdit()
-        self.edit_interaction_name = QtWidgets.QLineEdit()
+        self.combo_interaction_name = QtWidgets.QComboBox()
+        self.combo_interaction_name.setEditable(True)
         self.spin_tick_duration = QtWidgets.QDoubleSpinBox()
         self.spin_tick_duration.setDecimals(3)
         self.spin_tick_duration.setRange(0, 1_000_000)
@@ -53,7 +68,7 @@ class DialogSysdesimValidate(QDialog):
         source_layout.addWidget(QtWidgets.QLabel("状态机名："), 1, 0)
         source_layout.addWidget(self.edit_machine_name, 1, 1)
         source_layout.addWidget(QtWidgets.QLabel("交互名："), 1, 2)
-        source_layout.addWidget(self.edit_interaction_name, 1, 3)
+        source_layout.addWidget(self.combo_interaction_name, 1, 3)
         source_layout.addWidget(QtWidgets.QLabel("tick(ms)："), 2, 0)
         source_layout.addWidget(self.spin_tick_duration, 2, 1)
         main_layout.addWidget(source_group)
@@ -62,6 +77,8 @@ class DialogSysdesimValidate(QDialog):
         query_layout = QtWidgets.QGridLayout(query_group)
         self.check_enable_query = QtWidgets.QCheckBox("启用 Phase11 state query")
         self.check_enable_query.setChecked(True)
+        self.check_block_static_errors = QtWidgets.QCheckBox("静态预检 error 时跳过 SMT")
+        self.check_block_static_errors.setChecked(True)
         self.combo_left_machine = QtWidgets.QComboBox()
         self.combo_left_machine.setEditable(True)
         self.combo_left_state = QtWidgets.QComboBox()
@@ -72,7 +89,8 @@ class DialogSysdesimValidate(QDialog):
         self.combo_right_state.setEditable(True)
         self.combo_scope = QtWidgets.QComboBox()
         self.combo_scope.addItems(["both", "post_step", "open_interval"])
-        query_layout.addWidget(self.check_enable_query, 0, 0, 1, 4)
+        query_layout.addWidget(self.check_enable_query, 0, 0, 1, 2)
+        query_layout.addWidget(self.check_block_static_errors, 0, 2, 1, 2)
         query_layout.addWidget(QtWidgets.QLabel("左模型："), 1, 0)
         query_layout.addWidget(self.combo_left_machine, 1, 1)
         query_layout.addWidget(QtWidgets.QLabel("左状态："), 1, 2)
@@ -87,19 +105,54 @@ class DialogSysdesimValidate(QDialog):
 
         result_group = QtWidgets.QGroupBox("结果")
         result_layout = QtWidgets.QVBoxLayout(result_group)
+        self.tabs_result = QtWidgets.QTabWidget()
         self.text_result = QtWidgets.QPlainTextEdit()
         self.text_result.setReadOnly(True)
         self.text_result.setFont(QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.FixedFont))
-        result_layout.addWidget(self.text_result)
+        self.tabs_result.addTab(self.text_result, "报告")
+
+        diagnostics_page = QtWidgets.QWidget()
+        diagnostics_layout = QtWidgets.QVBoxLayout(diagnostics_page)
+        self.table_diagnostics = QtWidgets.QTableWidget(0, 4)
+        self.table_diagnostics.setHorizontalHeaderLabels(["级别", "代码", "来源", "消息"])
+        self.table_diagnostics.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.table_diagnostics.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.table_diagnostics.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.table_diagnostics.horizontalHeader().setStretchLastSection(True)
+        self.table_diagnostics.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        self.table_diagnostics.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        self.table_diagnostics.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.text_diagnostic_detail = QtWidgets.QPlainTextEdit()
+        self.text_diagnostic_detail.setReadOnly(True)
+        self.text_diagnostic_detail.setFont(QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.FixedFont))
+        diagnostics_layout.addWidget(self.table_diagnostics, 2)
+        diagnostics_layout.addWidget(self.text_diagnostic_detail, 1)
+        self.tabs_result.addTab(diagnostics_page, "静态诊断")
+
+        diagram_page = QtWidgets.QWidget()
+        diagram_layout = QtWidgets.QVBoxLayout(diagram_page)
+        self.svg_diagram = QSvgWidget()
+        self.svg_diagram.setMinimumSize(640, 360)
+        diagram_scroll = QtWidgets.QScrollArea()
+        diagram_scroll.setWidgetResizable(True)
+        diagram_scroll.setWidget(self.svg_diagram)
+        diagram_layout.addWidget(diagram_scroll)
+        self.tabs_result.addTab(diagram_page, "顺序图")
+
+        result_layout.addWidget(self.tabs_result)
         main_layout.addWidget(result_group, 1)
 
         button_layout = QtWidgets.QHBoxLayout()
         self.button_run = QtWidgets.QPushButton("开始验证")
         self.button_save_report = QtWidgets.QPushButton("保存 JSON 报告")
+        self.button_export_svg = QtWidgets.QPushButton("导出 SVG")
+        self.button_export_png = QtWidgets.QPushButton("导出 PNG")
         self.button_close = QtWidgets.QPushButton("关闭")
         button_layout.addStretch(1)
         button_layout.addWidget(self.button_run)
         button_layout.addWidget(self.button_save_report)
+        button_layout.addWidget(self.button_export_svg)
+        button_layout.addWidget(self.button_export_png)
         button_layout.addWidget(self.button_close)
         main_layout.addLayout(button_layout)
 
@@ -107,8 +160,11 @@ class DialogSysdesimValidate(QDialog):
         self.combo_xml_source.currentIndexChanged.connect(self._on_xml_changed)
         self.combo_left_machine.currentIndexChanged.connect(lambda _index: self._populate_state_combo("left"))
         self.combo_right_machine.currentIndexChanged.connect(lambda _index: self._populate_state_combo("right"))
+        self.table_diagnostics.itemSelectionChanged.connect(self._show_selected_diagnostic)
         self.button_run.clicked.connect(self._run_validate)
         self.button_save_report.clicked.connect(self._save_report)
+        self.button_export_svg.clicked.connect(self._export_svg)
+        self.button_export_png.clicked.connect(self._export_png)
         self.button_close.clicked.connect(self.reject)
 
     def _populate_xml_sources(self):
@@ -126,6 +182,19 @@ class DialogSysdesimValidate(QDialog):
         refresh_text_overflow(self)
 
     def _on_xml_changed(self, _index: int):
+        xml_path = self._current_xml_path()
+        current_interaction = self.combo_interaction_name.currentText().strip()
+        self.combo_interaction_name.clear()
+        if xml_path:
+            try:
+                for item in extract_sysdesim_interactions(xml_path):
+                    name = getattr(item, "interaction_name", None) or getattr(item, "interaction_id", "")
+                    self.combo_interaction_name.addItem(name)
+            except Exception:
+                pass
+        if current_interaction:
+            self.combo_interaction_name.setCurrentText(current_interaction)
+
         managers = self._current_source_managers()
         for combo in (self.combo_left_machine, self.combo_right_machine):
             combo.clear()
@@ -175,15 +244,10 @@ class DialogSysdesimValidate(QDialog):
             states.extend(self._state_paths(child))
         return states
 
-    def _run_validate(self):
-        xml_path = self._current_xml_path()
-        if not xml_path:
-            QtWidgets.QMessageBox.warning(self, "缺少 XML", "当前没有可验证的 XML 导入来源。")
-            return
-
-        kwargs = {
+    def _build_validate_kwargs(self) -> Optional[Dict[str, object]]:
+        kwargs: Dict[str, object] = {
             "machine_name": self.edit_machine_name.text().strip() or None,
-            "interaction_name": self.edit_interaction_name.text().strip() or None,
+            "interaction_name": self.combo_interaction_name.currentText().strip() or None,
             "tick_duration_ms": self.spin_tick_duration.value() or None,
         }
         if self.check_enable_query.isChecked():
@@ -196,7 +260,7 @@ class DialogSysdesimValidate(QDialog):
                 ]
             ):
                 QtWidgets.QMessageBox.warning(self, "缺少查询参数", "启用状态共存查询时，需要选择左右模型和状态。")
-                return
+                return None
             kwargs.update(
                 {
                     "left_machine_alias": self.combo_left_machine.currentText().strip(),
@@ -206,10 +270,197 @@ class DialogSysdesimValidate(QDialog):
                     "observation_scope": self.combo_scope.currentText(),
                 }
             )
+        return kwargs
+
+    @staticmethod
+    def _serialize_diagnostic(diag) -> Dict[str, object]:
+        payload = {
+            "level": getattr(diag, "level", ""),
+            "code": getattr(diag, "code", ""),
+            "message": getattr(diag, "message", ""),
+        }
+        source_id = getattr(diag, "source_id", None)
+        if source_id is not None:
+            payload["source_id"] = source_id
+        state_path = getattr(diag, "state_path", None)
+        if state_path is not None:
+            payload["state_path"] = list(state_path)
+        details = getattr(diag, "details", None)
+        if details is not None:
+            payload["details"] = details
+        hints = getattr(diag, "hints", None)
+        if hints:
+            payload["hints"] = list(hints)
+        return payload
+
+    @staticmethod
+    def _json_default(obj):
+        return str(obj)
+
+    def _diagnostic_count(self, level: str) -> int:
+        level = level.lower()
+        return sum(
+            1 for item in self._last_static_diagnostics
+            if (getattr(item, "level", "") or "").lower() == level
+        )
+
+    def _refresh_overlay_and_svg(self):
+        if self._last_phase10_report is None:
+            return
+        phase11 = self._last_report.get("phase11") if isinstance(self._last_report, dict) else None
+        timeline_report = phase11.get("timeline_report") if isinstance(phase11, dict) else None
+        summary_lines = []
+        if isinstance(timeline_report, dict):
+            symbol = timeline_report.get("first_coexistence_symbol")
+            time_text = timeline_report.get("first_coexistence_time_text")
+            note = timeline_report.get("first_coexistence_note") or timeline_report.get("reason")
+            if symbol is not None:
+                summary_lines.append("First coexistence: {} = {}".format(symbol, time_text))
+            elif note:
+                summary_lines.append("Phase11: {}".format(note))
+        elif isinstance(self._last_report, dict) and (self._last_report.get("static_check") or {}).get("skipped_smt"):
+            summary_lines.append("Validation skipped: static pre-check has blocking errors.")
+
+        self._last_overlay = build_overlay_from_diagnostics(
+            phase10_report=self._last_phase10_report,
+            diagnostics=self._last_static_diagnostics,
+            summary_lines=summary_lines,
+            coexistence_timeline=timeline_report if isinstance(timeline_report, dict) else None,
+            include_state_cells=True,
+        )
+        self._last_svg_text = render_sysdesim_timeline_svg(
+            phase10_report=self._last_phase10_report,
+            overlay=self._last_overlay,
+        )
+
+    def _load_svg_preview(self):
+        if not self._last_svg_text:
+            return
+        payload = QByteArray(self._last_svg_text.encode("utf-8"))
+        self.svg_diagram.load(payload)
+        size = self.svg_diagram.renderer().defaultSize()
+        if size.isValid():
+            self.svg_diagram.resize(size)
+
+    def _populate_diagnostics(self, diagnostics: Sequence[object]):
+        self.table_diagnostics.setRowCount(0)
+        self.text_diagnostic_detail.clear()
+        for row, diag in enumerate(diagnostics):
+            self.table_diagnostics.insertRow(row)
+            values = [
+                getattr(diag, "level", ""),
+                getattr(diag, "code", ""),
+                getattr(diag, "source_id", "") or "",
+                getattr(diag, "message", "") or "",
+            ]
+            for col, value in enumerate(values):
+                item = QtWidgets.QTableWidgetItem(str(value))
+                item.setData(Qt.UserRole, diag)
+                self.table_diagnostics.setItem(row, col, item)
+        if diagnostics:
+            self.table_diagnostics.selectRow(0)
+
+    def _show_selected_diagnostic(self):
+        rows = self.table_diagnostics.selectionModel().selectedRows()
+        if not rows:
+            self.text_diagnostic_detail.clear()
+            return
+        item = self.table_diagnostics.item(rows[0].row(), 0)
+        diag = item.data(Qt.UserRole) if item is not None else None
+        if diag is None:
+            self.text_diagnostic_detail.clear()
+            return
+        lines = [
+            "{} {}".format(str(getattr(diag, "level", "")).upper(), getattr(diag, "code", "")),
+            "",
+            getattr(diag, "message", "") or "",
+        ]
+        source_id = getattr(diag, "source_id", None)
+        if source_id:
+            lines.extend(["", "source: {}".format(source_id)])
+        details = getattr(diag, "details", None)
+        if details:
+            lines.extend(
+                [
+                    "",
+                    "details:",
+                    json.dumps(details, ensure_ascii=False, indent=2, default=self._json_default),
+                ]
+            )
+        hints = getattr(diag, "hints", None) or []
+        if hints:
+            lines.extend(["", "hints:"])
+            lines.extend("  - {}".format(item) for item in hints)
+        self.text_diagnostic_detail.setPlainText("\n".join(lines))
+
+    def _run_validate(self):
+        xml_path = self._current_xml_path()
+        if not xml_path:
+            QtWidgets.QMessageBox.warning(self, "缺少 XML", "当前没有可验证的 XML 导入来源。")
+            return
+
+        kwargs = self._build_validate_kwargs()
+        if kwargs is None:
+            return
+        self._last_report = None
+        self._last_phase10_report = None
+        self._last_static_diagnostics = []
+        self._last_overlay = None
+        self._last_svg_text = ""
+        self._last_run_kwargs = dict(kwargs)
+        self.text_result.clear()
+        self._populate_diagnostics([])
+        self.svg_diagram.load(QByteArray())
 
         QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            self._last_report = build_sysdesim_timeline_import_report(xml_path, **kwargs)
+            self._last_phase10_report = build_sysdesim_phase10_report(
+                xml_path,
+                machine_name=kwargs.get("machine_name"),
+                interaction_name=kwargs.get("interaction_name"),
+                tick_duration_ms=kwargs.get("tick_duration_ms"),
+            )
+            self._last_static_diagnostics = run_sysdesim_static_pre_checks(
+                phase10_report=self._last_phase10_report,
+                left_machine_alias=kwargs.get("left_machine_alias"),
+                left_state_ref=kwargs.get("left_state_ref"),
+                right_machine_alias=kwargs.get("right_machine_alias"),
+                right_state_ref=kwargs.get("right_state_ref"),
+            )
+
+            blocking_errors = [
+                item for item in self._last_static_diagnostics
+                if (getattr(item, "level", "") or "").lower() == "error"
+            ]
+            if blocking_errors and self.check_block_static_errors.isChecked():
+                self._last_report = {
+                    "source_xml_path": xml_path,
+                    "selected_machine_name": self._last_phase10_report.phase9_report.selected_machine_name,
+                    "selected_interaction_name": self._last_phase10_report.phase9_report.selected_interaction_name,
+                    "tick_duration_ms": kwargs.get("tick_duration_ms"),
+                    "static_check": {
+                        "skipped_smt": True,
+                        "blocking_errors": len(blocking_errors),
+                        "warnings": self._diagnostic_count("warning"),
+                        "diagnostics": [
+                            self._serialize_diagnostic(item)
+                            for item in self._last_static_diagnostics
+                        ],
+                    },
+                }
+            else:
+                self._last_report = build_sysdesim_timeline_import_report(xml_path, **kwargs)
+                self._last_report["static_check"] = {
+                    "skipped_smt": False,
+                    "blocking_errors": len(blocking_errors),
+                    "warnings": self._diagnostic_count("warning"),
+                    "diagnostics": [
+                        self._serialize_diagnostic(item)
+                        for item in self._last_static_diagnostics
+                    ],
+                }
+
+            self._refresh_overlay_and_svg()
         except Exception as e:
             self._last_report = None
             QtWidgets.QMessageBox.critical(self, "SysDeSim 验证失败", str(e))
@@ -218,50 +469,72 @@ class DialogSysdesimValidate(QDialog):
             QtWidgets.QApplication.restoreOverrideCursor()
 
         self.text_result.setPlainText(self._format_report(self._last_report))
+        self._populate_diagnostics(self._last_static_diagnostics)
+        self._load_svg_preview()
 
     def _format_report(self, report: Dict[str, object]) -> str:
         phase78 = report.get("phase78") or {}
         phase9 = report.get("phase9") or {}
         phase10 = report.get("phase10") or {}
+        static_check = report.get("static_check") or {}
         outputs = phase9.get("outputs") or []
         traces = phase10.get("traces") or []
         scenario = phase10.get("scenario") or {}
         has_state_query = isinstance(report.get("phase11"), dict)
+        has_import_sections = bool(phase78 or phase9 or phase10)
 
         lines = [
-            "SysDeSim State Query Complete" if has_state_query else "SysDeSim Timeline Import Report Complete",
-            "Mode: {}".format("import report + state query" if has_state_query else "import report only"),
+            "SysDeSim State Query Complete" if has_state_query else "SysDeSim Timeline Validation Complete",
+            "Mode: {}".format(
+                "static pre-check only"
+                if static_check.get("skipped_smt")
+                else ("import report + state query" if has_state_query else "import report only")
+            ),
             f"Machine: {report.get('selected_machine_name', '')}",
             f"Interaction: {report.get('selected_interaction_name', '')}",
             f"Source: {report.get('source_xml_path', '')}",
             f"Tick: {self._format_tick_duration_text(report.get('tick_duration_ms'))}",
-            "Model Import: graph_edges={graph} inputs={inputs} events={events} steps={steps} windows={windows} durations={durations} diagnostics={diagnostics}".format(
-                graph=len(phase78.get("machine_graph") or []),
-                inputs=len(phase78.get("input_candidates") or []),
-                events=len(phase78.get("event_candidates") or []),
-                steps=len(phase78.get("steps") or []),
-                windows=len(phase78.get("time_windows") or []),
-                durations=len(phase78.get("duration_constraints") or []),
-                diagnostics=len(phase78.get("diagnostics") or []),
-            ),
-            f"Outputs: {len(outputs)}",
-            "",
-            self._format_table(
-                headers=["output", "defines", "events", "diag"],
-                rows=[
-                    [
-                        str(item.get("output_name", "")),
-                        str(len(item.get("define_names") or [])),
-                        str(len(item.get("event_runtime_refs") or [])),
-                        self._diagnostic_summary(item.get("diagnostic_codes") or [], item.get("semantic_note")),
-                    ]
-                    for item in outputs
-                    if isinstance(item, dict)
-                ],
-                max_widths={"output": 36, "defines": 7, "events": 6, "diag": 18},
-                alignments={"defines": "right", "events": "right"},
+            "Static Check: errors={errors} warnings={warnings} diagnostics={diagnostics}{suffix}".format(
+                errors=static_check.get("blocking_errors", self._diagnostic_count("error")),
+                warnings=static_check.get("warnings", self._diagnostic_count("warning")),
+                diagnostics=len(static_check.get("diagnostics") or self._last_static_diagnostics),
+                suffix=" (SMT skipped)" if static_check.get("skipped_smt") else "",
             ),
         ]
+        if not has_import_sections:
+            lines.extend(["", "SMT validation was skipped because static pre-check reported blocking errors."])
+            return "\n".join(lines)
+
+        lines.extend(
+            [
+                "Model Import: graph_edges={graph} inputs={inputs} events={events} steps={steps} windows={windows} durations={durations} diagnostics={diagnostics}".format(
+                    graph=len(phase78.get("machine_graph") or []),
+                    inputs=len(phase78.get("input_candidates") or []),
+                    events=len(phase78.get("event_candidates") or []),
+                    steps=len(phase78.get("steps") or []),
+                    windows=len(phase78.get("time_windows") or []),
+                    durations=len(phase78.get("duration_constraints") or []),
+                    diagnostics=len(phase78.get("diagnostics") or []),
+                ),
+                f"Outputs: {len(outputs)}",
+                "",
+                self._format_table(
+                    headers=["output", "defines", "events", "diag"],
+                    rows=[
+                        [
+                            str(item.get("output_name", "")),
+                            str(len(item.get("define_names") or [])),
+                            str(len(item.get("event_runtime_refs") or [])),
+                            self._diagnostic_summary(item.get("diagnostic_codes") or [], item.get("semantic_note")),
+                        ]
+                        for item in outputs
+                        if isinstance(item, dict)
+                    ],
+                    max_widths={"output": 36, "defines": 7, "events": 6, "diag": 18},
+                    alignments={"defines": "right", "events": "right"},
+                ),
+            ]
+        )
 
         if any((item.get("diagnostic_codes") or item.get("semantic_note")) for item in outputs if isinstance(item, dict)):
             lines.extend(["", "Notes: compact diagnostics shown; use 保存 JSON 报告 to export full JSON diagnostics."])
@@ -439,7 +712,7 @@ class DialogSysdesimValidate(QDialog):
 
         main_alias = output_aliases[0] if output_aliases else None
         machine_headers = [self._short_machine_alias(alias, main_alias) for alias in output_aliases]
-        headers = ["t", "pt", "act"] + machine_headers + ["co"]
+        headers = ["t", "act"] + machine_headers + ["co"]
         rows = []
         for item in timeline_points:
             if not isinstance(item, dict):
@@ -457,14 +730,13 @@ class DialogSysdesimValidate(QDialog):
             rows.append(
                 [
                     str(item.get("time_value_text", "")),
-                    str(point_label),
                     self._format_phase11_actions(item.get("actions") or [], main_alias),
                 ]
                 + [state_map.get(header, "-") for header in machine_headers]
                 + [co_text]
             )
 
-        max_widths = {"t": 8, "pt": 14, "act": 28, "co": 8}
+        max_widths = {"t": 8, "act": 28, "co": 8}
         for header in machine_headers:
             max_widths[header] = 14
 
@@ -472,12 +744,65 @@ class DialogSysdesimValidate(QDialog):
             [
                 "  witness timeline:",
                 "    - t: solved continuous-time value.",
-                "    - pt: `sXX` is one imported step, `tau@...` is one hidden auto point.",
-                "    - act: actions observed at that point.",
-                "    - co: `start` marks the first coexistence point; `yes` means coexistence still holds.",
+                "    - act: actions observed at that point; tau:* means hidden auto-transition.",
+                "    - co: `initial` marks the initial state; `start` marks first coexistence; `yes` means coexistence still holds.",
                 self._format_table(headers, rows, max_widths),
             ]
         )
+
+    def _export_svg(self):
+        if not self._last_svg_text:
+            QtWidgets.QMessageBox.warning(self, "没有顺序图", "请先运行验证。")
+            return
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "导出 SysDeSim 顺序图 SVG",
+            "./sysdesim_sequence.svg",
+            "SVG Files (*.svg);;All Files (*)",
+        )
+        if not file_path:
+            return
+        if not file_path.lower().endswith(".svg"):
+            file_path += ".svg"
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(self._last_svg_text)
+
+    def _export_png(self):
+        if self._last_phase10_report is None:
+            QtWidgets.QMessageBox.warning(self, "没有顺序图", "请先运行验证。")
+            return
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "导出 SysDeSim 顺序图 PNG",
+            "./sysdesim_sequence.png",
+            "PNG Files (*.png);;All Files (*)",
+        )
+        if not file_path:
+            return
+        if not file_path.lower().endswith(".png"):
+            file_path += ".png"
+        QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            payload = render_sysdesim_timeline_png(
+                phase10_report=self._last_phase10_report,
+                overlay=self._last_overlay,
+                font_files=self._resolve_cjk_font_files(),
+            )
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "导出 PNG 失败", str(e))
+            return
+        finally:
+            QtWidgets.QApplication.restoreOverrideCursor()
+        with open(file_path, "wb") as f:
+            f.write(payload)
+
+    @staticmethod
+    def _resolve_cjk_font_files() -> Optional[List[str]]:
+        try:
+            from pyfcstm.entry.sysdesim import _resolve_render_font_files
+            return _resolve_render_font_files([])
+        except Exception:
+            return None
 
     def _save_report(self):
         if self._last_report is None:
@@ -494,4 +819,4 @@ class DialogSysdesimValidate(QDialog):
         if not file_path.lower().endswith(".json"):
             file_path += ".json"
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(self._last_report, f, ensure_ascii=False, indent=2)
+            json.dump(self._last_report, f, ensure_ascii=False, indent=2, default=self._json_default)

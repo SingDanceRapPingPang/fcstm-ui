@@ -128,6 +128,62 @@ def _collect_z3_dynamic_libs():
 
 binaries += _collect_z3_dynamic_libs()
 
+
+def _collect_mini_racer_runtime():
+    """Collect MiniRacer's V8 shared library and sidecar data files.
+
+    pyfcstm's SysDeSim SVG/PNG renderer runs inside MiniRacer.  Both the
+    Python 3.7 ``py-mini-racer`` wheel and the newer ``mini-racer`` wheel
+    expose the ``py_mini_racer`` package, but they resolve native files
+    differently under PyInstaller:
+
+    * py-mini-racer 0.6 looks for ``<_MEIPASS>/libmini_racer.<libc>.so``
+      (or the platform equivalent).
+    * mini-racer 0.14 looks under ``<_MEIPASS>/py_mini_racer`` and also
+      needs ``icudtl.dat`` next to the shared library.
+
+    Stage native libraries in both places and sidecar data files under the
+    package directory so either wheel works in frozen builds.
+    """
+    import importlib
+
+    runtime_binaries = []
+    runtime_datas = []
+    seen = set()
+    try:
+        mod = importlib.import_module('py_mini_racer')
+    except ImportError:
+        return runtime_binaries, runtime_datas
+
+    package_dir = Path(getattr(mod, '__file__', '')).resolve().parent
+    if not package_dir.is_dir():
+        return runtime_binaries, runtime_datas
+
+    for item in package_dir.rglob('*'):
+        if not item.is_file() or '__pycache__' in item.parts:
+            continue
+        suffix = item.suffix.lower()
+        if suffix in {'.py', '.pyc', '.pyo', '.pyi'}:
+            continue
+        src = str(item)
+        rel_dir = item.parent.relative_to(package_dir.parent)
+        for dest in ('.', str(rel_dir)):
+            key = (src, dest)
+            if key in seen:
+                continue
+            seen.add(key)
+            entry = (src, dest)
+            if suffix in {'.so', '.dylib', '.dll', '.pyd'}:
+                runtime_binaries.append(entry)
+            else:
+                runtime_datas.append(entry)
+    return runtime_binaries, runtime_datas
+
+
+mini_racer_binaries, mini_racer_datas = _collect_mini_racer_runtime()
+binaries += mini_racer_binaries
+datas += mini_racer_datas
+
 # pyfcstm ships data files (DSL grammar tokens, packaged template zips,
 # verify design notes, etc.) inside its package; PyInstaller does not pick
 # those up automatically because they are referenced through importlib
@@ -136,6 +192,7 @@ datas += collect_data_files('pyfcstm', includes=[
     '**/*.g4', '**/*.tokens', '**/*.interp',
     '**/*.json', '**/*.yaml', '**/*.yml',
     '**/*.zip', '**/*.png', '**/*.md',
+    '**/*.js', '**/*.dat',
 ])
 
 # qtawesome ships the FontAwesome / Material font files as package data.
@@ -160,6 +217,7 @@ hiddenimports = []
 hiddenimports += collect_submodules('pyfcstm')
 hiddenimports += collect_submodules('plantumlcli')
 hiddenimports += collect_submodules('hbutils')
+hiddenimports += collect_submodules('py_mini_racer')
 # App-level submodules — several are loaded by name (importlib/subprocess
 # strings inside dialog handlers) so PyInstaller can't see them via static
 # analysis.

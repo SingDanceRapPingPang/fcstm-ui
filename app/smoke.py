@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import importlib
 import os
+import struct
 import shutil
 import subprocess
 import sys
@@ -87,6 +88,7 @@ PRIMARY_MODULES: List[str] = [
     'prompt_toolkit',
     'click',
     'z3',
+    'py_mini_racer',
 
     # pyfcstm subpackages we exercise
     'pyfcstm',
@@ -97,6 +99,9 @@ PRIMARY_MODULES: List[str] = [
     'pyfcstm.verify.search',
     'pyfcstm.solver',
     'pyfcstm.convert.sysdesim',
+    'pyfcstm.convert.sysdesim.render',
+    'pyfcstm.convert.sysdesim.static_check',
+    'pyfcstm.diagnostics',
     'pyfcstm.entry.simulate.commands',
 
     # Application packages
@@ -359,6 +364,120 @@ def _check_pyfcstm_simulate_runtime() -> None:
     _print(f'    SimulationRuntime created for {type(sm).__name__}')
 
 
+_SMOKE_SYSDESIM_XMI = """<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001"
+         xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="m1" name="m1">
+    <packagedElement xmi:type="uml:Class" xmi:id="cls1" name="SmokeMachine" classifierBehavior="machine_1">
+      <ownedBehavior xmi:type="uml:StateMachine" xmi:id="machine_1" name="SmokeMachine">
+        <region xmi:type="uml:Region" xmi:id="region_root" name="">
+          <transition xmi:type="uml:Transition" xmi:id="tx_init" source="init_root" target="state_idle"/>
+          <transition xmi:type="uml:Transition" xmi:id="tx_idle_done" source="state_idle" target="state_done">
+            <trigger xmi:type="uml:Trigger" xmi:id="trigger_go" event="signal_evt_go"/>
+          </transition>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="init_root"/>
+          <subvertex xmi:type="uml:State" xmi:id="state_idle" name="Idle"/>
+          <subvertex xmi:type="uml:State" xmi:id="state_done" name="Done"/>
+        </region>
+      </ownedBehavior>
+      <ownedBehavior xmi:type="uml:Interaction" xmi:id="interaction_1" name="SmokeScenario">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="prop_send" name="sender"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="prop_recv" name="receiver"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="ll_send" name="sender" represents="prop_send"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="ll_recv" name="receiver" represents="prop_recv"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="go_send" covered="ll_send" message="msg_go"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="go_recv" covered="ll_recv" message="msg_go"/>
+        <message xmi:type="uml:Message" xmi:id="msg_go" sendEvent="go_send" receiveEvent="go_recv" signature="signal_go"/>
+      </ownedBehavior>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Signal" xmi:id="signal_go" name="Go"/>
+    <packagedElement xmi:type="uml:SignalEvent" xmi:id="signal_evt_go" signal="signal_go"/>
+  </uml:Model>
+</xmi:XMI>
+"""
+
+
+def _write_smoke_sysdesim_xml() -> str:
+    handle = tempfile.NamedTemporaryFile('w', suffix='.xml', delete=False, encoding='utf-8')
+    try:
+        handle.write(_SMOKE_SYSDESIM_XMI)
+        return handle.name
+    finally:
+        handle.close()
+
+
+def _check_mini_racer_v8() -> None:
+    from py_mini_racer import MiniRacer
+
+    ctx = MiniRacer()
+    assert ctx.eval('40 + 2') == 42, 'MiniRacer basic eval failed'
+    js = """
+    const wasmBytes = new Uint8Array([
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+      0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f,
+      0x03, 0x02, 0x01, 0x00,
+      0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00,
+      0x0a, 0x09, 0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b
+    ]);
+    const m = new WebAssembly.Module(wasmBytes);
+    const i = new WebAssembly.Instance(m, {});
+    i.exports.add(7, 35);
+    """
+    assert ctx.eval(js) == 42, 'MiniRacer WebAssembly support failed'
+    _print('    MiniRacer V8 eval + WebAssembly OK')
+
+
+def _check_pyfcstm_render_bundle() -> None:
+    import pyfcstm.convert.sysdesim as sysdesim_pkg
+    from pyfcstm.convert.sysdesim import render as render_module
+
+    pkg_dir = os.path.dirname(os.path.abspath(sysdesim_pkg.__file__))
+    bundle_path = os.path.join(pkg_dir, '_render_assets', 'pyfcstm-sysdesim-render.js')
+    assert os.path.exists(bundle_path), f'SysDeSim render bundle missing: {bundle_path}'
+    size = os.path.getsize(bundle_path)
+    assert size > 1_000_000, f'SysDeSim render bundle too small: {size}'
+    render_module._runtime_cached = None
+    _ctx, version = render_module._get_runtime()
+    assert version, 'PyfcstmSysdesim.version() returned empty value'
+    _print(f'    render bundle OK: {size} bytes, version={version}')
+
+
+def _check_sysdesim_static_and_render() -> None:
+    from pyfcstm.convert.sysdesim import (
+        build_overlay_from_diagnostics,
+        build_sysdesim_phase10_report,
+        build_sysdesim_timeline_import_report,
+        render_sysdesim_timeline_png,
+        render_sysdesim_timeline_svg,
+        run_sysdesim_static_pre_checks,
+    )
+
+    path = _write_smoke_sysdesim_xml()
+    try:
+        phase10 = build_sysdesim_phase10_report(path)
+        diagnostics = run_sysdesim_static_pre_checks(phase10_report=phase10)
+        report = build_sysdesim_timeline_import_report(path)
+        assert report and 'phase10' in report, 'timeline import report missing phase10'
+        overlay = build_overlay_from_diagnostics(
+            phase10_report=phase10,
+            diagnostics=diagnostics,
+            include_state_cells=True,
+        )
+        svg = render_sysdesim_timeline_svg(phase10_report=phase10, overlay=overlay)
+        assert isinstance(svg, str) and '<svg' in svg and '</svg>' in svg, 'bad SVG render output'
+        png = render_sysdesim_timeline_png(phase10_report=phase10, overlay=overlay)
+        assert png[:8] == b'\x89PNG\r\n\x1a\n', 'bad PNG magic from SysDeSim renderer'
+        width, height = struct.unpack('>II', png[16:24])
+        assert width > 0 and height > 0, f'bad PNG dimensions: {width}x{height}'
+        _print(f'    SysDeSim static/render OK: diagnostics={len(diagnostics)} svg={len(svg)} png={len(png)} {width}x{height}')
+    finally:
+        try:
+            os.unlink(path)
+        except OSError:
+            pass
+
+
 def _check_event_loop_pumps() -> None:
     """Drive the QApplication event loop briefly to confirm the GUI
     layer actually runs (paints, processes events) and exits cleanly."""
@@ -395,6 +514,9 @@ def _build_checks() -> List[Tuple[str, CheckFn]]:
         ('frozen self-dispatch render',    _check_frozen_self_dispatch_render),
         ('z3 import + sat solve',          _check_z3_solve),
         ('pyfcstm simulate runtime',       _check_pyfcstm_simulate_runtime),
+        ('MiniRacer V8 + WebAssembly',     _check_mini_racer_v8),
+        ('pyfcstm render bundle loadable', _check_pyfcstm_render_bundle),
+        ('SysDeSim static + SVG/PNG render', _check_sysdesim_static_and_render),
         ('Qt event loop pumps',            _check_event_loop_pumps),
     ])
     return checks
