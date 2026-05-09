@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Sequence
 
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.Qt import QDialog
-from PyQt5.QtCore import QByteArray, Qt
+from PyQt5.QtCore import QByteArray, QEvent, QSize, Qt
 from PyQt5.QtSvg import QSvgWidget
 from pyfcstm.convert.sysdesim import (
     build_overlay_from_diagnostics,
@@ -32,6 +32,7 @@ class DialogSysdesimValidate(QDialog):
         self._last_static_diagnostics = []
         self._last_overlay = None
         self._last_svg_text = ""
+        self._diagram_base_size = QSize()
         self._last_run_kwargs: Dict[str, object] = {}
         self._init_ui()
         apply_text_overflow_handling(self)
@@ -111,6 +112,39 @@ class DialogSysdesimValidate(QDialog):
         self.text_result.setFont(QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.FixedFont))
         self.tabs_result.addTab(self.text_result, "报告")
 
+        witness_page = QtWidgets.QWidget()
+        witness_layout = QtWidgets.QVBoxLayout(witness_page)
+        self.label_witness_summary = QtWidgets.QLabel("未运行 SAT 查询")
+        self.table_witness = QtWidgets.QTableWidget(0, 0)
+        self.table_witness.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.table_witness.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.table_witness.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.table_witness.setAlternatingRowColors(True)
+        self.table_witness.setWordWrap(False)
+        self.table_witness.verticalHeader().setVisible(False)
+        self.table_witness.horizontalHeader().setStretchLastSection(False)
+        self.table_witness.setStyleSheet(
+            """
+            QTableWidget {
+                gridline-color: #cbd5e1;
+                alternate-background-color: #f8fafc;
+                selection-background-color: #1d4ed8;
+                selection-color: #ffffff;
+            }
+            QHeaderView::section {
+                background-color: #1e293b;
+                color: #ffffff;
+                font-weight: 600;
+                padding: 5px 8px;
+                border: 0;
+                border-right: 1px solid #475569;
+            }
+            """
+        )
+        witness_layout.addWidget(self.label_witness_summary)
+        witness_layout.addWidget(self.table_witness, 1)
+        self.tabs_result.addTab(witness_page, "SAT 轨迹")
+
         diagnostics_page = QtWidgets.QWidget()
         diagnostics_layout = QtWidgets.QVBoxLayout(diagnostics_page)
         self.table_diagnostics = QtWidgets.QTableWidget(0, 4)
@@ -132,11 +166,15 @@ class DialogSysdesimValidate(QDialog):
         diagram_page = QtWidgets.QWidget()
         diagram_layout = QtWidgets.QVBoxLayout(diagram_page)
         self.svg_diagram = QSvgWidget()
-        self.svg_diagram.setMinimumSize(640, 360)
-        diagram_scroll = QtWidgets.QScrollArea()
-        diagram_scroll.setWidgetResizable(True)
-        diagram_scroll.setWidget(self.svg_diagram)
-        diagram_layout.addWidget(diagram_scroll)
+        self.svg_diagram.setMinimumSize(0, 0)
+        self.diagram_scroll = QtWidgets.QScrollArea()
+        self.diagram_scroll.setWidgetResizable(False)
+        self.diagram_scroll.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self.diagram_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.diagram_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.diagram_scroll.viewport().installEventFilter(self)
+        self.diagram_scroll.setWidget(self.svg_diagram)
+        diagram_layout.addWidget(self.diagram_scroll)
         self.tabs_result.addTab(diagram_page, "顺序图")
 
         result_layout.addWidget(self.tabs_result)
@@ -166,6 +204,11 @@ class DialogSysdesimValidate(QDialog):
         self.button_export_svg.clicked.connect(self._export_svg)
         self.button_export_png.clicked.connect(self._export_png)
         self.button_close.clicked.connect(self.reject)
+
+    def eventFilter(self, watched, event):
+        if watched is self.diagram_scroll.viewport() and event.type() == QEvent.Resize:
+            self._resize_svg_preview_to_viewport()
+        return super().eventFilter(watched, event)
 
     def _populate_xml_sources(self):
         self.combo_xml_source.clear()
@@ -339,8 +382,26 @@ class DialogSysdesimValidate(QDialog):
         payload = QByteArray(self._last_svg_text.encode("utf-8"))
         self.svg_diagram.load(payload)
         size = self.svg_diagram.renderer().defaultSize()
-        if size.isValid():
-            self.svg_diagram.resize(size)
+        if not size.isValid():
+            view_box = self.svg_diagram.renderer().viewBoxF()
+            if view_box.isValid():
+                size = QSize(max(1, int(view_box.width())), max(1, int(view_box.height())))
+        self._diagram_base_size = size if size.isValid() else QSize(640, 360)
+        self._resize_svg_preview_to_viewport()
+
+    def _resize_svg_preview_to_viewport(self):
+        if not self._diagram_base_size.isValid() or self._diagram_base_size.isEmpty():
+            return
+        viewport_width = self.diagram_scroll.viewport().width()
+        if viewport_width <= 0:
+            self.svg_diagram.resize(self._diagram_base_size)
+            return
+        frame_margin = 2 * self.diagram_scroll.frameWidth()
+        available_width = max(1, viewport_width - frame_margin)
+        scale = float(available_width) / float(max(1, self._diagram_base_size.width()))
+        target_width = max(1, int(round(self._diagram_base_size.width() * scale)))
+        target_height = max(1, int(round(self._diagram_base_size.height() * scale)))
+        self.svg_diagram.resize(target_width, target_height)
 
     def _populate_diagnostics(self, diagnostics: Sequence[object]):
         self.table_diagnostics.setRowCount(0)
@@ -410,6 +471,8 @@ class DialogSysdesimValidate(QDialog):
         self._last_run_kwargs = dict(kwargs)
         self.text_result.clear()
         self._populate_diagnostics([])
+        self._populate_witness_table(None)
+        self._diagram_base_size = QSize()
         self.svg_diagram.load(QByteArray())
 
         QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -470,6 +533,7 @@ class DialogSysdesimValidate(QDialog):
 
         self.text_result.setPlainText(self._format_report(self._last_report))
         self._populate_diagnostics(self._last_static_diagnostics)
+        self._populate_witness_table(self._last_report)
         self._load_svg_preview()
 
     def _format_report(self, report: Dict[str, object]) -> str:
@@ -597,9 +661,8 @@ class DialogSysdesimValidate(QDialog):
             lines.append(f"  note: {timeline_report.get('first_coexistence_note')}")
         if timeline_report.get("first_coexistence_symbol") is not None:
             lines.append(
-                self._format_phase11_timeline_table(
-                    timeline_report,
-                    [item.get("output_name", "") for item in outputs if isinstance(item, dict)],
+                "  witness timeline points: {}".format(
+                    len(timeline_report.get("timeline_points") or [])
                 )
             )
         elif solve_result.get("reason"):
@@ -704,6 +767,177 @@ class DialogSysdesimValidate(QDialog):
             else:
                 rendered.append(item)
         return ",".join(rendered)
+
+    @staticmethod
+    def _unique_headers(headers: Sequence[str]) -> List[str]:
+        seen: Dict[str, int] = {}
+        result = []
+        for header in headers:
+            base = header or "machine"
+            count = seen.get(base, 0)
+            seen[base] = count + 1
+            result.append(base if count == 0 else "{}#{}".format(base, count + 1))
+        return result
+
+    def _phase11_machine_aliases(self, report: Dict[str, object], timeline_points: Sequence[object]) -> List[str]:
+        aliases = []
+
+        def add(alias):
+            alias = str(alias or "")
+            if alias and alias not in aliases:
+                aliases.append(alias)
+
+        phase9 = report.get("phase9") or {}
+        for item in phase9.get("outputs") or []:
+            if isinstance(item, dict):
+                add(item.get("output_name"))
+
+        phase10 = report.get("phase10") or {}
+        for item in phase10.get("traces") or []:
+            if isinstance(item, dict):
+                add(item.get("machine_alias"))
+
+        for point in timeline_points:
+            if not isinstance(point, dict):
+                continue
+            for alias, _state in point.get("machine_states") or []:
+                add(alias)
+        return aliases
+
+    @staticmethod
+    def _coexistence_cell_text(point: Dict[str, object], timeline_report: Dict[str, object]) -> str:
+        if point.get("is_coexistent"):
+            if point.get("symbol") == timeline_report.get("first_coexistence_symbol"):
+                return "start"
+            return "yes"
+        if point.get("point_kind") == "initial":
+            return "initial"
+        return ""
+
+    def _populate_witness_table(self, report: Optional[Dict[str, object]]):
+        self.table_witness.clear()
+        self.table_witness.setRowCount(0)
+        self.table_witness.setColumnCount(0)
+        self.label_witness_summary.setText("未运行 SAT 查询")
+        if not isinstance(report, dict):
+            return
+
+        phase11 = report.get("phase11")
+        if not isinstance(phase11, dict):
+            self.label_witness_summary.setText("Phase11 未启用或未返回 SAT 查询。")
+            return
+
+        solve_result = phase11.get("solve_result") or {}
+        timeline_report = phase11.get("timeline_report") or {}
+        timeline_points = [
+            item for item in (timeline_report.get("timeline_points") or [])
+            if isinstance(item, dict)
+        ]
+        status = str(solve_result.get("status") or timeline_report.get("status") or "").upper()
+        if not timeline_points:
+            reason = solve_result.get("reason") or timeline_report.get("reason") or "没有 witness timeline。"
+            self.label_witness_summary.setText("SAT 轨迹：status={}，{}".format(status or "-", reason))
+            return
+
+        output_aliases = self._phase11_machine_aliases(report, timeline_points)
+        main_alias = output_aliases[0] if output_aliases else None
+        machine_headers = self._unique_headers([
+            self._short_machine_alias(alias, main_alias)
+            for alias in output_aliases
+        ])
+        headers = ["t", "act"] + machine_headers + ["co"]
+        self.table_witness.setColumnCount(len(headers))
+        self.table_witness.setHorizontalHeaderLabels(headers)
+        self.table_witness.setRowCount(len(timeline_points))
+        header = self.table_witness.horizontalHeader()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        for col in range(2, len(headers) - 1):
+            header.setSectionResizeMode(col, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(len(headers) - 1, QtWidgets.QHeaderView.ResizeToContents)
+
+        first_symbol = timeline_report.get("first_coexistence_symbol")
+        first_time = timeline_report.get("first_coexistence_time_text")
+        if first_symbol is not None:
+            self.label_witness_summary.setText(
+                "SAT 轨迹：status={}，first coexistence {} = {}，points={}".format(
+                    status or "-",
+                    first_symbol,
+                    first_time,
+                    len(timeline_points),
+                )
+            )
+        else:
+            self.label_witness_summary.setText(
+                "SAT 轨迹：status={}，points={}".format(status or "-", len(timeline_points))
+            )
+
+        for row, point in enumerate(timeline_points):
+            state_map = {
+                str(alias): str(state)
+                for alias, state in point.get("machine_states") or []
+            }
+            action_text = self._format_phase11_actions(point.get("actions") or [], main_alias)
+            co_text = self._coexistence_cell_text(point, timeline_report)
+            values = [
+                str(point.get("time_value_text", "")),
+                action_text,
+            ] + [
+                self._short_state_text(state_map.get(alias, "-"))
+                for alias in output_aliases
+            ] + [
+                co_text,
+            ]
+            tooltip = "symbol={symbol}\nkind={kind}\nlabel={label}".format(
+                symbol=point.get("symbol", ""),
+                kind=point.get("point_kind", ""),
+                label=point.get("point_label", ""),
+            )
+            for col, value in enumerate(values):
+                item = QtWidgets.QTableWidgetItem(value)
+                item.setToolTip(tooltip)
+                item.setData(Qt.UserRole, point)
+                self._style_witness_item(item, point, co_text, headers[col], value)
+                self.table_witness.setItem(row, col, item)
+
+        self.table_witness.resizeColumnsToContents()
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        for col in range(2, len(headers) - 1):
+            header.setSectionResizeMode(col, QtWidgets.QHeaderView.Stretch)
+
+    def _style_witness_item(self, item, point: Dict[str, object], co_text: str, header: str, value: str):
+        font = item.font()
+        kind = point.get("point_kind")
+        if co_text == "start":
+            item.setBackground(QtGui.QColor("#dcfce7"))
+            font.setBold(True)
+        elif co_text == "yes":
+            item.setBackground(QtGui.QColor("#f0fdf4"))
+        elif kind == "initial":
+            item.setBackground(QtGui.QColor("#eff6ff"))
+
+        if header == "co":
+            font.setBold(bool(co_text))
+            if co_text == "start":
+                item.setBackground(QtGui.QColor("#16a34a"))
+                item.setForeground(QtGui.QColor("#ffffff"))
+            elif co_text == "yes":
+                item.setForeground(QtGui.QColor("#15803d"))
+            elif co_text == "initial":
+                item.setForeground(QtGui.QColor("#1d4ed8"))
+        elif header == "act":
+            if "tau:" in value:
+                item.setForeground(QtGui.QColor("#b45309"))
+                font.setBold(True)
+            elif value and value != "-":
+                item.setForeground(QtGui.QColor("#0369a1"))
+        elif header not in {"t", "co"} and value != "-":
+            item.setForeground(QtGui.QColor("#334155"))
+
+        if value == "-":
+            item.setForeground(QtGui.QColor("#94a3b8"))
+        item.setFont(font)
 
     def _format_phase11_timeline_table(self, timeline_report: Dict[str, object], output_aliases: Sequence[str]) -> str:
         timeline_points = timeline_report.get("timeline_points") or []

@@ -478,6 +478,81 @@ def _check_sysdesim_static_and_render() -> None:
             pass
 
 
+def _check_sysdesim_validate_dialog_views() -> None:
+    from PyQt5.QtWidgets import QApplication
+    from app.widget.dialog_sysdesim_validate import DialogSysdesimValidate
+    from pyfcstm.convert.sysdesim import (
+        build_overlay_from_diagnostics,
+        build_sysdesim_phase10_report,
+        build_sysdesim_timeline_import_report,
+        render_sysdesim_timeline_svg,
+        run_sysdesim_static_pre_checks,
+    )
+
+    path = _write_smoke_sysdesim_xml()
+    app = QApplication.instance() or QApplication(sys.argv)
+    dialog = None
+    try:
+        phase10 = build_sysdesim_phase10_report(path)
+        diagnostics = run_sysdesim_static_pre_checks(phase10_report=phase10)
+        report = build_sysdesim_timeline_import_report(
+            path,
+            left_machine_alias='SmokeMachine',
+            left_state_ref='SmokeMachine.Idle',
+            right_machine_alias='SmokeMachine',
+            right_state_ref='SmokeMachine.Idle',
+            observation_scope='both',
+        )
+        dialog = DialogSysdesimValidate(None, [])
+        dialog.resize(900, 650)
+        dialog.show()
+        app.processEvents()
+
+        dialog._populate_witness_table(report)
+        assert dialog.table_witness.rowCount() >= 2, 'SAT witness table did not populate rows'
+        assert dialog.table_witness.columnCount() >= 4, 'SAT witness table did not populate columns'
+        co_values = [
+            dialog.table_witness.item(row, dialog.table_witness.columnCount() - 1).text()
+            for row in range(dialog.table_witness.rowCount())
+        ]
+        assert 'start' in co_values, f'SAT witness table missing start marker: {co_values}'
+
+        overlay = build_overlay_from_diagnostics(
+            phase10_report=phase10,
+            diagnostics=diagnostics,
+            coexistence_timeline=(report.get('phase11') or {}).get('timeline_report'),
+            include_state_cells=True,
+        )
+        dialog._last_svg_text = render_sysdesim_timeline_svg(phase10_report=phase10, overlay=overlay)
+        dialog._load_svg_preview()
+        app.processEvents()
+        base = dialog._diagram_base_size
+        shown = dialog.svg_diagram.size()
+        assert base.isValid() and shown.isValid(), 'sequence diagram preview size is invalid'
+        assert shown.width() > 0 and shown.height() > 0, 'sequence diagram preview collapsed'
+        base_ratio = float(base.width()) / float(base.height())
+        shown_ratio = float(shown.width()) / float(shown.height())
+        assert abs(base_ratio - shown_ratio) < 0.02, (
+            f'sequence diagram aspect ratio changed: base={base_ratio:.4f} shown={shown_ratio:.4f}'
+        )
+        _print(
+            '    SysDeSim validate dialog OK: witness_rows={} diagram={}x{} -> {}x{}'.format(
+                dialog.table_witness.rowCount(),
+                base.width(),
+                base.height(),
+                shown.width(),
+                shown.height(),
+            )
+        )
+    finally:
+        if dialog is not None:
+            dialog.close()
+        try:
+            os.unlink(path)
+        except OSError:
+            pass
+
+
 def _check_event_loop_pumps() -> None:
     """Drive the QApplication event loop briefly to confirm the GUI
     layer actually runs (paints, processes events) and exits cleanly."""
@@ -517,6 +592,7 @@ def _build_checks() -> List[Tuple[str, CheckFn]]:
         ('MiniRacer V8 + WebAssembly',     _check_mini_racer_v8),
         ('pyfcstm render bundle loadable', _check_pyfcstm_render_bundle),
         ('SysDeSim static + SVG/PNG render', _check_sysdesim_static_and_render),
+        ('SysDeSim validate dialog views', _check_sysdesim_validate_dialog_views),
         ('Qt event loop pumps',            _check_event_loop_pumps),
     ])
     return checks
