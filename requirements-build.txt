@@ -1,2 +1,5 @@
-pyinstaller>=6.0
+pip<23.1
+setuptools<69
+wheel<0.43
+pyinstaller>=5.13,<6
 pyinstaller-hooks-contrib>=2024.7

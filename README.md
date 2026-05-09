@@ -27,12 +27,12 @@
 | 项目 | 值 |
 |------|----|
 | 入口 | `python main.py` |
-| Python 版本 | **3.10** （CI 默认 3.10，本仓库内 venv 也是 3.10） |
-| GUI 框架 | PyQt5 ≥ 5.15 |
+| Python 版本 | **3.7**（CI 与本地兼容环境使用 3.7.17） |
+| GUI 框架 | PyQt5 5.15.9 |
 | 状态机后端 | `pyfcstm`（当前依赖分支：`dev/damnx`） |
 | PlantUML | 仓库内 `docs/plantuml.jar`，**Java 运行时不打包，目标机自带** |
 | 求解器 | `z3-solver`，二进制 libz3 通过 PyInstaller runtime hook 暴露 |
-| 打包工具 | PyInstaller 6.x，spec 文件 `main.spec` 同时支持 onefile / onedir |
+| 打包工具 | PyInstaller 5.x，spec 文件 `main.spec` 同时支持 onefile / onedir |
 | CI 平台 | GitHub Actions ， 矩阵覆盖 `ubuntu-22.04` / `windows-2022` / `macos-15-intel`（全部 x86_64，全部免费 runner） |
 | 目标运行环境 | Linux: Ubuntu 22.04.5 LTS x86_64 + `default-jre`（OpenJDK 11）；Win/Mac: 系统自带 Java |
 
@@ -67,7 +67,7 @@
 
 ### 从源码开发时
 
-- Python **3.10**（其它 3.8–3.12 也基本能跑，但 venv 是按 3.10 拉的依赖锁定）
+- Python **3.7.17**（不要用过旧的 3.7.1，本依赖栈里会触发 z3 / ctypes / Qt 相关崩溃）
 - 上面的全部 Qt / Java / graphviz 系统依赖
 - `make`（用于触发 `app/ui/Makefile` 的 `pyuic5` 转换）
 
@@ -104,7 +104,7 @@ cd fcstm-ui
 带显示器的开发机直接双击 / 在 shell 里跑就行；无显示器的机器（CI、SSH 远程）用：
 
 ```bash
-QT_QPA_PLATFORM=offscreen ./fcstm-ui --smoke-test    # 75 项自检
+QT_QPA_PLATFORM=offscreen ./fcstm-ui --smoke-test    # 76 项自检
 xvfb-run -a ./fcstm-ui                                # 在虚拟 X server 里跑真实 GUI
 ```
 
@@ -127,12 +127,10 @@ sudo apt-get install -y \
     default-jre-headless graphviz
 
 # 3. venv + Python 依赖
-python3.10 -m venv venv
-source venv/bin/activate
-pip install -U pip wheel setuptools
-pip install -r requirements.txt
-pip install -r requirements-test.txt
-pip install -r requirements-build.txt    # 仅打包时需要
+python3.7 -m venv venv37
+source venv37/bin/activate
+python -m pip install "pip<23.1" "setuptools<69" "wheel<0.43"
+python -m pip install -U -r requirements-build.txt -r requirements-test.txt -r requirements.txt
 
 # 4. 把 Qt Designer 的 .ui 文件编译成 *_ui.py
 make -C app/ui build
@@ -174,7 +172,7 @@ QT_QPA_PLATFORM=offscreen ./dist/fcstm-ui --smoke-test
 正常输出末尾应该是：
 
 ```
-fcstm-ui smoke test: 75 OK / 0 WARN / 0 FAIL
+fcstm-ui smoke test: 76 OK / 0 WARN / 0 FAIL
 fcstm-ui smoke test: PASSED
 ```
 
@@ -197,7 +195,7 @@ fcstm-ui smoke test: PASSED
 
 - 矩阵：`ubuntu-22.04` / `windows-2022` / `macos-15-intel`，**全部 x86_64**（不打 ARM）。三个 label 都在 GitHub free 矩阵上，无需 paid runner。
 - 装 Qt 系统库 + JRE（Temurin 11，对齐目标机的 OpenJDK 11）。
-- `pip install -r requirements.txt -r requirements-build.txt`。
+- 先固定 Python 3.7 兼容的 pip 工具链，再 `python -m pip install -U -r requirements-build.txt -r requirements-test.txt -r requirements.txt`。
 - 用 `python -m PyQt5.uic.pyuic` 现场编译 `.ui` → `*_ui.py`（这些文件在 `.gitignore` 里）。
 - 跑两轮 PyInstaller：onedir + onefile。
 - 每一轮打完都立刻在同一 runner 上跑 `--smoke-test`，跑通才继续。
@@ -219,7 +217,7 @@ fcstm-ui smoke test: PASSED
 
 ## Smoke Test：最后一道防线
 
-`app/smoke.py` 是 75 个独立的小检查，核心设计原则：
+`app/smoke.py` 是 76 个独立的小检查，核心设计原则：
 
 1. **任何一项失败都不能让其它项跑不下去** —— 每个 check 都包在自己的 try / except 里，最后统一打印 OK / WARN / FAIL 计数。
 2. **入口尽量薄** —— `main.py` 解析 `--smoke-test` 后直接 import `app.smoke`，**绕过** `app/__init__.py`、`app.app` 那些会 eager-import PyQt5 / pyfcstm 的模块，所以即便依赖整个炸了 smoke test 还能启动并输出诊断。
@@ -261,7 +259,7 @@ FCSTM_UI_SMOKE_TEST=1 QT_QPA_PLATFORM=offscreen ./fcstm-ui    # 等价于 --smok
 ├── app/
 │   ├── __init__.py            # 懒加载 run_app
 │   ├── app.py                 # QApplication + 主题
-│   ├── smoke.py               # 75 项自检
+│   ├── smoke.py               # 76 项自检
 │   ├── config/                # 常量 + frozen-aware resource_path
 │   ├── model/                 # UI 侧状态机模型
 │   ├── ui/                    # .ui XML + Makefile (pyuic5 → *_ui.py)
@@ -329,11 +327,11 @@ GitHub Actions 默认 `set -o pipefail`，`head` 关闭 stdin → `ls` 收到 SI
 
 这是 plantumlcli 的兼容性 bug，不是我们的。本仓库的对策：在 `app/utils/plantuml_safe_dump.py` 里写一个 `render_plantuml(plantuml_code, output_path, fmt)`，**直接调 `java -jar plantuml.jar -t<fmt> -o <outdir> <input.puml>`**，把 .puml 写到一个普通的 `tempfile.TemporaryDirectory` 里再跑——既不依赖 `NamedTemporaryFile` 的独占行为，也不依赖 `plantumlcli.LocalPlantuml._generate_uml_data` 的内部实现。Linux/macOS 行为与之前完全一致（PNG 字节相同），Windows 不再炸。`ShowStateGraph.dump_state_graph` 与 `app.utils.plantuml_render_cli` 都改走这条新路径。
 
-### 7. `xcb plugin not found` 与 PyInstaller 6.x 的 system-lib 行为
+### 7. `xcb plugin not found` 与 PyInstaller system-lib 行为
 
 老版本 PyInstaller 默认会跳过一长串"系统提供的"库，因此早期文档里"目标机必须 apt install libxcb-* / libxkbcommon-x11-0 / libfontconfig1 …"的结论曾经是对的。
 
-但 PyInstaller 6.x 已经默认把 PyQt5 platform plugin 真正依赖的 **libxcb 子模块全套 / libxkbcommon / libfontconfig / libfreetype / libstdc++ / libdbus / libpng / libz / libglib** 都自动 collect 进 onedir / onefile，所以那条结论现在过时了。本仓库实测过：本机 build 出 dist/ 后扔到一个**全新 `ubuntu:22.04`、零 `apt install`** 的 docker 容器里，PyQt5 还能起来，挡路的只剩下 **OpenGL / GLX / libX11 / libxcb 本体** 这一组。
+PyInstaller 会把 PyQt5 platform plugin 真正依赖的 **libxcb 子模块全套 / libxkbcommon / libfontconfig / libfreetype / libstdc++ / libdbus / libpng / libz / libglib** 自动 collect 进 onedir / onefile，所以那条结论现在过时了。本仓库实测过：本机 build 出 dist/ 后扔到一个**全新 `ubuntu:22.04`、零 `apt install`** 的 docker 容器里，PyQt5 还能起来，挡路的只剩下 **OpenGL / GLX / libX11 / libxcb 本体** 这一组。
 
 这一组之所以默认不带，是 PyInstaller 维护着一份"system-driver excludelist"——`libGL.so.1` 等通常需要匹配目标机的 GPU 驱动，所以官方默认让目标机自己出。但对一个 **PyQt5 offscreen / 不真正 issue GL draw call** 的应用，把 build runner 上的 `libGL` 带过去**只要保证 dlopen 能拿到符号**就够了。所以 `main.spec` 里我们加了一个 `_collect_linux_system_libs()` helper，从 build 机的 `/usr/lib/x86_64-linux-gnu` 收下面这 10 个 SONAME 并塞进 `binaries`：
 

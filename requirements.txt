@@ -1,7 +1,7 @@
 pyfcstm @ git+https://github.com/HansBug/pyfcstm.git@dev/damnx
 
-PyQt5>=5.15
-PyQt5-sip>=12.13
+PyQt5==5.15.9
+PyQt5-sip==12.12.2
 QtPy>=2.4
 qtawesome>=1.4
 qtmodern>=0.2
@@ -11,6 +11,6 @@ python-docx>=1.1
 
 # These are also pulled in transitively via pyfcstm, but we list
 # them explicitly so that PyInstaller's hooks pick them up reliably.
-hbutils>=0.14
+hbutils>=0.14,<0.15
 plantumlcli>=0.2.0
-z3-solver>=4.12
+z3-solver>=4.12,<=4.15.4

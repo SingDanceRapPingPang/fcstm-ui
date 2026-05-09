@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 env:
-  PYTHON_VERSION: '3.10'
+  PYTHON_VERSION: '3.7'
 
 jobs:
   # ----------------------------------------------------------------------
@@ -88,9 +88,8 @@ jobs:
       - name: Install Python dependencies
         shell: bash
         run: |
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
-          pip install -r requirements-build.txt
+          python -m pip install 'pip<23.1' 'setuptools<69' 'wheel<0.43'
+          python -m pip install -U -r requirements-build.txt -r requirements-test.txt -r requirements.txt
 
       - name: Generate Qt UI Python files
         shell: bash
@@ -154,7 +153,8 @@ jobs:
               with open(run_bat, 'w') as f:
                   f.write('@echo off\r\n')
                   f.write('"%~dp0${{ matrix.onefile_name }}" %*\r\n')
-          archive = os.path.join('out', '${{ matrix.onedir_archive }}'.removesuffix('.zip'))
+          archive_name = '${{ matrix.onedir_archive }}'
+          archive = os.path.join('out', archive_name[:-4] if archive_name.endswith('.zip') else archive_name)
           shutil.make_archive(archive, 'zip', root_dir='dist', base_dir='${{ matrix.artifact_dir_name }}')
           print('zip ->', archive + '.zip', os.path.getsize(archive + '.zip'))
           PY

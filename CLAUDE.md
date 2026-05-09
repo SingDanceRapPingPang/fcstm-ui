@@ -53,15 +53,13 @@ The application **uses** Java at runtime (PlantUML is invoked through `java -jar
 
 ## Setting Up a Local Dev Environment
 
-A `venv` directory is included at the repo root (Python 3.10). Recreate it like this if needed:
+A `venv37` directory can be created at the repo root for Python 3.7 development. Recreate it like this if needed:
 
 ```bash
-python3.10 -m venv venv
-source venv/bin/activate
-pip install -U pip wheel setuptools
-pip install -r requirements.txt
-pip install -r requirements-test.txt
-pip install -r requirements-build.txt
+python3.7 -m venv venv37
+source venv37/bin/activate
+python -m pip install "pip<23.1" "setuptools<69" "wheel<0.43"
+python -m pip install -U -r requirements-build.txt -r requirements-test.txt -r requirements.txt
 make -C app/ui build         # generate *_ui.py from .ui XML
 ```
 

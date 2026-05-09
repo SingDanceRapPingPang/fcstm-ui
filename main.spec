@@ -44,7 +44,7 @@ def _collect_linux_system_libs():
     that PyInstaller does *not* bundle by default but that PyQt5 needs at
     runtime on a clean Ubuntu 22.04 box.
 
-    PyInstaller 6.x already auto-collects the bulk of the Qt platform
+    PyInstaller already auto-collects the bulk of the Qt platform
     plugin's dependencies (libxcb-* sub-libs, libxkbcommon, libfontconfig,
     libfreetype, libstdc++, libdbus, libpng16, libz, …).  What it
     intentionally excludes are the OpenGL / GLX / X11 entry-point
@@ -178,7 +178,6 @@ a = Analysis(
         'PySide6',
     ],
     noarchive=False,
-    optimize=0,
 )
 pyz = PYZ(a.pure)
 
