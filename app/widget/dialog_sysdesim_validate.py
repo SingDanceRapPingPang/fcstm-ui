@@ -150,12 +150,32 @@ class DialogSysdesimValidate(QDialog):
         self.table_diagnostics = QtWidgets.QTableWidget(0, 4)
         self.table_diagnostics.setHorizontalHeaderLabels(["级别", "代码", "来源", "消息"])
         self.table_diagnostics.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.table_diagnostics.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.table_diagnostics.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.table_diagnostics.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.table_diagnostics.setAlternatingRowColors(False)
+        self.table_diagnostics.setWordWrap(False)
+        self.table_diagnostics.verticalHeader().setVisible(False)
         self.table_diagnostics.horizontalHeader().setStretchLastSection(True)
         self.table_diagnostics.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         self.table_diagnostics.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
         self.table_diagnostics.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.table_diagnostics.setStyleSheet(
+            """
+            QTableWidget {
+                gridline-color: #cbd5e1;
+                selection-background-color: transparent;
+                selection-color: #0f172a;
+            }
+            QHeaderView::section {
+                background-color: #334155;
+                color: #ffffff;
+                font-weight: 600;
+                padding: 5px 8px;
+                border: 0;
+                border-right: 1px solid #64748b;
+            }
+            """
+        )
         self.text_diagnostic_detail = QtWidgets.QPlainTextEdit()
         self.text_diagnostic_detail.setReadOnly(True)
         self.text_diagnostic_detail.setFont(QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.FixedFont))
@@ -199,6 +219,7 @@ class DialogSysdesimValidate(QDialog):
         self.combo_left_machine.currentIndexChanged.connect(lambda _index: self._populate_state_combo("left"))
         self.combo_right_machine.currentIndexChanged.connect(lambda _index: self._populate_state_combo("right"))
         self.table_diagnostics.itemSelectionChanged.connect(self._show_selected_diagnostic)
+        self.table_diagnostics.itemClicked.connect(self._show_clicked_diagnostic)
         self.button_run.clicked.connect(self._run_validate)
         self.button_save_report.clicked.connect(self._save_report)
         self.button_export_svg.clicked.connect(self._export_svg)
@@ -417,17 +438,51 @@ class DialogSysdesimValidate(QDialog):
             for col, value in enumerate(values):
                 item = QtWidgets.QTableWidgetItem(str(value))
                 item.setData(Qt.UserRole, diag)
+                self._style_diagnostic_item(item, diag, col)
                 self.table_diagnostics.setItem(row, col, item)
         if diagnostics:
-            self.table_diagnostics.selectRow(0)
+            self._show_diagnostic_detail(diagnostics[0])
+
+    def _style_diagnostic_item(self, item, diag, col: int):
+        level = (getattr(diag, "level", "") or "").lower()
+        font = item.font()
+        if level == "error":
+            row_bg = QtGui.QColor("#fef2f2")
+            level_bg = QtGui.QColor("#dc2626")
+            level_fg = QtGui.QColor("#ffffff")
+            text_fg = QtGui.QColor("#7f1d1d")
+        elif level == "warning":
+            row_bg = QtGui.QColor("#fffbeb")
+            level_bg = QtGui.QColor("#f59e0b")
+            level_fg = QtGui.QColor("#111827")
+            text_fg = QtGui.QColor("#78350f")
+        else:
+            row_bg = QtGui.QColor("#f8fafc")
+            level_bg = QtGui.QColor("#64748b")
+            level_fg = QtGui.QColor("#ffffff")
+            text_fg = QtGui.QColor("#334155")
+
+        item.setBackground(level_bg if col == 0 else row_bg)
+        item.setForeground(level_fg if col == 0 else text_fg)
+        if col == 0:
+            font.setBold(True)
+            item.setText(str(item.text()).upper())
+            item.setTextAlignment(Qt.AlignCenter)
+        item.setFont(font)
+
+    def _show_clicked_diagnostic(self, item):
+        diag = item.data(Qt.UserRole) if item is not None else None
+        self._show_diagnostic_detail(diag)
 
     def _show_selected_diagnostic(self):
         rows = self.table_diagnostics.selectionModel().selectedRows()
         if not rows:
-            self.text_diagnostic_detail.clear()
             return
         item = self.table_diagnostics.item(rows[0].row(), 0)
         diag = item.data(Qt.UserRole) if item is not None else None
+        self._show_diagnostic_detail(diag)
+
+    def _show_diagnostic_detail(self, diag):
         if diag is None:
             self.text_diagnostic_detail.clear()
             return
