@@ -105,7 +105,28 @@ binaries += _collect_linux_system_libs()
 # z3-solver: bundle the native libz3 next to the python wrapper.  The
 # runtime hook (pyinstaller_rthook_z3.py) sets Z3_LIBRARY_PATH so the
 # python wrapper can find the right .so/.dll/.dylib at startup.
-binaries += collect_dynamic_libs('z3', destdir='z3/lib')
+def _collect_z3_dynamic_libs():
+    """Collect only the native z3 library for the current platform.
+
+    Some z3-solver wheels carry native libraries for multiple platforms in
+    the same package directory.  PyInstaller 5's macOS bindepend tries to
+    parse every collected binary as Mach-O, so a stray Windows ``libz3.dll``
+    aborts the build.  Keep the bundle platform-specific.
+    """
+    if sys.platform == 'win32':
+        suffixes = ('.dll',)
+    elif sys.platform == 'darwin':
+        suffixes = ('.dylib',)
+    else:
+        suffixes = ('.so',)
+    return [
+        item
+        for item in collect_dynamic_libs('z3', destdir='z3/lib')
+        if item[0].lower().endswith(suffixes)
+    ]
+
+
+binaries += _collect_z3_dynamic_libs()
 
 # pyfcstm ships data files (DSL grammar tokens, packaged template zips,
 # verify design notes, etc.) inside its package; PyInstaller does not pick
