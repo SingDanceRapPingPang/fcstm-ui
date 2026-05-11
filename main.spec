@@ -206,9 +206,12 @@ if plantuml_jar.exists():
 
 # Sample DSL file used by the smoke-test routine to do an end-to-end
 # parse + plantuml render check inside the frozen build.
-sample_dsl = Path('docs/StateMachine.fcstm')
-if sample_dsl.exists():
-    datas.append((str(sample_dsl), 'docs'))
+for sample_dsl in [
+    Path('docs/StateMachine.fcstm'),
+    Path('docs/topology_controller_all_in_one.fcstm'),
+]:
+    if sample_dsl.exists():
+        datas.append((str(sample_dsl), 'docs'))
 
 # Help PyInstaller discover modules that get imported via string lookups
 # inside pyfcstm / hbutils, plus a handful of stdlib modules that PyQt5

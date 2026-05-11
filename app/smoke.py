@@ -98,6 +98,14 @@ PRIMARY_MODULES: List[str] = [
     'pyfcstm.verify',
     'pyfcstm.verify.search',
     'pyfcstm.solver',
+    'pyfcstm.utils',
+    'pyfcstm.topology',
+    'pyfcstm.topology.reachability',
+    'pyfcstm.topology.finiteness',
+    'pyfcstm.topology.inevitability',
+    'pyfcstm.topology.graph',
+    'pyfcstm.topology.render',
+    'pyfcstm.topology.types',
     'pyfcstm.convert.sysdesim',
     'pyfcstm.convert.sysdesim.render',
     'pyfcstm.convert.sysdesim.static_check',
@@ -128,6 +136,7 @@ PRIMARY_MODULES: List[str] = [
     'app.widget.dialog_show_graph',
     'app.widget.dialog_show_error',
     'app.widget.dialog_reachability_val',
+    'app.widget.dialog_topology_verify',
     'app.widget.dialog_add_lifecycle',
     'app.widget.dialog_add_transition',
     'app.widget.dialog_simulate',
@@ -247,6 +256,19 @@ def _resolve_sample_fcstm() -> str:
     raise FileNotFoundError(f'no sample DSL file found, tried: {candidates}')
 
 
+def _resolve_topology_sample_fcstm() -> str:
+    from app.config.meta import resource_path
+
+    candidates = [
+        resource_path('docs/topology_controller_all_in_one.fcstm'),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'docs', 'topology_controller_all_in_one.fcstm'),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return os.path.abspath(p)
+    raise FileNotFoundError(f'no topology sample DSL file found, tried: {candidates}')
+
+
 def _check_sample_dsl_present() -> None:
     sample = _resolve_sample_fcstm()
     size = os.path.getsize(sample)
@@ -362,6 +384,129 @@ def _check_pyfcstm_simulate_runtime() -> None:
     rt = SimulationRuntime(sm)
     assert rt is not None, 'SimulationRuntime() returned None'
     _print(f'    SimulationRuntime created for {type(sm).__name__}')
+
+
+def _check_pyfcstm_utils_identifier_runtime() -> None:
+    from pyfcstm.utils import normalize, to_c_identifier, to_java_identifier, to_python_identifier
+
+    assert normalize('Hello World!') == 'Hello_World'
+    assert normalize('123 Test') == '123_Test'
+    assert normalize('class', keyword_safe_for=['python']) == 'class_'
+    assert to_python_identifier('123 Test') == '_123_Test'
+    assert to_python_identifier('class') == 'class_'
+    assert to_java_identifier('class') == 'class_'
+    assert to_c_identifier('int') == 'int_'
+    assert to_c_identifier('控制 器') == 'Kong_Zhi_Qi'
+    _print('    pyfcstm utils identifier helpers OK')
+
+
+_SMOKE_TOPOLOGY_DSL = """
+state Controller named "控制器" {
+    state Startup named "启动阶段" {
+        state PowerOn named "上电";
+        state SelfCheck named "自检";
+        state Fault named "异常";
+        [*] -> PowerOn;
+        PowerOn -> SelfCheck;
+        SelfCheck -> [*];
+        SelfCheck -> Fault;
+        Fault -> PowerOn;
+        Fault -> [*];
+    }
+    state Running named "运行阶段" {
+        state Idle named "等待";
+        state Process named "处理";
+        state Emit named "输出";
+        [*] -> Idle;
+        Idle -> Process;
+        Process -> Emit;
+        Process -> Idle;
+        Emit -> Idle;
+        Emit -> [*];
+    }
+    state Shutdown named "关闭阶段" {
+        state Save named "保存数据";
+        state PowerOff named "断电";
+        [*] -> Save;
+        Save -> PowerOff;
+        PowerOff -> [*];
+    }
+    state Error named "故障";
+    state Halt named "紧急停机";
+    [*] -> Startup;
+    Startup -> Running;
+    Running -> Shutdown;
+    Running -> Error;
+    Error -> Halt;
+    Halt -> [*];
+    Shutdown -> [*];
+}
+"""
+
+
+def _build_smoke_topology_model():
+    from pyfcstm.dsl import parse_with_grammar_entry
+    from pyfcstm.model import parse_dsl_node_to_state_machine
+
+    try:
+        with open(_resolve_topology_sample_fcstm(), 'r', encoding='utf-8') as f:
+            dsl_code = f.read()
+    except FileNotFoundError:
+        dsl_code = _SMOKE_TOPOLOGY_DSL
+    ast_node = parse_with_grammar_entry(dsl_code, 'state_machine_dsl')
+    return parse_dsl_node_to_state_machine(ast_node)
+
+
+def _check_pyfcstm_topology_runtime() -> None:
+    from pyfcstm.topology import (
+        build_topology_graph,
+        check_finiteness,
+        check_inevitability,
+        check_reachability,
+        render_topology_png,
+        render_topology_svg,
+    )
+
+    sample = _resolve_topology_sample_fcstm()
+    size = os.path.getsize(sample)
+    assert size > 500, f'topology sample DSL too small: {size}'
+    sm = _build_smoke_topology_model()
+    graph = build_topology_graph(sm)
+    reach_ok = check_reachability(sm, target='Controller.Shutdown.PowerOff', graph=graph)
+    reach_fail = check_reachability(
+        sm,
+        target='Controller.Startup.PowerOn',
+        source='Controller.Shutdown.PowerOff',
+        graph=graph,
+    )
+    finite_ok = check_finiteness(sm, source='Controller.Shutdown.Save', graph=graph)
+    finite_fail = check_finiteness(sm, graph=graph)
+    inevitability_ok = check_inevitability(
+        sm,
+        target='Controller.Shutdown.PowerOff',
+        source='Controller.Shutdown.Save',
+        graph=graph,
+    )
+    inevitability_fail = check_inevitability(sm, target='Controller.Shutdown.Save', graph=graph)
+    assert reach_ok.reachable is True, 'topology reachability expected Controller.Shutdown.PowerOff reachable'
+    assert reach_fail.reachable is False, 'topology reachability expected Controller.Startup.PowerOn unreachable from PowerOff'
+    assert finite_ok.finite is True, 'topology finiteness expected finite from Controller.Shutdown.Save'
+    assert finite_fail.finite is False, 'topology finiteness expected default-source trap cycle'
+    assert getattr(finite_fail.counterexample, 'kind', None) == 'trap_cycle', 'topology finiteness expected trap_cycle'
+    assert inevitability_ok.inevitable is True, 'topology inevitability expected PowerOff inevitable from Save'
+    assert inevitability_fail.inevitable is False, 'topology inevitability expected Save avoidable from default source'
+    assert getattr(inevitability_fail.counterexample, 'kind', None) == 'alt_end', 'topology inevitability expected alt_end'
+    svg = render_topology_svg(sm, inevitability_fail, graph=graph)
+    assert isinstance(svg, str) and '<svg' in svg and '</svg>' in svg, 'bad topology SVG output'
+    png = render_topology_png(sm, finite_fail, graph=graph)
+    assert png[:8] == b'\x89PNG\r\n\x1a\n', 'bad topology PNG magic'
+    width, height = struct.unpack('>II', png[16:24])
+    assert width > 0 and height > 0, f'bad topology PNG dimensions: {width}x{height}'
+    _print(
+        '    topology checks/render OK: sample={} 6 scenarios leaves={} edges={} svg={} png={} {}x{}'.format(
+            os.path.basename(sample), len(graph.leaves), len(graph.edges), len(svg), len(png), width, height,
+        )
+    )
 
 
 _SMOKE_SYSDESIM_XMI = """<?xml version="1.0" encoding="UTF-8"?>
@@ -553,6 +698,50 @@ def _check_sysdesim_validate_dialog_views() -> None:
             pass
 
 
+def _check_topology_verify_dialog_views() -> None:
+    from PyQt5.QtWidgets import QApplication
+    from app.widget.dialog_topology_verify import DialogTopologyVerify
+    from app.utils.dsl_to_ui import convert_state_machine_to_state_manager
+    from pyfcstm.dsl import parse_with_grammar_entry
+
+    with open(_resolve_topology_sample_fcstm(), 'r', encoding='utf-8') as f:
+        dsl_code = f.read()
+    ast_node = parse_with_grammar_entry(dsl_code, 'state_machine_dsl')
+    manager = convert_state_machine_to_state_manager(ast_node)
+    app = QApplication.instance() or QApplication(sys.argv)
+    dialog = DialogTopologyVerify(None, [manager], manager)
+    try:
+        dialog.resize(900, 650)
+        dialog.show()
+        app.processEvents()
+
+        dialog._select_combo_path(dialog.combo_target_state, 'Controller.Shutdown.Save')
+        dialog.combo_check.setCurrentIndex(dialog.combo_check.findData('inevitability'))
+        dialog._run_check()
+        app.processEvents()
+
+        assert dialog._last_result is not None, 'topology dialog did not produce a result'
+        assert getattr(dialog._last_result, 'inevitable', None) is False, 'dialog inevitability expected avoidable'
+        assert getattr(dialog._last_result.counterexample, 'kind', None) == 'alt_end', 'dialog inevitability expected alt_end'
+        assert dialog.table_result.rowCount() >= 2, 'topology result table did not populate rows'
+        assert dialog._last_svg_text and '<svg' in dialog._last_svg_text, 'topology dialog missing SVG'
+        base = dialog._diagram_base_size
+        shown = dialog.svg_diagram.size()
+        assert base.isValid() and shown.isValid(), 'topology diagram preview size is invalid'
+        assert shown.width() > 0 and shown.height() > 0, 'topology diagram preview collapsed'
+        _print(
+            '    topology dialog OK: rows={} diagram={}x{} -> {}x{}'.format(
+                dialog.table_result.rowCount(),
+                base.width(),
+                base.height(),
+                shown.width(),
+                shown.height(),
+            )
+        )
+    finally:
+        dialog.close()
+
+
 def _check_event_loop_pumps() -> None:
     """Drive the QApplication event loop briefly to confirm the GUI
     layer actually runs (paints, processes events) and exits cleanly."""
@@ -589,10 +778,13 @@ def _build_checks() -> List[Tuple[str, CheckFn]]:
         ('frozen self-dispatch render',    _check_frozen_self_dispatch_render),
         ('z3 import + sat solve',          _check_z3_solve),
         ('pyfcstm simulate runtime',       _check_pyfcstm_simulate_runtime),
+        ('pyfcstm utils identifier runtime', _check_pyfcstm_utils_identifier_runtime),
+        ('pyfcstm topology runtime',       _check_pyfcstm_topology_runtime),
         ('MiniRacer V8 + WebAssembly',     _check_mini_racer_v8),
         ('pyfcstm render bundle loadable', _check_pyfcstm_render_bundle),
         ('SysDeSim static + SVG/PNG render', _check_sysdesim_static_and_render),
         ('SysDeSim validate dialog views', _check_sysdesim_validate_dialog_views),
+        ('topology validate dialog views',  _check_topology_verify_dialog_views),
         ('Qt event loop pumps',            _check_event_loop_pumps),
     ])
     return checks

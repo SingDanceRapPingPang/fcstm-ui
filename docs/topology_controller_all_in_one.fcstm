@@ -1,0 +1,40 @@
+state Controller named "控制器" {
+    state Startup named "启动阶段" {
+        state PowerOn named "上电";
+        state SelfCheck named "自检";
+        state Fault named "异常";
+        [*] -> PowerOn;
+        PowerOn -> SelfCheck;
+        SelfCheck -> [*];
+        SelfCheck -> Fault;
+        Fault -> PowerOn;
+        Fault -> [*];
+    }
+    state Running named "运行阶段" {
+        state Idle named "等待";
+        state Process named "处理";
+        state Emit named "输出";
+        [*] -> Idle;
+        Idle -> Process;
+        Process -> Emit;
+        Process -> Idle;
+        Emit -> Idle;
+        Emit -> [*];
+    }
+    state Shutdown named "关闭阶段" {
+        state Save named "保存数据";
+        state PowerOff named "断电";
+        [*] -> Save;
+        Save -> PowerOff;
+        PowerOff -> [*];
+    }
+    state Error named "故障";
+    state Halt named "紧急停机";
+    [*] -> Startup;
+    Startup -> Running;
+    Running -> Shutdown;
+    Running -> Error;
+    Error -> Halt;
+    Halt -> [*];
+    Shutdown -> [*];
+}

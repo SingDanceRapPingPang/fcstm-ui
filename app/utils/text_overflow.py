@@ -58,7 +58,7 @@ class _TextOverflowFilter(QtCore.QObject):
 
         flags = int(label.alignment()) | QtCore.Qt.TextSingleLine
         elided = label.fontMetrics().elidedText(text, QtCore.Qt.ElideMiddle, rect.width())
-        color_role = QtGui.QPalette.WindowText if label.isEnabled() else QtGui.QPalette.Disabled
+        color_role = QtGui.QPalette.WindowText
         label.style().drawItemText(
             painter,
             rect,

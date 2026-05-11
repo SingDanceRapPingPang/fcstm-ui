@@ -24,6 +24,7 @@ from .dialog_add_transition import DialogAddTransition
 from .dialog_simulate import DialogSimulate
 from .dialog_exclusive_val import DialogExclusiveVal
 from .dialog_sysdesim_validate import DialogSysdesimValidate
+from .dialog_topology_verify import DialogTopologyVerify
 from app.utils.xml_converter import (
     convert_xml_to_fcstm,
     format_sysdesim_conversion_report_table,
@@ -101,6 +102,8 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.menu_tool.addAction(self.action_exclusive_val)
         self.menu_tool.addAction(self.action_graph_gen)
         self.menu_tool.addAction(self.action_reachability_val)
+        self.action_topology_verify = QtWidgets.QAction("拓扑验证（可达/有穷/必达）", self)
+        self.menu_tool.addAction(self.action_topology_verify)
         self.action_sysdesim_validate = QtWidgets.QAction("SysDeSim时间线验证", self)
         self.menu_tool.addAction(self.action_sysdesim_validate)
 
@@ -110,6 +113,7 @@ class AppMainWindow(QMainWindow, UIMainWindow):
         self.action_graph_gen.triggered.connect(self._graph_gen)
 
         self.action_reachability_val.triggered.connect(self._reachability_validation)
+        self.action_topology_verify.triggered.connect(self._topology_validation)
 
         self.action_simulate.triggered.connect(self._model_simulate)
 
@@ -1005,6 +1009,34 @@ class AppMainWindow(QMainWindow, UIMainWindow):
                 self,
                 "错误",
                 f"可达性验证时发生错误：\n{str(e)}",
+                QtWidgets.QMessageBox.Ok
+            )
+
+    def _topology_validation(self):
+        """纯拓扑可达性、有穷性和必达性验证。"""
+        try:
+            if not self.state_managers:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "警告",
+                    "请先创建或导入状态机！",
+                    QtWidgets.QMessageBox.Ok
+                )
+                return
+
+            dialog = DialogTopologyVerify(
+                self,
+                self.state_managers,
+                self.state_manager,
+                self._get_pro_state(),
+            )
+            dialog.exec_()
+
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "错误",
+                f"拓扑验证时发生错误：\n{str(e)}",
                 QtWidgets.QMessageBox.Ok
             )
 
