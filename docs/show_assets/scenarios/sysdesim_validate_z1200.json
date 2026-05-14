@@ -1,0 +1,29 @@
+{
+  "name": "sysdesim-validate-z1200",
+  "cwd": "/home/zhangshaoang/oo-projects/fcstm-ui",
+  "shell": ["bash", "--noprofile", "--norc", "-i"],
+  "requires": ["python3"],
+  "ttyd": {
+    "fontSize": 16,
+    "typingDelayMs": 10,
+    "cursorBlink": false,
+    "viewport": { "width": 1500, "height": 760, "deviceScaleFactor": 2 },
+    "theme": { "background": "#1a1b26" }
+  },
+  "screenshots": { "autocrop": true, "padding": 18 },
+  "steps": [
+    { "action": "command", "text": "export PS1='\\$ '", "clear_before": true, "wait_for_text": "\\$" },
+    {
+      "action": "command",
+      "text": "venv37/bin/pyfcstm sysdesim validate -i '/home/zhangshaoang/Nutstore/work/20260424文档拷贝/daochu/单个用例_v2_z1200_experiment.xml' --interaction 1 --left-machine-alias StateMachine__Control_region2 --left-state StateMachine.Control.H.M --right-machine-alias StateMachine__Control_region3 --right-state StateMachine.Control.X 2>&1 | sed -n '1,14p' && echo '...' && venv37/bin/pyfcstm sysdesim validate -i '/home/zhangshaoang/Nutstore/work/20260424文档拷贝/daochu/单个用例_v2_z1200_experiment.xml' --interaction 1 --left-machine-alias StateMachine__Control_region2 --left-state StateMachine.Control.H.M --right-machine-alias StateMachine__Control_region3 --right-state StateMachine.Control.X 2>&1 | tail -2",
+      "clear_before": true,
+      "wrap_at_columns": 150,
+      "prompt_columns": 2,
+      "typed_shot": "01-typed",
+      "wait_for_text": "blocking error",
+      "timeout_ms": 60000
+    },
+    { "action": "sleep", "ms": 1500 },
+    { "action": "screenshot", "name": "02-result" }
+  ]
+}

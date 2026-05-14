@@ -155,6 +155,11 @@ class DialogTopologyVerify(QDialog):
 
         diagram_page = QtWidgets.QWidget()
         diagram_layout = QtWidgets.QVBoxLayout(diagram_page)
+        self.label_diagram_hint = QtWidgets.QLabel(
+            "拓扑图会按区域宽度等比缩放；使用滚轮或滚动条查看完整图，右键可保存 PNG/SVG。"
+        )
+        self.label_diagram_hint.setStyleSheet("color: #64748b; padding: 2px 0;")
+        diagram_layout.addWidget(self.label_diagram_hint)
         self.svg_diagram = QSvgWidget()
         self.svg_diagram.setMinimumSize(0, 0)
         self.diagram_scroll = QtWidgets.QScrollArea()
@@ -164,6 +169,7 @@ class DialogTopologyVerify(QDialog):
         self.diagram_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.diagram_scroll.viewport().installEventFilter(self)
         self.diagram_scroll.setWidget(self.svg_diagram)
+        self._install_diagram_context_menu()
         diagram_layout.addWidget(self.diagram_scroll)
         self.tabs_result.addTab(diagram_page, "拓扑图")
 
@@ -196,6 +202,33 @@ class DialogTopologyVerify(QDialog):
         self.button_export_png.clicked.connect(self._export_png)
         self.button_close.clicked.connect(self.reject)
         self._on_check_changed(self.combo_check.currentIndex())
+
+    def _install_diagram_context_menu(self):
+        hint = self.label_diagram_hint.text()
+        for widget in (self.diagram_scroll, self.diagram_scroll.viewport(), self.svg_diagram):
+            widget.setToolTip(hint)
+            widget.setContextMenuPolicy(Qt.CustomContextMenu)
+            widget.customContextMenuRequested.connect(self._show_diagram_context_menu)
+
+    def _show_diagram_context_menu(self, pos):
+        menu = QtWidgets.QMenu(self)
+        save_png_action = menu.addAction("保存为 PNG...")
+        save_svg_action = menu.addAction("保存为 SVG...")
+        save_png_action.setEnabled(self._last_model is not None and self._last_result is not None)
+        save_svg_action.setEnabled(bool(self._last_svg_text))
+        if not save_png_action.isEnabled() and not save_svg_action.isEnabled():
+            empty_action = menu.addAction("暂无可保存的拓扑图")
+            empty_action.setEnabled(False)
+        sender = self.sender()
+        if sender is None:
+            global_pos = self.diagram_scroll.viewport().mapToGlobal(pos)
+        else:
+            global_pos = sender.mapToGlobal(pos)
+        selected = menu.exec_(global_pos)
+        if selected == save_png_action:
+            self._export_png()
+        elif selected == save_svg_action:
+            self._export_svg()
 
     def eventFilter(self, watched, event):
         if watched is self.diagram_scroll.viewport() and event.type() == QEvent.Resize:
@@ -613,6 +646,8 @@ class DialogTopologyVerify(QDialog):
         )
         if not file_path:
             return
+        if not file_path.lower().endswith(".svg"):
+            file_path += ".svg"
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(self._last_svg_text)
 
@@ -628,6 +663,8 @@ class DialogTopologyVerify(QDialog):
         )
         if not file_path:
             return
+        if not file_path.lower().endswith(".png"):
+            file_path += ".png"
         QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             png = render_topology_png(self._last_model, self._last_result, graph=self._last_graph)

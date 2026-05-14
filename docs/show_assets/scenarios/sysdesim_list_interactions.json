@@ -1,0 +1,29 @@
+{
+  "name": "sysdesim-list-interactions",
+  "cwd": "/home/zhangshaoang/oo-projects/fcstm-ui",
+  "shell": ["bash", "--noprofile", "--norc", "-i"],
+  "requires": ["python3"],
+  "ttyd": {
+    "fontSize": 18,
+    "typingDelayMs": 10,
+    "cursorBlink": false,
+    "viewport": { "width": 1500, "height": 320, "deviceScaleFactor": 2 },
+    "theme": { "background": "#1a1b26" }
+  },
+  "screenshots": { "autocrop": true, "padding": 18 },
+  "steps": [
+    { "action": "command", "text": "export PS1='\\$ '", "clear_before": true, "wait_for_text": "\\$" },
+    {
+      "action": "command",
+      "text": "venv37/bin/pyfcstm sysdesim list-interactions -i '/home/zhangshaoang/Nutstore/work/20260424文档拷贝/daochu/单个用例_v2.xml'",
+      "clear_before": true,
+      "wrap_at_columns": 150,
+      "prompt_columns": 2,
+      "typed_shot": "01-typed",
+      "wait_for_text": "lifelines",
+      "timeout_ms": 30000
+    },
+    { "action": "sleep", "ms": 1200 },
+    { "action": "screenshot", "name": "02-result" }
+  ]
+}

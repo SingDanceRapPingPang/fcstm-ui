@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import importlib
 import os
+import signal
 import struct
 import shutil
 import subprocess
@@ -38,6 +39,48 @@ class JavaUnavailable(RuntimeError):
 _FAILURES: List[str] = []
 _WARNINGS: List[str] = []
 
+#: Set of top-level module names whose isolated import failed.  In-process
+#: checks that depend on a broken native binding consult this set via
+#: ``_require_imports(...)`` and skip themselves cleanly instead of
+#: re-triggering the same SIGSEGV/SIGABRT in the parent process.
+_FAILED_IMPORTS = set()
+
+
+def _require_imports(*modnames: str) -> None:
+    failed = [m for m in modnames if m in _FAILED_IMPORTS]
+    if failed:
+        raise RuntimeError(
+            'skipping: prerequisite import(s) already failed: ' + ', '.join(failed)
+        )
+
+
+def _supports_color() -> bool:
+    if os.environ.get('NO_COLOR'):
+        return False
+    if os.environ.get('FORCE_COLOR'):
+        return True
+    try:
+        return bool(sys.stdout.isatty())
+    except Exception:
+        return False
+
+
+_USE_COLOR = _supports_color()
+
+
+def _ansi(code: str, text: str) -> str:
+    if not _USE_COLOR:
+        return text
+    return f'\033[{code}m{text}\033[0m'
+
+
+def _green(text: str) -> str:  return _ansi('32', text)
+def _red(text: str) -> str:    return _ansi('31', text)
+def _yellow(text: str) -> str: return _ansi('33', text)
+def _cyan(text: str) -> str:   return _ansi('36', text)
+def _bold(text: str) -> str:   return _ansi('1', text)
+def _dim(text: str) -> str:    return _ansi('2', text)
+
 
 def _print(msg: str) -> None:
     print(msg, flush=True)
@@ -49,13 +92,13 @@ def _step(idx: int, total: int, name: str, fn: CheckFn) -> None:
         fn()
     except JavaUnavailable as exc:
         _WARNINGS.append(name)
-        _print(f'{label}: WARN ({exc})')
+        _print(f'{label}: {_bold(_yellow("WARN"))} ({exc})')
     except Exception as exc:  # pragma: no cover - smoke-test branch
         _FAILURES.append(name)
-        _print(f'{label}: FAIL ({exc.__class__.__name__}: {exc})')
+        _print(f'{label}: {_bold(_red("FAIL"))} ({_red(exc.__class__.__name__)}: {exc})')
         traceback.print_exc()
     else:
-        _print(f'{label}: OK')
+        _print(f'{label}: {_bold(_green("OK"))}')
 
 
 # ---------------------------------------------------------------------
@@ -148,9 +191,105 @@ PRIMARY_MODULES: List[str] = [
 ]
 
 
+def _import_module_isolated(modname: str) -> None:
+    """Import *modname* in a forked subprocess so a native crash
+    (SIGSEGV / SIGABRT from a broken ``z3-solver`` / ``py_mini_racer``
+    / ``PyQt5`` binding, mismatched glibc, …) turns into an
+    ``ImportError`` instead of taking the whole smoke run down.
+
+    Falls back to an in-process import on platforms without ``os.fork``
+    (Windows). The CI verify stage uses Linux + macOS + Windows; Linux
+    and macOS get the hardened path, Windows keeps the old behaviour.
+    """
+    if not hasattr(os, 'fork'):  # Windows
+        importlib.import_module(modname)
+        return
+
+    r_fd, w_fd = os.pipe()
+    pid = os.fork()
+    if pid == 0:
+        # Child: do the import, write the result (or the exception
+        # message) to the pipe, then leave via os._exit so that no
+        # Python / PyInstaller / Qt cleanup runs in the child.
+        os.close(r_fd)
+        try:
+            importlib.import_module(modname)
+            try:
+                os.write(w_fd, b'ok\n')
+            finally:
+                os.close(w_fd)
+            os._exit(0)
+        except BaseException as exc:
+            try:
+                payload = f'{exc.__class__.__name__}: {exc}'.encode('utf-8', errors='replace')
+                os.write(w_fd, b'fail\n' + payload)
+            except Exception:
+                pass
+            finally:
+                try:
+                    os.close(w_fd)
+                except Exception:
+                    pass
+            os._exit(1)
+
+    # Parent: drain the pipe (bounded) and reap the child.
+    os.close(w_fd)
+    try:
+        buf = bytearray()
+        while True:
+            chunk = os.read(r_fd, 65536)
+            if not chunk:
+                break
+            buf.extend(chunk)
+            if len(buf) >= 65536:
+                break
+    finally:
+        try:
+            os.close(r_fd)
+        except Exception:
+            pass
+
+    _, status = os.waitpid(pid, 0)
+    if os.WIFEXITED(status):
+        exit_code = os.WEXITSTATUS(status)
+        if exit_code == 0:
+            # Child said the import is fine. Mirror it in the parent so
+            # that future fork-isolated imports inherit the loaded module
+            # via copy-on-write rather than reloading from scratch every
+            # time.  If the parent-side import surprises us (very rare,
+            # would indicate a non-deterministic native binding), let the
+            # exception bubble through as a normal FAIL.
+            importlib.import_module(modname)
+            return
+        if buf.startswith(b'fail\n'):
+            raise ImportError(buf[5:].decode('utf-8', errors='replace'))
+        raise ImportError(f'subprocess exited {exit_code} with no diagnostic')
+    if os.WIFSIGNALED(status):
+        sig = os.WTERMSIG(status)
+        try:
+            sig_name = signal.Signals(sig).name  # type: ignore[attr-defined]
+        except Exception:
+            sig_name = f'signal {sig}'
+        raise ImportError(
+            f'native crash on `import {modname}` ({sig_name}); '
+            f'usually a broken extension binding (incompatible glibc / '
+            f'missing system library / wheel built for a different cpu) — '
+            f'reinstall the offending package'
+        )
+    raise ImportError(f'subprocess exited with unrecognised status 0x{status:x}')
+
+
 def _make_module_check(modname: str) -> CheckFn:
     def _check() -> None:
-        importlib.import_module(modname)
+        try:
+            _import_module_isolated(modname)
+        except BaseException:
+            # Remember the broken top-level package so that downstream
+            # in-process checks can ``_require_imports(...)`` and skip
+            # themselves instead of re-triggering the same crash.
+            _FAILED_IMPORTS.add(modname)
+            _FAILED_IMPORTS.add(modname.split('.', 1)[0])
+            raise
     _check.__name__ = f'_check_module_{modname.replace(".", "_")}'
     return _check
 
@@ -167,11 +306,13 @@ def _check_python_runtime() -> None:
 
 
 def _check_pyqt_versions() -> None:
+    _import_module_isolated('PyQt5.QtCore')
     from PyQt5 import QtCore
     _print(f'    Qt={QtCore.QT_VERSION_STR} sip={QtCore.PYQT_VERSION_STR}')
 
 
 def _check_qtawesome_assets() -> None:
+    _import_module_isolated('qtawesome')
     import qtawesome
     pkg_dir = os.path.dirname(os.path.abspath(qtawesome.__file__))
     fonts_dir = os.path.join(pkg_dir, 'fonts')
@@ -182,6 +323,7 @@ def _check_qtawesome_assets() -> None:
 
 
 def _check_main_window_constructible() -> None:
+    _require_imports('app.widget.main_window')
     from PyQt5.QtWidgets import QApplication
     from app.widget import AppMainWindow
 
@@ -361,6 +503,7 @@ def _check_frozen_self_dispatch_render() -> None:
 
 
 def _check_z3_solve() -> None:
+    _require_imports('z3')
     import z3
 
     x = z3.Int('x')
@@ -373,6 +516,7 @@ def _check_z3_solve() -> None:
 
 
 def _check_pyfcstm_simulate_runtime() -> None:
+    _require_imports('z3', 'pyfcstm.simulate', 'pyfcstm.dsl', 'pyfcstm.model')
     from pyfcstm.dsl import parse_with_grammar_entry
     from pyfcstm.model import parse_dsl_node_to_state_machine
     from pyfcstm.simulate import SimulationRuntime
@@ -458,6 +602,7 @@ def _build_smoke_topology_model():
 
 
 def _check_pyfcstm_topology_runtime() -> None:
+    _require_imports('py_mini_racer', 'pyfcstm.topology')
     from pyfcstm.topology import (
         build_topology_graph,
         check_finiteness,
@@ -553,6 +698,7 @@ def _write_smoke_sysdesim_xml() -> str:
 
 
 def _check_mini_racer_v8() -> None:
+    _require_imports('py_mini_racer')
     from py_mini_racer import MiniRacer
 
     ctx = MiniRacer()
@@ -574,6 +720,7 @@ def _check_mini_racer_v8() -> None:
 
 
 def _check_pyfcstm_render_bundle() -> None:
+    _require_imports('py_mini_racer', 'pyfcstm.convert.sysdesim')
     import pyfcstm.convert.sysdesim as sysdesim_pkg
     from pyfcstm.convert.sysdesim import render as render_module
 
@@ -589,6 +736,7 @@ def _check_pyfcstm_render_bundle() -> None:
 
 
 def _check_sysdesim_static_and_render() -> None:
+    _require_imports('py_mini_racer', 'pyfcstm.convert.sysdesim')
     from pyfcstm.convert.sysdesim import (
         build_overlay_from_diagnostics,
         build_sysdesim_phase10_report,
@@ -624,6 +772,8 @@ def _check_sysdesim_static_and_render() -> None:
 
 
 def _check_sysdesim_validate_dialog_views() -> None:
+    _require_imports('py_mini_racer', 'pyfcstm.convert.sysdesim', 'app.widget.dialog_sysdesim_validate')
+    from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import QApplication
     from app.widget.dialog_sysdesim_validate import DialogSysdesimValidate
     from pyfcstm.convert.sysdesim import (
@@ -675,6 +825,12 @@ def _check_sysdesim_validate_dialog_views() -> None:
         shown = dialog.svg_diagram.size()
         assert base.isValid() and shown.isValid(), 'sequence diagram preview size is invalid'
         assert shown.width() > 0 and shown.height() > 0, 'sequence diagram preview collapsed'
+        assert '右键' in dialog.label_diagram_hint.text(), 'sequence diagram missing visible save hint'
+        assert '滚动' in dialog.diagram_scroll.toolTip(), 'sequence diagram missing scroll tooltip'
+        assert dialog.svg_diagram.contextMenuPolicy() == Qt.CustomContextMenu, 'sequence diagram missing SVG context menu'
+        assert dialog.diagram_scroll.viewport().contextMenuPolicy() == Qt.CustomContextMenu, (
+            'sequence diagram missing viewport context menu'
+        )
         base_ratio = float(base.width()) / float(base.height())
         shown_ratio = float(shown.width()) / float(shown.height())
         assert abs(base_ratio - shown_ratio) < 0.02, (
@@ -698,7 +854,31 @@ def _check_sysdesim_validate_dialog_views() -> None:
             pass
 
 
+def _check_state_graph_dialog_affordances() -> None:
+    _require_imports('app.widget.dialog_show_graph')
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QApplication
+    from app.widget.dialog_show_graph import DialogShowGraph
+
+    app = QApplication.instance() or QApplication(sys.argv)
+    dialog = DialogShowGraph(None, [])
+    try:
+        dialog.resize(900, 650)
+        dialog.show()
+        app.processEvents()
+
+        assert '右键' in dialog.label_graph_hint.text(), 'state graph missing visible save hint'
+        assert '滚轮' in dialog.graphics_view_show_graph.toolTip(), 'state graph missing zoom tooltip'
+        assert dialog.graphics_view_show_graph.viewport().contextMenuPolicy() == Qt.CustomContextMenu, (
+            'state graph missing viewport context menu'
+        )
+    finally:
+        dialog.close()
+
+
 def _check_topology_verify_dialog_views() -> None:
+    _require_imports('py_mini_racer', 'pyfcstm.topology', 'app.widget.dialog_topology_verify')
+    from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import QApplication
     from app.widget.dialog_topology_verify import DialogTopologyVerify
     from app.utils.dsl_to_ui import convert_state_machine_to_state_manager
@@ -729,6 +909,12 @@ def _check_topology_verify_dialog_views() -> None:
         shown = dialog.svg_diagram.size()
         assert base.isValid() and shown.isValid(), 'topology diagram preview size is invalid'
         assert shown.width() > 0 and shown.height() > 0, 'topology diagram preview collapsed'
+        assert '右键' in dialog.label_diagram_hint.text(), 'topology diagram missing visible save hint'
+        assert '滚动条' in dialog.diagram_scroll.toolTip(), 'topology diagram missing pan/scroll tooltip'
+        assert dialog.svg_diagram.contextMenuPolicy() == Qt.CustomContextMenu, 'topology diagram missing SVG context menu'
+        assert dialog.diagram_scroll.viewport().contextMenuPolicy() == Qt.CustomContextMenu, (
+            'topology diagram missing viewport context menu'
+        )
         _print(
             '    topology dialog OK: rows={} diagram={}x{} -> {}x{}'.format(
                 dialog.table_result.rowCount(),
@@ -745,10 +931,15 @@ def _check_topology_verify_dialog_views() -> None:
 def _check_event_loop_pumps() -> None:
     """Drive the QApplication event loop briefly to confirm the GUI
     layer actually runs (paints, processes events) and exits cleanly."""
+    _require_imports('PyQt5.QtCore', 'app.widget.main_window')
     from PyQt5.QtCore import QTimer
 
     app = globals().get('_smoke_app')
-    assert app is not None, 'main window check did not create a QApplication'
+    if app is None:
+        raise RuntimeError(
+            'skipping: main window check did not create a QApplication '
+            '(probably because an earlier prerequisite import failed)'
+        )
     QTimer.singleShot(500, app.quit)
     rc = app.exec_()
     assert rc == 0, f'app.exec_() returned {rc}'
@@ -784,6 +975,7 @@ def _build_checks() -> List[Tuple[str, CheckFn]]:
         ('pyfcstm render bundle loadable', _check_pyfcstm_render_bundle),
         ('SysDeSim static + SVG/PNG render', _check_sysdesim_static_and_render),
         ('SysDeSim validate dialog views', _check_sysdesim_validate_dialog_views),
+        ('state graph dialog affordances',  _check_state_graph_dialog_affordances),
         ('topology validate dialog views',  _check_topology_verify_dialog_views),
         ('Qt event loop pumps',            _check_event_loop_pumps),
     ])
@@ -804,13 +996,13 @@ def run_smoke_test() -> int:
         checks = _build_checks()
     except Exception as exc:
         traceback.print_exc()
-        _print(f'fcstm-ui smoke test: FAILED to build check list ({exc!r})')
+        _print(f'{_cyan("fcstm-ui smoke test:")} {_bold(_red("FAILED"))} to build check list ({exc!r})')
         return 2
 
     total = len(checks)
-    _print(f'fcstm-ui smoke test: running {total} checks')
-    _print(f'  cwd={os.getcwd()}')
-    _print(f'  argv={sys.argv}')
+    _print(_cyan(f'fcstm-ui smoke test: running {total} checks'))
+    _print(_dim(f'  cwd={os.getcwd()}'))
+    _print(_dim(f'  argv={sys.argv}'))
 
     for idx, (name, fn) in enumerate(checks, start=1):
         # _step itself catches inside; this outer guard is paranoid
@@ -820,25 +1012,32 @@ def run_smoke_test() -> int:
             _step(idx, total, name, fn)
         except BaseException as exc:  # pragma: no cover
             _FAILURES.append(name)
-            _print(f'[{idx:>2}/{total}] {name}: HARD-FAIL ({exc!r})')
+            _print(f'[{idx:>2}/{total}] {name}: {_bold(_red("HARD-FAIL"))} ({exc!r})')
             traceback.print_exc()
 
     ok = total - len(_FAILURES) - len(_WARNINGS)
-    _print(f'fcstm-ui smoke test: {ok} OK / {len(_WARNINGS)} WARN / {len(_FAILURES)} FAIL')
+    _print(
+        '{header} {ok_part} / {warn_part} / {fail_part}'.format(
+            header=_cyan('fcstm-ui smoke test:'),
+            ok_part=_green(f'{ok} OK'),
+            warn_part=_yellow(f'{len(_WARNINGS)} WARN'),
+            fail_part=_red(f'{len(_FAILURES)} FAIL'),
+        )
+    )
 
     if _WARNINGS:
-        _print('  warnings:')
+        _print(_yellow('  warnings:'))
         for name in _WARNINGS:
-            _print(f'    - {name}')
+            _print(_yellow(f'    - {name}'))
 
     if _FAILURES:
-        _print('  failures:')
+        _print(_red('  failures:'))
         for name in _FAILURES:
-            _print(f'    - {name}')
-        _print('fcstm-ui smoke test: FAILED')
+            _print(_red(f'    - {name}'))
+        _print(f'{_cyan("fcstm-ui smoke test:")} {_bold(_red("FAILED"))}')
         return 1
 
-    _print('fcstm-ui smoke test: PASSED')
+    _print(f'{_cyan("fcstm-ui smoke test:")} {_bold(_green("PASSED"))}')
     return 0
 
 

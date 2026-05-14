@@ -1,0 +1,29 @@
+{
+  "name": "topology-finite-ok",
+  "cwd": "/home/zhangshaoang/oo-projects/fcstm-ui",
+  "shell": ["bash", "--noprofile", "--norc", "-i"],
+  "requires": ["python3"],
+  "ttyd": {
+    "fontSize": 18,
+    "typingDelayMs": 12,
+    "cursorBlink": true,
+    "viewport": { "width": 1500, "height": 360, "deviceScaleFactor": 2 },
+    "theme": { "background": "#1a1b26" }
+  },
+  "screenshots": { "autocrop": true, "padding": 18 },
+  "steps": [
+    { "action": "command", "text": "export PS1='\\$ '", "clear_before": true, "wait_for_text": "\\$" },
+    {
+      "action": "command",
+      "text": "venv37/bin/pyfcstm topology finite -i docs/topology_controller_all_in_one.fcstm -s Controller.Shutdown.Save",
+      "clear_before": true,
+      "wrap_at_columns": 150,
+      "prompt_columns": 2,
+      "typed_shot": "01-typed",
+      "wait_for_text": "finite",
+      "timeout_ms": 20000
+    },
+    { "action": "sleep", "ms": 1000 },
+    { "action": "screenshot", "name": "02-result" }
+  ]
+}

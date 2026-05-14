@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import (
     QGraphicsView,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -128,6 +129,9 @@ class DialogShowGraph(QDialog, UIDialogShowGraph):
         self.graphics_view_show_graph = CustomGraphicsView()
         layout = QVBoxLayout(self.widget_graph_container)
         layout.setContentsMargins(0, 0, 0, 0)
+        self.label_graph_hint = QLabel("滚轮缩放，按住左键拖动画布；右键可保存当前 PNG 图片。")
+        self.label_graph_hint.setStyleSheet("color: #64748b; padding: 2px 0;")
+        layout.addWidget(self.label_graph_hint)
         layout.addWidget(self.graphics_view_show_graph)
 
         self.button_export_graph.clicked.connect(self.export_graph)
@@ -143,9 +147,58 @@ class DialogShowGraph(QDialog, UIDialogShowGraph):
         self.graphics_view_show_graph.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.graphics_view_show_graph.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
         self.graphics_view_show_graph.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+        self._install_graph_context_menu()
         self.splitter_graph.setSizes([820, 280])
 
         self.show_state_graph()
+
+    def _install_graph_context_menu(self):
+        hint = self.label_graph_hint.text()
+        self.graphics_view_show_graph.setToolTip(hint)
+        self.graphics_view_show_graph.viewport().setToolTip(hint)
+        self.graphics_view_show_graph.viewport().setContextMenuPolicy(Qt.CustomContextMenu)
+        self.graphics_view_show_graph.viewport().customContextMenuRequested.connect(
+            self._show_graph_context_menu
+        )
+
+    def _has_preview_png(self) -> bool:
+        scene = self.graphics_view_show_graph.scene()
+        return (
+            self.state_manager is not None
+            and self._last_preview_options_key is not None
+            and scene is not None
+            and bool(scene.items())
+            and os.path.exists(self.temp_png_path)
+            and os.path.getsize(self.temp_png_path) > 0
+        )
+
+    def _show_graph_context_menu(self, pos):
+        menu = QMenu(self)
+        save_action = menu.addAction("保存当前图片为 PNG...")
+        save_action.setEnabled(self._has_preview_png())
+        menu.addAction("导出其他格式...").triggered.connect(self.export_graph)
+        if not save_action.isEnabled():
+            empty_action = menu.addAction("暂无可保存的预览图")
+            empty_action.setEnabled(False)
+        selected = menu.exec_(self.graphics_view_show_graph.viewport().mapToGlobal(pos))
+        if selected == save_action:
+            self._save_preview_png()
+
+    def _save_preview_png(self):
+        if not self._has_preview_png():
+            QMessageBox.information(self, "没有预览图", "请先生成状态图。")
+            return
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "保存当前状态图 PNG",
+            "./state_graph.png",
+            "PNG Files (*.png);;All Files (*)",
+        )
+        if not file_path:
+            return
+        if not file_path.lower().endswith(".png"):
+            file_path += ".png"
+        shutil.copy2(self.temp_png_path, file_path)
 
     def _display_name(self, state_manager: StateManager, index: int) -> str:
         display_name = getattr(state_manager, "display_name", None)

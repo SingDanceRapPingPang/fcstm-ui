@@ -1230,4 +1230,9 @@ pip-wheel-metadata/
 # Keep packaging specs under version control
 !main.spec
 !fcstm-ui.spec
+
+# Keep canonical demo screenshots under version control
+!docs/show_assets/**/*.png
+!docs/show_assets/**/*.svg
+
 .claude/

@@ -72,6 +72,8 @@ class DialogSysdesimValidate(QDialog):
         source_layout.addWidget(self.combo_interaction_name, 1, 3)
         source_layout.addWidget(QtWidgets.QLabel("tick(ms)："), 2, 0)
         source_layout.addWidget(self.spin_tick_duration, 2, 1)
+        for col, stretch in ((0, 0), (1, 1), (2, 0), (3, 1)):
+            source_layout.setColumnStretch(col, stretch)
         main_layout.addWidget(source_group)
 
         query_group = QtWidgets.QGroupBox("Phase11 状态共存查询")
@@ -102,6 +104,8 @@ class DialogSysdesimValidate(QDialog):
         query_layout.addWidget(self.combo_right_state, 2, 3)
         query_layout.addWidget(QtWidgets.QLabel("观测范围："), 3, 0)
         query_layout.addWidget(self.combo_scope, 3, 1)
+        for col, stretch in ((0, 0), (1, 1), (2, 0), (3, 1)):
+            query_layout.setColumnStretch(col, stretch)
         main_layout.addWidget(query_group)
 
         result_group = QtWidgets.QGroupBox("结果")
@@ -185,6 +189,11 @@ class DialogSysdesimValidate(QDialog):
 
         diagram_page = QtWidgets.QWidget()
         diagram_layout = QtWidgets.QVBoxLayout(diagram_page)
+        self.label_diagram_hint = QtWidgets.QLabel(
+            "顺序图按区域宽度等比缩放；使用鼠标滚轮或右侧滚动条纵向查看，右键可保存 PNG/SVG。"
+        )
+        self.label_diagram_hint.setStyleSheet("color: #64748b; padding: 2px 0;")
+        diagram_layout.addWidget(self.label_diagram_hint)
         self.svg_diagram = QSvgWidget()
         self.svg_diagram.setMinimumSize(0, 0)
         self.diagram_scroll = QtWidgets.QScrollArea()
@@ -194,6 +203,7 @@ class DialogSysdesimValidate(QDialog):
         self.diagram_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.diagram_scroll.viewport().installEventFilter(self)
         self.diagram_scroll.setWidget(self.svg_diagram)
+        self._install_diagram_context_menu()
         diagram_layout.addWidget(self.diagram_scroll)
         self.tabs_result.addTab(diagram_page, "顺序图")
 
@@ -225,6 +235,33 @@ class DialogSysdesimValidate(QDialog):
         self.button_export_svg.clicked.connect(self._export_svg)
         self.button_export_png.clicked.connect(self._export_png)
         self.button_close.clicked.connect(self.reject)
+
+    def _install_diagram_context_menu(self):
+        hint = self.label_diagram_hint.text()
+        for widget in (self.diagram_scroll, self.diagram_scroll.viewport(), self.svg_diagram):
+            widget.setToolTip(hint)
+            widget.setContextMenuPolicy(Qt.CustomContextMenu)
+            widget.customContextMenuRequested.connect(self._show_diagram_context_menu)
+
+    def _show_diagram_context_menu(self, pos):
+        menu = QtWidgets.QMenu(self)
+        save_png_action = menu.addAction("保存为 PNG...")
+        save_svg_action = menu.addAction("保存为 SVG...")
+        save_png_action.setEnabled(self._last_phase10_report is not None)
+        save_svg_action.setEnabled(bool(self._last_svg_text))
+        if not save_png_action.isEnabled() and not save_svg_action.isEnabled():
+            empty_action = menu.addAction("暂无可保存的顺序图")
+            empty_action.setEnabled(False)
+        sender = self.sender()
+        if sender is None:
+            global_pos = self.diagram_scroll.viewport().mapToGlobal(pos)
+        else:
+            global_pos = sender.mapToGlobal(pos)
+        selected = menu.exec_(global_pos)
+        if selected == save_png_action:
+            self._export_png()
+        elif selected == save_svg_action:
+            self._export_svg()
 
     def eventFilter(self, watched, event):
         if watched is self.diagram_scroll.viewport() and event.type() == QEvent.Resize:
