@@ -201,7 +201,17 @@ def _import_module_isolated(modname: str) -> None:
     (Windows). The CI verify stage uses Linux + macOS + Windows; Linux
     and macOS get the hardened path, Windows keeps the old behaviour.
     """
-    if not hasattr(os, 'fork'):  # Windows
+    if not hasattr(os, 'fork') or sys.platform == 'darwin':
+        # * Windows has no ``os.fork``.
+        # * macOS Cocoa-linked processes cannot safely fork() once a
+        #   Qt / AppKit symbol has been loaded — the child inherits a
+        #   half-initialised Objective-C runtime and any subsequent
+        #   message dispatch (e.g. importing another widget module
+        #   that touches a Qt class) segfaults the child even though
+        #   the parent is fine.  We fall back to in-process import on
+        #   both, accepting that a broken native binding there takes
+        #   the runner down — that path was never resilient on macOS
+        #   anyway.  Linux keeps the fork-isolated path below.
         importlib.import_module(modname)
         return
 
