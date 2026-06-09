@@ -906,7 +906,15 @@ def _check_topology_verify_dialog_views() -> None:
         app.processEvents()
 
         dialog._select_combo_path(dialog.combo_target_state, 'Controller.Shutdown.Save')
+        dialog.combo_check.setCurrentIndex(dialog.combo_check.findData('finiteness'))
+        app.processEvents()
+        assert not dialog.label_target.isVisible(), 'topology finiteness should hide target label'
+        assert not dialog.combo_target_state.isVisible(), 'topology finiteness should hide target dropdown'
+
         dialog.combo_check.setCurrentIndex(dialog.combo_check.findData('inevitability'))
+        app.processEvents()
+        assert dialog.label_target.isVisible(), 'topology inevitability should show target label'
+        assert dialog.combo_target_state.isVisible(), 'topology inevitability should show target dropdown'
         dialog._run_check()
         app.processEvents()
 

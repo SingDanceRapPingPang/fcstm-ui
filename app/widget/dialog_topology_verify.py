@@ -323,6 +323,8 @@ class DialogTopologyVerify(QDialog):
     def _on_check_changed(self, _index: int):
         check_key = self._current_check_key()
         needs_target = check_key in {"reachability", "inevitability"}
+        self.label_target.setVisible(needs_target)
+        self.combo_target_state.setVisible(needs_target)
         self.label_target.setEnabled(needs_target)
         self.combo_target_state.setEnabled(needs_target)
         self._sync_source_enabled()
